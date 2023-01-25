@@ -10,7 +10,13 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     shiny::navbarPage(title = "Conversation Landscape",
-                      tabPanel(
+                      theme = shinythemes::shinytheme("cosmo"),
+                      htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"), # Prevents the navbar from eating body of app
+                      # colours all 10  sliders orange
+                      shinyWidgets::setSliderColor(color = rep("#ff7518", 10), sliderId = c(1:10)),
+
+# Render each tab via its respective module
+                      tabPanel( #First page of the app
                         "Landing Page",
                         mod_landing_page_ui("xd")
                       ),
