@@ -48,7 +48,7 @@ mod_conversation_landscape_ui <- function(id){
                               style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
         )
       )),
-      mod_umap_plot_ui("umapPlot"),
+      mod_umap_plot_ui(ns("umapPlot")),
       mod_data_table_ui(ns("dataTable"))
       # shiny::column(5,
       #               shinycssloaders::withSpinner(
@@ -68,6 +68,7 @@ mod_conversation_landscape_server <- function(id){
     ns <- session$ns
 
     mod_data_table_server("dataTable")
+    mod_umap_plot_server("umapPlot")
     # output$highlightedTable <- DT::renderDataTable({
     #   dt <- LandscapeR::ls_example
     #
@@ -85,6 +86,40 @@ mod_conversation_landscape_server <- function(id){
     #   dt
     # }) #This is working now after fixing the ns() stuff
 
+    #---- Pattern ----
+    #We create a reactive variable called pattern, which  has a default
+    # pattern <- shiny::reactiveVal(value = "", {})
+    # shiny::observeEvent(input$filterPattern, {
+    #   pattern(input$Regex)
+    # })
+    #
+    # #---- Filter + Reset Pattern ----
+    # shiny::observeEvent(input$reset, {
+    #   pattern(input$Regex)
+    #   updateTextInput(session, "Regex", value = "")
+    # })
+    # shiny::observeEvent(input$reset, {
+    #   pattern("")
+    # })
+    #
+    # #---- Delete IDS ----
+    # remove_range <- shiny::reactiveValues(
+    #   keep_keys = data %>% dplyr::pull({{ id }}), # Get the original IDs saved and save an object for later adding selected points to remove
+    #   remove_keys = NULL
+    # )
+    #
+    # shiny::observeEvent(input$delete, { # Update remove_range's values on delete button press
+    #   req(length(remove_range$keep_keys) > 0)
+    #   remove_range$remove_keys <- selected_range()$key
+    #   remove_range$keep_keys <- remove_range$keep_keys[!remove_range$keep_keys %in% remove_range$remove_keys]
+    # })
+    # #---- reactive data ---
+    # reactive_data <- shiny::reactive({
+    #   data <- data %>%
+    #     dplyr::filter({{ x_var }} > input$x1[[1]], {{ x_var }} < input$x1[[2]], V2 > input$y1[[1]], V2 < input$y1[[2]]) %>%
+    #     dplyr::filter({{ id }} %in% remove_range$keep_keys) %>%
+    #     dplyr::filter(grepl(input$filterPattern, {{ text_var }}, ignore.case = TRUE))
+    # })
   })
 }
 

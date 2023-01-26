@@ -24,9 +24,11 @@ mod_data_table_server <- function(id){
     ns <- session$ns
 
     output$highlightedTable <- DT::renderDataTable({
+      #Using this as a placeholder, will need to re-work in the reactive frames
       dt <- LandscapeR::ls_example
 
       dt <- dt %>%
+        #Also a question of how best to manage tidy evaluation etc. here
         dplyr::select(date, text, cluster, sentiment, permalink) %>%
         DT::datatable(
           filter = "top",
