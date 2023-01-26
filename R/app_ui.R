@@ -16,13 +16,13 @@ app_ui <- function(request) {
                       shinyWidgets::setSliderColor(color = rep("#ff7518", 10), sliderId = c(1:10)),
 
 # Render each tab via its respective module
-                      tabPanel( #First page of the app
+                      shiny::tabPanel( #First page of the app
                         "Landing Page",
                         mod_landing_page_ui("xd")
                       ),
-                      tabPanel(
+                      shiny::tabPanel(
                         "Survey Landscape",
-                        mod_conversation_landscape_ui("xxdd")
+                        mod_conversation_landscape_ui("landscapeTag")
                       )
 
 
