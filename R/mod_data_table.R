@@ -19,16 +19,13 @@ mod_data_table_ui <- function(id){
 #' data_table Server Functions
 #'
 #' @noRd
-mod_data_table_server <- function(id, reactive_data){
+mod_data_table_server <- function(id, reactive_dataframe){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     output$highlightedTable <- DT::renderDataTable({
       #Using this as a placeholder, will need to re-work in the reactive frames
-      # dt <- LandscapeR::ls_example
-      #
-      # dt <- dt %>%
-      reactive_data() %>%
+      reactive_dataframe() %>%
         #Also a question of how best to manage tidy evaluation etc. here
         dplyr::select(date, text, cluster, sentiment, permalink) %>%
         DT::datatable(
