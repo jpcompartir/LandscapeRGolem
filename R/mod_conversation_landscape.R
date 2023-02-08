@@ -27,7 +27,7 @@ mod_conversation_landscape_ui <- function(id){
                                             style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;")
                     )),
       shiny::column(3, style = "padding-left: 20px; padding-right: 10px;", shinyWidgets::searchInput(
-        #Use the shinyWidget searchInput for a tidy searchable button
+        #Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
         inputId = ns("filterPattern"),
         label = "Pattern to search text with",
         placeholder = "A placeholder",
@@ -49,10 +49,7 @@ mod_conversation_landscape_ui <- function(id){
         )
       )),
       mod_umap_plot_ui(ns("umapPlot")),
-      # mod_data_table_ui(ns("dataTable"))
-      shiny::column(5,
-                    shinycssloaders::withSpinner(
-                      DT::dataTableOutput(ns("highlightedTable"))))
+      mod_data_table_ui(ns("dataTable"))
 
     )
   )
@@ -63,29 +60,14 @@ mod_conversation_landscape_ui <- function(id){
 #' @param xd The reactive data frame from app_server
 #'
 #' @noRd
-mod_conversation_landscape_server <- function(id, xd){
+mod_conversation_landscape_server <- function(id, reactive_dataframe){
   moduleServer(
     id,
     function(input, output, session){
     ns <- session$ns
 
-    # mod_data_table_server("dataTable")
-    mod_umap_plot_server("umapPlot")
-    output$highlightedTable <- DT::renderDataTable({
-
-      xd() %>%
-        dplyr::select(date, text, cluster, sentiment, permalink) %>%
-        DT::datatable(
-          filter = "top",
-          options = list(pageLength = 25,
-                         dom = '<"top" ifp> rt<"bottom"lp>',
-                         autoWidth = FALSE),
-          style = "bootstrap",
-          rownames = FALSE,
-          escape = FALSE)
-
-
-    }) #This is working now after fixing the ns() stuff
+    mod_data_table_server("dataTable", reactive_dataframe)
+    mod_umap_plot_server("umapPlot", reactive_dataframe)
 
   })
 }
