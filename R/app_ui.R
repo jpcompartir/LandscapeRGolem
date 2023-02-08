@@ -5,6 +5,7 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+  # ns <- NS(id)
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
@@ -23,8 +24,7 @@ app_ui <- function(request) {
                       shiny::tabPanel(
                         "Survey Landscape",
                         mod_conversation_landscape_ui("landscapeTag")
-                      )
-
+                      ),
 
     )
   )
