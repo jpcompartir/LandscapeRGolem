@@ -28,14 +28,14 @@ mod_umap_plot_ui <- function(id){
                      shiny::column(6, htmltools::div(
                        id = "slider1",
                        style = "width: 100%;",
-                       shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20))
+                       shiny::sliderInput("x1", "V1 Range", step = 5, -100, 100, c(-20, 20)) #not using ns(x1) as don't want this input to be restricted to the namespace
                      ),
                      ), #Slider 1
                      shiny::column(
                        6,
                        htmltools::div(
                          id = "slider2", style = "width: 100%;",
-                         shiny::sliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20))
+                         shiny::sliderInput("y1", "V2 Range", step = 5, -100, 100, c(-20, 20))
                        )
                      ), #Slider2
                    )
@@ -48,15 +48,16 @@ mod_umap_plot_ui <- function(id){
 #' umap_plot Server Functions
 #'
 #' @noRd
-mod_umap_plot_server <- function(id){
+mod_umap_plot_server <- function(id, reactive_dataframe){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
      output$umapPlot <- plotly::renderPlotly({
-       dt <- LandscapeR::ls_example %>%
-         dplyr::mutate(cluster = factor(cluster))
+       # dt <- LandscapeR::ls_example %>%
+       #   dplyr::mutate(cluster = factor(cluster))
 
-       dt %>%
+       reactive_dataframe() %>%
+         dplyr::mutate(cluster = factor(cluster)) %>%
          plotly::plot_ly(
            x = ~V1,
            y = ~V2,
@@ -80,22 +81,22 @@ mod_umap_plot_server <- function(id){
 
 ## To be copied in the server
 # mod_umap_plot_server("umap_plot_1")
-
-dt <- LandscapeR::ls_example %>%
-  dplyr::mutate(cluster = factor(cluster))
-dt %>%
-  plotly::plot_ly(
-    x = ~V1,
-    y = ~V2,
-    type = "scattergl",
-    color = ~cluster,
-    key = ~document,
-    text = ~ paste("<br> Post:", text),
-    hoverinfo = "text",
-    market = list(size = 2), height = 600
-  ) %>%
-  plotly::layout(
-    dragmode = "lasso",
-    legend = list(itemsizing = "constant")
-  ) %>%
-  plotly::event_register(event = "plotly_selected")
+#
+# dt <- LandscapeR::ls_example %>%
+#   dplyr::mutate(cluster = factor(cluster))
+# dt %>%
+#   plotly::plot_ly(
+#     x = ~V1,
+#     y = ~V2,
+#     type = "scattergl",
+#     color = ~cluster,
+#     key = ~document,
+#     text = ~ paste("<br> Post:", text),
+#     hoverinfo = "text",
+#     market = list(size = 2), height = 600
+#   ) %>%
+#   plotly::layout(
+#     dragmode = "lasso",
+#     legend = list(itemsizing = "constant")
+#   ) %>%
+#   plotly::event_register(event = "plotly_selected")
