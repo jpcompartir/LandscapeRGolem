@@ -1,4 +1,4 @@
-#' landing_page UI Function
+#' distribution_tab UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,17 +7,17 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_landing_page_ui <- function(id){
+mod_distribution_tab_ui <- function(id){
   ns <- NS(id)
   tagList(
-    p("Helpful UI Text")
+
   )
 }
 
-#' landing_page Server Functions
+#' distribution_tab Server Functions
 #'
 #' @noRd
-mod_landing_page_server <- function(id){
+mod_distribution_tab_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -25,7 +25,7 @@ mod_landing_page_server <- function(id){
 }
 
 ## To be copied in the UI
-# mod_landing_page_ui("landing_page_1")
+# mod_distribution_tab_ui("distribution_tab_1")
 
 ## To be copied in the server
-# mod_landing_page_server("landing_page_1")
+# mod_distribution_tab_server("distribution_tab_1")
