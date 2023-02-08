@@ -10,8 +10,11 @@ pattern <- shiny::reactiveVal(value = "", {})
 shiny::observeEvent(input$filterPattern, {
   pattern(input$Regex)
 })
+  data <- LandscapeR::ls_example
 
-  mod_conversation_landscape_server("landscapeTag", reactive_dataframe = reactive_data)
+  mod_conversation_landscape_server("landscapeTag",
+                                    reactive_dataframe = reactive_data,
+                                    selected_range = selected_range)
 
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
   #Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.
@@ -19,15 +22,37 @@ shiny::observeEvent(input$filterPattern, {
   #reactive_data() also takes care of the filtering via a pattern
   reactive_data <- shiny::reactive({
 
-    data <- LandscapeR::ls_example
-
     #Uncommenting currently breaks the app, presumably because input$x1, y1, etc. are not being read in this environment. Potential strategy...
     data <- data %>%
-      dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) #%>% #Slider input ranges
-      #   dplyr::filter({{ id }} %in% remove_range$keep_keys) %>% #Filtering for the keys not in remove_range$remove_keys
+      dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) %>% #Slider input ranges
+        dplyr::filter(document %in% remove_range$keep_keys) #%>% #Filtering for the keys not in remove_range$remove_keys
       #   dplyr::filter(grepl(input$filterPattern, {{ text_var }}, ignore.case = TRUE))
 
       return(data)
 
+  })
+
+  #---- Delete IDS ----
+  remove_range <- shiny::reactiveValues(
+    keep_keys = data %>% dplyr::pull(document), # Get the original IDs saved and save an object for later adding selected points to remove
+    remove_keys = NULL
+  )
+
+  shiny::observeEvent(input$delete, { # Update remove_range's values on delete button press
+    req(length(remove_range$keep_keys) > 0)
+    remove_range$remove_keys <- selected_range()$key
+    remove_range$keep_keys <- remove_range$keep_keys[!remove_range$keep_keys %in% remove_range$remove_keys]
+  })
+
+  # Instantiate a reactive value, then update that value dynamically when points are selected. ----
+  selected_range <- shiny::reactiveVal({})
+
+  shiny::observeEvent(plotly::event_data("plotly_selected"), {
+    selected_range(plotly::event_data("plotly_selected"))
+  })
+
+  #---- key ----
+  key <- reactive({
+    selected_range()$key
   })
 }
