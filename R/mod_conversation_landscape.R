@@ -60,14 +60,14 @@ mod_conversation_landscape_ui <- function(id){
 #' @param xd The reactive data frame from app_server
 #'
 #' @noRd
-mod_conversation_landscape_server <- function(id, reactive_dataframe){
+mod_conversation_landscape_server <- function(id, reactive_dataframe, selected_range){
   moduleServer(
     id,
     function(input, output, session){
     ns <- session$ns
 
     mod_data_table_server("dataTable", reactive_dataframe)
-    mod_umap_plot_server("umapPlot", reactive_dataframe)
+    mod_umap_plot_server("umapPlot", reactive_dataframe, selected_range)
 
   })
 }
