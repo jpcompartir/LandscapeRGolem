@@ -19,13 +19,13 @@ mod_data_table_ui <- function(id){
 #' data_table Server Functions
 #'
 #' @noRd
-mod_data_table_server <- function(id, reactive_dataframe){
+mod_data_table_server <- function(id, highlighted_dataframe){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     output$highlightedTable <- DT::renderDataTable({
       #Using this as a placeholder, will need to re-work in the reactive frames
-      reactive_dataframe() %>%
+      highlighted_dataframe() %>%
         #Also a question of how best to manage tidy evaluation etc. here
         dplyr::select(date, text, cluster, sentiment, permalink) %>%
         DT::datatable(

@@ -14,6 +14,7 @@ shiny::observeEvent(input$filterPattern, {
 
   mod_conversation_landscape_server("landscapeTag",
                                     reactive_dataframe = reactive_data,
+                                    highlighted_dataframe = df_filtered,
                                     selected_range = selected_range)
 
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
@@ -54,5 +55,13 @@ shiny::observeEvent(input$filterPattern, {
   #---- key ----
   key <- reactive({
     selected_range()$key
+  })
+
+  #---- filtered_df ----
+  #Used for rendering the fully responsive data table
+  #consider changing this to highlighted_dataframe
+  df_filtered <- reactive({
+    df_filtered <- reactive_data() %>%
+      dplyr::filter(document %in% key())
   })
 }
