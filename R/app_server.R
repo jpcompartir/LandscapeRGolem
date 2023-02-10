@@ -12,6 +12,7 @@ shiny::observeEvent(input$filterPattern, {
 })
   data <- LandscapeR::ls_example
 
+  #This is for passing reactive values to and from modules
   r <- reactiveValues()
 
   mod_conversation_landscape_server("landscapeTag",
@@ -30,8 +31,8 @@ shiny::observeEvent(input$filterPattern, {
     data <- data %>%
       dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) %>%
       # dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) %>% #Slider input ranges
-        dplyr::filter(document %in% remove_range$keep_keys) #%>% #Filtering for the keys not in remove_range$remove_keys
-      #   dplyr::filter(grepl(input$filterPattern, {{ text_var }}, ignore.case = TRUE))
+        dplyr::filter(document %in% remove_range$keep_keys) %>% #Filtering for the keys not in remove_range$remove_keys
+        dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
 
       return(data)
 

@@ -69,6 +69,10 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe, selected_r
     mod_data_table_server("dataTable", highlighted_dataframe)
     mod_umap_plot_server("umapPlot", reactive_dataframe, selected_range, r)
 
+    observe({
+      r$filterPattern <- input$filterPattern
+    })
+
     # return(list(
     #   pattern = reactive({tmp_var$pattern})
     # ))
