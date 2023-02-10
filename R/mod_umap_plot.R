@@ -28,14 +28,14 @@ mod_umap_plot_ui <- function(id){
                      shiny::column(6, htmltools::div(
                        id = "slider1",
                        style = "width: 100%;",
-                       shiny::sliderInput("x1", "V1 Range", step = 5, -100, 100, c(-20, 20)) #not using ns(x1) as don't want this input to be restricted to the namespace
+                       shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20)) #not using ns(x1) as don't want this input to be restricted to the namespace
                      ),
                      ), #Slider 1
                      shiny::column(
                        6,
                        htmltools::div(
                          id = "slider2", style = "width: 100%;",
-                         shiny::sliderInput("y1", "V2 Range", step = 5, -100, 100, c(-20, 20))
+                         shiny::sliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20))
                        )
                      ), #Slider2
                    )
@@ -48,9 +48,16 @@ mod_umap_plot_ui <- function(id){
 #' umap_plot Server Functions
 #'
 #' @noRd
-mod_umap_plot_server <- function(id, reactive_dataframe, selected_range){
+mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
+
+    observe({
+      r$x1 <- input$x1
+    })
+    observe({
+      r$y1 <- input$y1
+    })
 
      output$umapPlot <- plotly::renderPlotly({
        # dt <- LandscapeR::ls_example %>%

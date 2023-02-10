@@ -12,10 +12,13 @@ shiny::observeEvent(input$filterPattern, {
 })
   data <- LandscapeR::ls_example
 
+  r <- reactiveValues()
+
   mod_conversation_landscape_server("landscapeTag",
                                     reactive_dataframe = reactive_data,
                                     highlighted_dataframe = df_filtered,
-                                    selected_range = selected_range)
+                                    selected_range = selected_range,
+                                    r = r)
 
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
   #Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.
@@ -25,7 +28,8 @@ shiny::observeEvent(input$filterPattern, {
 
     #Uncommenting currently breaks the app, presumably because input$x1, y1, etc. are not being read in this environment. Potential strategy...
     data <- data %>%
-      dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) %>% #Slider input ranges
+      dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) %>%
+      # dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) %>% #Slider input ranges
         dplyr::filter(document %in% remove_range$keep_keys) #%>% #Filtering for the keys not in remove_range$remove_keys
       #   dplyr::filter(grepl(input$filterPattern, {{ text_var }}, ignore.case = TRUE))
 
