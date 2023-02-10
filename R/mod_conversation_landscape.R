@@ -12,20 +12,8 @@ mod_conversation_landscape_ui <- function(id){
   tagList(
     gotop::use_gotop(),
     shiny::fluidRow(
-      shiny::column(2,
-                    style = "padding-right: 0px; border: none;",
-                    shiny::textInput(inputId = ns("remainingName"), "All Data",
-                                     value = NULL,
-                                     placeholder = "filename")
-      ),
-      shiny::column(1,
-                    style = "padding-left: 10px; padding-right: 20px;",
-                    shiny::div(
-                      style = "margin-top: 25px;",
-                      shiny::downloadButton(ns("downloadAll"), "Download",
-                                            class = "btn btn-warning",
-                                            style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;")
-                    )),
+      mod_download_data_ui(id = ns("allData"), label = "All Data"),
+
       shiny::column(3, style = "padding-left: 20px; padding-right: 10px;", shinyWidgets::searchInput(
         #Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
         inputId = ns("filterPattern"),
@@ -36,21 +24,9 @@ mod_conversation_landscape_ui <- function(id){
         width = "100%",
         value = ""
       )),
-      shiny::column(2, shiny::textInput(ns("fileName"),
-                                        "Selected Data",
-                                        value = NULL,
-                                        placeholder = "filename excluding .csv")),
-      shiny::column(2, shiny::div(
-        style = "margin-top: 25px;",
-        shiny::downloadButton(ns("downloadData"),
-                              "Download",
-                              class = "btn btn-warning",
-                              style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
-        )
-      )),
+      mod_download_data_ui(id = ns("selectedData"), label = "Selected Data"),
       mod_umap_plot_ui(ns("umapPlot")),
       mod_data_table_ui(ns("dataTable"))
-
     )
   )
 }
@@ -68,6 +44,8 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe, selected_r
 
     mod_data_table_server("dataTable", highlighted_dataframe)
     mod_umap_plot_server("umapPlot", reactive_dataframe, selected_range, r)
+    mod_download_data_server("allData", data_object = highlighted_dataframe)
+    mod_download_data_server("selectedData", data_object = highlighted_dataframe)
 
     observe({
       r$filterPattern <- input$filterPattern

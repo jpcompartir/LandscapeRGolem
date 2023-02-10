@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_download_data_ui <- function(id, label, data_object){
+mod_download_data_ui <- function(id, label){
   ns <- NS(id)
   tagList(
     shiny::column(2, shiny::textInput(ns("fileName"), label, value = NULL, placeholder = "filename excluding .csv")),
@@ -25,18 +25,17 @@ mod_download_data_ui <- function(id, label, data_object){
 #' download_data Server Functions
 #'
 #' @noRd
-mod_download_data_server <- function(id){
+mod_download_data_server <- function(id, data_object){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    shiny::downloadHandler(
+    output$download <- shiny::downloadHandler(
       filename = function() {
         paste0(input$fileName, ".csv")
       },
       content = function(file) {
-        utils::write.csv(data_object, file)
+        utils::write.csv(data_object(), file)
       }
-
     )
   })
 }
