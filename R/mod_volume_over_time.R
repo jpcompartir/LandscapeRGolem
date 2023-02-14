@@ -17,7 +17,7 @@ mod_volume_over_time_ui <- function(id){
         width = 2,
         shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 800, value = 400, step = 50),
         shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 800, value = 400, step = 50),
-        shiny::dateRangeInput(inputId = ns("dateRange"), label = "Date Range", start = as.Date("30-01-22"), end = as.Date("30-01-23")),
+        shiny::dateRangeInput(inputId = ns("dateRange"), label = "Date Range", start = as.Date("01-01-2022", format = "%d-%m-%Y"), end = as.Date("01-01-2023", format = "%d-%m-%Y")), #This being hardcoded in is not ideal but it works for now
         shiny::selectInput(inputId = ns("dateBreak"), label = "Unit", choices = c("day", "week", "month", "quarter", "year"), selected = "week"),
         shiny::selectInput(inputId = ns("dateSmooth"), label = "Smooth", choices = c("none", "loess", "lm", "glm", "gam"), selected = "none"),
         shiny::uiOutput(ns("smoothControls")),
@@ -48,18 +48,18 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
     ns <- session$ns
 
     #---- Volume Plot ----
-    # volume_label <- reactive_labels("volume", input)
+    volume_label <- reactive_labels("volume", input)
     volume_reactive <- reactive({
       vol_plot <- highlighted_dataframe() %>%
         dplyr::mutate(date = as.Date(date)) %>%
-        # dplyr::filter(date >= input$dateRange[[1]],
-        #               date <= input$dateRange[[2]]) %>%
+        dplyr::filter(date >= input$dateRange[[1]],
+                      date <= input$dateRange[[2]]) %>%
         LandscapeR::ls_plot_volume_over_time(
           .date_var = date,
           unit = input$dateBreak,
           fill = delayedVolumeHex()
-        ) #+
-        # volume_label()
+        ) +
+        volume_label()
 
       # if(!input$dateSmooth == "none") {
       #   if(input$smoothSe == "FALSE") {
