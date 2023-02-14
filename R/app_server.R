@@ -6,20 +6,31 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
+  data <- LandscapeR::ls_example
+
+
 pattern <- shiny::reactiveVal(value = "", {})
 shiny::observeEvent(input$filterPattern, {
   pattern(input$Regex)
 })
-  data <- LandscapeR::ls_example
+
 
   #This is for passing reactive values to and from modules
   r <- reactiveValues()
+
+  r$date_min = min(data$date)
+  r$date_max = max(data$date)
 
   mod_conversation_landscape_server("landscapeTag",
                                     reactive_dataframe = reactive_data,
                                     highlighted_dataframe = df_filtered,
                                     selected_range = selected_range,
                                     r = r)
+
+  mod_distribution_tab_server(id = "distributionTab",
+                              highlighted_dataframe = df_filtered)
+
+  mod_bigram_network_server("bigramPlot", highlighted_dataframe = df_filtered)
 
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
   #Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.
