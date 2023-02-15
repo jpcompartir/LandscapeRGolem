@@ -6,15 +6,31 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
+  data <- LandscapeR::ls_example
+
+
 pattern <- shiny::reactiveVal(value = "", {})
 shiny::observeEvent(input$filterPattern, {
   pattern(input$Regex)
 })
-  data <- LandscapeR::ls_example
+
+
+  #This is for passing reactive values to and from modules
+  r <- reactiveValues()
+
+  r$date_min = min(data$date)
+  r$date_max = max(data$date)
 
   mod_conversation_landscape_server("landscapeTag",
                                     reactive_dataframe = reactive_data,
-                                    selected_range = selected_range)
+                                    highlighted_dataframe = df_filtered,
+                                    selected_range = selected_range,
+                                    r = r)
+
+  mod_distribution_tab_server(id = "distributionTab",
+                              highlighted_dataframe = df_filtered)
+
+  mod_bigram_network_server("bigramPlot", highlighted_dataframe = df_filtered)
 
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
   #Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.
@@ -24,9 +40,10 @@ shiny::observeEvent(input$filterPattern, {
 
     #Uncommenting currently breaks the app, presumably because input$x1, y1, etc. are not being read in this environment. Potential strategy...
     data <- data %>%
-      dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) %>% #Slider input ranges
-        dplyr::filter(document %in% remove_range$keep_keys) #%>% #Filtering for the keys not in remove_range$remove_keys
-      #   dplyr::filter(grepl(input$filterPattern, {{ text_var }}, ignore.case = TRUE))
+      dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) %>%
+      # dplyr::filter(V1> input[["x1"]][[1]], V1 < input[["x1"]][[2]], V2 > input[["y1"]][[1]], V2 < input[["y1"]][[2]]) %>% #Slider input ranges
+        dplyr::filter(document %in% remove_range$keep_keys) %>% #Filtering for the keys not in remove_range$remove_keys
+        dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
 
       return(data)
 
@@ -54,5 +71,13 @@ shiny::observeEvent(input$filterPattern, {
   #---- key ----
   key <- reactive({
     selected_range()$key
+  })
+
+  #---- filtered_df ----
+  #Used for rendering the fully responsive data table
+  #consider changing this to highlighted_dataframe
+  df_filtered <- reactive({
+    df_filtered <- reactive_data() %>%
+      dplyr::filter(document %in% key())
   })
 }

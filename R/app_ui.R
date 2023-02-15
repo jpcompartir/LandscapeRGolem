@@ -5,7 +5,7 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
-  # ns <- NS(id)
+  # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
@@ -16,16 +16,25 @@ app_ui <- function(request) {
                       # colours all 10  sliders orange
                       shinyWidgets::setSliderColor(color = rep("#ff7518", 10), sliderId = c(1:10)),
 
-# Render each tab via its respective module
+                      # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
                         "Landing Page",
                         mod_landing_page_ui("xd")
                       ),
                       shiny::tabPanel(
                         "Survey Landscape",
-                        mod_conversation_landscape_ui("landscapeTag")
+                        mod_conversation_landscape_ui("landscapeTag")),
+                      # shiny::tabPanel(
+                      #   "Distribution Plots",
+                      #   mod_distribution_tab_ui(id = "distributionTab")),
+                      shiny::tabPanel(
+                        "Bigram Network",
+                        mod_bigram_network_ui(id = "bigramPlot")
                       ),
-
+                      shiny::tabPanel(
+                        "Distribution Tab",
+                        mod_distribution_tab_ui(id = "distributionTab")
+                      ),
     )
   )
 }
