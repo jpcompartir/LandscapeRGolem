@@ -23,7 +23,7 @@ mod_reactive_labels_ui <- function(id){
 #' reactive_labels Server Functions
 #'
 #' @noRd
-mod_reactive_labels_server <- function(id, plot){
+mod_reactive_labels_server <- function(id){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
@@ -50,10 +50,23 @@ mod_reactive_labels_server <- function(id, plot){
             inputId = ns("Ylabel"), label = "Y axis title",
             placeholder = "Write y axis title here...."
           )
-
         )
       }
     })
+
+    labels <- shiny::reactive({
+      ggplot2::labs(
+        title = input$Title,
+        subtitle = input$Subtitle,
+        caption = input$Caption,
+        x = input$Xlabel,
+        y = input$Ylabel
+      )
+    })
+
+    return(list(labels = labels))
+
+
   })
 }
 
