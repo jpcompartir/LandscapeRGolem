@@ -10,10 +10,10 @@
 mod_date_smooth_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shiny::selectInput(inputId = "dateSmooth", label = "Smooth",
+    shiny::selectInput(inputId = ns("dateSmooth"), label = "Smooth",
                        choices = c("none", "loess", "lm", "glm", "gam"),
                        selected = "none"),
-    shiny::uiOutput(outputId = "smoothControls")
+    shiny::uiOutput(outputId = ns("smoothControls"))
 
   )
 }
@@ -25,6 +25,20 @@ mod_date_smooth_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # Volume plot smooth controls
+    output$smoothControls <- shiny::renderUI({
+      if(input$dateSmooth != "none") {
+        shiny::tagList(
+          shiny::selectInput(
+            ns("smoothSe"),
+            "show standard error?",
+            choices = c("TRUE", "FALSE"),
+            selected = "TRUE"
+          ),
+          shiny::textInput(ns("smoothColour"), "Smooth colour", value = "#000000")
+        )
+      }
+    })
   })
 }
 
@@ -33,3 +47,5 @@ mod_date_smooth_server <- function(id){
 
 ## To be copied in the server
 # mod_date_smooth_server("date_smooth_1")
+
+#Not clear this should be a module tbh

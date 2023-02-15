@@ -10,7 +10,12 @@
 mod_distribution_tab_ui <- function(id){
   ns <- NS(id)
   tagList(
-    mod_volume_over_time_ui(id = ns("volumeModule"))
+    shiny::titlePanel(title = "Volume Over Time"),
+    mod_volume_over_time_ui(id = ns("volumeModule")),
+    shiny::titlePanel(title = "Sentiment Distribution"),
+    mod_sentiment_ui(ns("sentimentModule")),
+    shiny::titlePanel(title = "tokenPlot"),
+    mod_token_plot_ui(id = ns("tokenModule"))
   )
 }
 
@@ -22,6 +27,11 @@ mod_distribution_tab_server <- function(id, highlighted_dataframe){
     ns <- session$ns
 
     mod_volume_over_time_server(id = "volumeModule", highlighted_dataframe = highlighted_dataframe)
+
+    mod_sentiment_server("sentimentModule", highlighted_dataframe = highlighted_dataframe)
+
+  mod_token_plot_server("tokenModule", highlighted_dataframe = highlighted_dataframe)
+
   })
 }
 

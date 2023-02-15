@@ -28,7 +28,7 @@ mod_reactive_labels_server <- function(id){
     ns <- session$ns
 
     output$titles <- shiny::renderUI({
-      if(input$toggle == TRUE){
+      if(input$toggle == TRUE){ #Render te ui when the toggle input is TRUE
         shiny::tagList(
           shiny::textInput(
             inputId = ns("Title"), label = "Title",
@@ -54,7 +54,7 @@ mod_reactive_labels_server <- function(id){
       }
     })
 
-    labels <- shiny::reactive({
+    labels <- shiny::reactive({ #Store labels to then return
       ggplot2::labs(
         title = input$Title,
         subtitle = input$Subtitle,
@@ -64,9 +64,7 @@ mod_reactive_labels_server <- function(id){
       )
     })
 
-    return(list(labels = labels))
-
-
+    return(list(labels = labels)) #Return the labels as a named object inside a list
   })
 }
 
@@ -75,34 +73,3 @@ mod_reactive_labels_server <- function(id){
 
 ## To be copied in the server
 # mod_reactive_labels_server("reactive_labels_1")
-
-
-# plot_type_title <- stringr::str_to_title(plot_type)
-#
-# shiny::renderUI({
-#   if (input[[paste0("toggle", plot_type_title, "titles")]]) {
-#     shiny::tagList(
-#       shiny::textInput(
-#         inputId = paste0(plot_type, "Title"), label = "Title",
-#         placeholder = "Write title here...", value = ""
-#       ),
-#       shiny::textInput(
-#         inputId = paste0(plot_type, "Subtitle"), label = "Subtitle",
-#         placeholder = "Write subtitle here...", value = ""
-#       ),
-#       shiny::textInput(
-#         inputId = paste0(plot_type, "Caption"), label = "Caption",
-#         placeholder = "Write caption here...", value = ""
-#       ),
-#       shiny::textInput(
-#         inputId = paste0(plot_type, "Xlabel"), label = "X axis title",
-#         placeholder = "Write the x axis title here..."
-#       ),
-#       shiny::textInput(
-#         inputId = paste0(plot_type, "Ylabel"), label = "Y axis title",
-#         placeholder = "Write the y axis title here"
-#       )
-#     )
-#   }
-# })
-# }
