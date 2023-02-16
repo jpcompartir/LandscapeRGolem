@@ -25,8 +25,8 @@ mod_conversation_landscape_ui <- function(id){
         value = ""
       )),
       mod_download_data_ui(id = ns("selectedData"), label = "Selected Data"),
-      mod_umap_plot_ui(ns("umapPlot")),
-      mod_data_table_ui(ns("dataTable"))
+      mod_umap_plot_ui(id = ns("umapPlot")),
+      mod_data_table_ui(id = ns("dataTable"))
     )
   )
 }

@@ -37,7 +37,7 @@ mod_sentiment_server <- function(id, highlighted_dataframe){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # sentiment_label <- reactive_labels("sentiment", input)
+
     sent_titles <- mod_reactive_labels_server("sentimentTitles")
     sentiment_reactive <- reactive({
       highlighted_dataframe() %>%
@@ -56,7 +56,6 @@ mod_sentiment_server <- function(id, highlighted_dataframe){
       )
 
     output$saveSentiment <- LandscapeR::download_box(exportname = "sentiment_plot", plot = sentiment_reactive())
-
   })
 }
 

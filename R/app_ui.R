@@ -24,9 +24,6 @@ app_ui <- function(request) {
                       shiny::tabPanel(
                         "Survey Landscape",
                         mod_conversation_landscape_ui("landscapeTag")),
-                      # shiny::tabPanel(
-                      #   "Distribution Plots",
-                      #   mod_distribution_tab_ui(id = "distributionTab")),
                       shiny::tabPanel(
                         "Bigram Network",
                         mod_bigram_network_ui(id = "bigramPlot")

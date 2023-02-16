@@ -41,10 +41,7 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-    #---- Volume Plot ----
-    # output$volumeTitles <- titles_render("volume", input)
-    # volume_label <- reactive_labels("volume", input)
-
+    vol_titles <- mod_reactive_labels_server("volumeTitles")
 
     volume_reactive <- reactive({
       vol_plot <- highlighted_dataframe() %>%
@@ -55,8 +52,7 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
           .date_var = date,
           unit = input$dateBreak,
           fill = delayedVolumeHex()
-        ) +
-        vol_titles$labels()
+        ) #Add the labels from mod_reactive_labels to the plot
 
       if(!input$dateSmooth == "none") {
         if(input$smoothSe == "FALSE") {
@@ -74,11 +70,11 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
             )
         }
       }
+      vol_plot <- vol_plot +
+        vol_titles$labels()
 
       return(vol_plot)
     })
-
-    vol_titles <- mod_reactive_labels_server("volumeTitles")
 
     output$volumePlot<- shiny::renderPlot({
           volume_reactive()
@@ -93,12 +89,12 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
       if(input$dateSmooth != "none") {
         shiny::tagList(
           shiny::selectInput(
-            "smoothSe",
+            ns("smoothSe"),
             "show standard error?",
             choices = c("TRUE", "FALSE"),
             selected = "TRUE"
           ),
-          shiny::textInput("smoothColour", "Smooth colour", value = "#000000")
+          shiny::textInput(ns("smoothColour"), "Smooth colour", value = "#000000")
         )
       }
     })
@@ -109,8 +105,6 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
       shiny::debounce(500)
 
     output$saveVolume <- LandscapeR::download_box("volume_plot", volume_reactive())
-
-
   })
 }
 
