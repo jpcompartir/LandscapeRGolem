@@ -17,11 +17,13 @@ mod_volume_over_time_ui <- function(id){
         width = 2,
         shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 800, value = 400, step = 50),
         shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 800, value = 400, step = 50),
-        shiny::dateRangeInput(inputId = ns("dateRange"), label = "Date Range", start = as.Date("01-01-2022", format = "%d-%m-%Y"), end = as.Date("01-01-2023", format = "%d-%m-%Y")), #This being hardcoded in is not ideal but it works for now
+        shiny::dateRangeInput(inputId = ns("dateRange"),
+                              label = "Date Range",
+                              start = NULL,
+                              end = NULL), #This being hardcoded in is not ideal but it works for now
         shiny::selectInput(inputId = ns("dateBreak"), label = "Unit", choices = c("day", "week", "month", "quarter", "year"), selected = "week"),
         shiny::selectInput(inputId = ns("dateSmooth"), label = "Smooth", choices = c("none", "loess", "lm", "glm", "gam"), selected = "none"),
         shiny::uiOutput(ns("smoothControls")),
-
         shiny::textInput(ns("volumeHex"), "colour", value = "#107C10"),
         mod_reactive_labels_ui(ns("volumeTitles")),
         shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning", style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
@@ -42,6 +44,16 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
     ns <- session$ns
 
     vol_titles <- mod_reactive_labels_server("volumeTitles")
+
+   date_min <- reactive(min(highlighted_dataframe()[["date"]]))
+   date_max <- reactive(max(highlighted_dataframe()[["date"]]))
+
+  observe({shiny::updateDateRangeInput(session = session,
+                                inputId = "dateRange",
+                                label = "Date Range",
+                                start = date_min(),
+                                end = date_max())
+  })
 
     volume_reactive <- reactive({
       vol_plot <- highlighted_dataframe() %>%
