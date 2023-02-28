@@ -26,12 +26,16 @@ app_ui <- function(request) {
                         mod_conversation_landscape_ui("landscapeTag")),
                       shiny::tabPanel(
                         "Bigram Network",
-                        mod_bigram_network_ui(id = "bigramPlot")
+                        mod_bigram_network_ui(id = "bigramTag")
                       ),
                       shiny::tabPanel(
                         "Distribution Tab",
-                        mod_distribution_tab_ui(id = "distributionTab")
+                        mod_distribution_tab_ui(id = "distributionTag")
                       ),
+                      shiny::tabPanel(
+                        "Weighed Log-odds",
+                        mod_wlos_ui(id = "wlosTag")
+                      )
     )
   )
 }
