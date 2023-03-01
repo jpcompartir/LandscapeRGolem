@@ -24,7 +24,11 @@ mod_wlos_ui <- function(id){
           </ul>")
       )
     ),
-    shiny::sidebarPanel(
+    shiny::sidebarPanel(width = 2,
+      shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 1400, value = 800, step = 100),
+      shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 1200, value = 600, step = 100),
+      shiny::sliderInput(inputId = ns("textSize"), "Text size", min = 2, max = 20, value = 4, step = 1),
+      shiny::sliderInput(inputId = ns("nrow"),label = "Number of Rows", min = 1, max = 10, value = 3, step = 1),
       shiny::sliderInput(inputId = ns("topN"),
                          label = "top_n",
                          min = 15,
@@ -38,11 +42,13 @@ mod_wlos_ui <- function(id){
                          step = 100),
       shiny::selectInput(inputId = ns("groupVar"),
                          label = "Select your grouping variable",
-                         choices = NULL
-      )
+                         choices = NULL),
+      shiny::downloadButton(outputId = ns("saveWLOs"), class = "btn btn-warning", style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
     ),
-    shiny::mainPanel(
-
+    shiny::mainPanel(width = 8,
+      shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
+                                                     height = "800px",
+                                                     width = "600px"))
     )
 
   )
@@ -52,7 +58,7 @@ mod_wlos_ui <- function(id){
 #'
 #' @noRd
 mod_wlos_server <- function(id, highlighted_dataframe){
-  moduleServer( id, function(input, output, session){
+  moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     observe({
@@ -63,6 +69,25 @@ mod_wlos_server <- function(id, highlighted_dataframe){
                                )
     })
 
+    wlos_reactive <- reactive({
+      wlos <- highlighted_dataframe() %>%
+        LandscapeR::ls_wlos(group_var = input$groupVar,
+                            text_var = clean_text,
+                            top_n = input$topN,
+                            top_terms_cutoff = input$termCutoff,
+                            nrow = input$nrow,
+                            text_size = input$textSize)
+      return(wlos)
+
+    })
+
+    output$wlosPlot <- shiny::renderPlot({
+      wlos_reactive()
+    },
+    width = function() input$width,
+    height = function() input$height)
+
+    output$saveWLOs <- LandscapeR::download_box("wlos_plot", wlos_reactive())
   })
 }
 
