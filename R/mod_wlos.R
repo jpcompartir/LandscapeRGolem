@@ -70,6 +70,9 @@ mod_wlos_server <- function(id, highlighted_dataframe){
     })
 
     wlos_reactive <- reactive({
+      if(nrow(highlighted_dataframe()) < 1){
+        validate("You must select data first to view a weighted log-odds chart")
+      }
       wlos <- highlighted_dataframe() %>%
         LandscapeR::ls_wlos(group_var = input$groupVar,
                             text_var = clean_text,

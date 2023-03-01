@@ -40,6 +40,11 @@ mod_sentiment_server <- function(id, highlighted_dataframe){
 
     sent_titles <- mod_reactive_labels_server("sentimentTitles")
     sentiment_reactive <- reactive({
+
+      if(nrow(highlighted_dataframe()) < 1){
+        validate("You must select data first to view a sentiment distribution plot")
+      }
+
       highlighted_dataframe() %>%
         LandscapeR::ls_plot_sentiment_distribution(sentiment_var = sentiment) +
         sent_titles$labels()

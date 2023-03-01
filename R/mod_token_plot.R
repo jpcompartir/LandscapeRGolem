@@ -36,6 +36,10 @@ mod_token_plot_server <- function(id, highlighted_dataframe){
 
     token_titles <- mod_reactive_labels_server("tokenTitles")
     token_reactive <- reactive({
+      if(nrow(highlighted_dataframe()) < 1){
+        validate("You must select data first to view a token distribution plot")
+      }
+
       highlighted_dataframe() %>%
       # ls_example %>%
         LandscapeR::ls_plot_tokens_counter(
