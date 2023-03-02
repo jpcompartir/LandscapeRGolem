@@ -9,7 +9,7 @@ app_ui <- function(request) {
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
     tags$head(
-      tags$link(
+      tags$link( # link to the inst/www/styles.css sheet for styling of various elements
         rel = "stylesheet",
         type = "text/css",
         href = "styles.css"
@@ -26,8 +26,6 @@ app_ui <- function(request) {
                       # Prevents the navbar from eating body of app
                       # colours all 10  sliders orange
                       shinyWidgets::setSliderColor(color = rep("#ff7518", 20), sliderId = c(1:20)),
-
-                      htmltools::tags$style(type = "text/css", ".irs-handle {background-color: #ff7518;}"),
                       # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
                         "Landing Page",
@@ -44,7 +42,7 @@ app_ui <- function(request) {
                         mod_distribution_tab_ui(id = "distributionTag")
                       ),
                       shiny::tabPanel(
-                        "Weighted Log-odds",
+                        "Compare Groups",
                         mod_wlos_ui(id = "wlosTag")
                       )
     )

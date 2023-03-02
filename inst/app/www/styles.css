@@ -9,8 +9,9 @@
 
 .btn {
 background-color: #ff7518!important;
-border: white;
+border-color: white!important;
 border-radius:10px!important;
+margin-left: 5px;
 }
 
 .label-primary{
