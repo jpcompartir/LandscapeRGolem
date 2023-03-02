@@ -27,7 +27,7 @@ mod_wlos_ui <- function(id){
     shiny::sidebarPanel(width = 2,
       shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 1400, value = 800, step = 100),
       shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 1200, value = 600, step = 100),
-      shiny::sliderInput(inputId = ns("textSize"), "Text size", min = 2, max = 20, value = 4, step = 1),
+      shiny::sliderInput(inputId = ns("textSize"), "Text size", min = 2, max = 8, value = 4, step = 1),
       shiny::sliderInput(inputId = ns("nrow"),label = "Number of Rows", min = 1, max = 10, value = 3, step = 1),
       shiny::sliderInput(inputId = ns("topN"),
                          label = "top_n",

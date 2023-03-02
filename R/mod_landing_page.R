@@ -13,19 +13,20 @@ mod_landing_page_ui <- function(id){
     shiny::fluidRow(
       shiny::column(6,
                     shiny::HTML("
-                  <h1>Welcome to <span style='color: #0f50d2;'>LandscapeR!</span></h1>
+<h1>Welcome to <span style='color: #0f50d2;'>LandscapeR!</span></h1>
                   <br>
                   <p><span style='color: #0f50d2;'>LandscapeR</span> is SHARE and Capture's application for creating navigable conversation maps from unstructured text data. This application will allow you to interactively clean, inspect and chart a conversation which has been embedded, clustered, and had its dimensions reduced.</p>
                   <br>
-                  <p><b>If you are familiar</b> with  <span style='color: #0f50d2;'>LandscapeR</span>, you should <b>move directly</b> to the <b>Survey Landscape tab</b> to start analysing your mapped conversation.
-
+                  <p><b>If you are familiar</b> with  <span style='color: #0f50d2;'>LandscapeR</span>, you should <b>move directly</b> to the <b>Survey Landscape tab</b> to start analysing your mapped conversation. If not: <a href='https://jpcompartir.github.io/LandscapeR/' target='blank'>click here</a>
+                  </p>
                   "),
                     ),
     ),
     shiny::fluidRow(
       shiny::column(3,
                     shiny::HTML("<h2><b>Starting Out</b></h2>
-                  <p>Head over to the Survey Landscape tab, use your mouse or trackpad to select regions of the conversation landscape, and watch the data table populate to the right. You can search for specific keywords using the pattern widget.</p>
+                  <p>Head over to the Survey Landscape tab, use your mouse or trackpad to select regions of the conversation landscape, and watch the data table populate to the right. You cannot render any of the exploratory charts until you have selected some data. Use plotly's lasso or box selection tools to highlight interesting areas of the map.<br> <br>
+                  <i><b>Pro tip</b>: You can filter for specific keywords or regex patterns using the pattern widget.</i></p>
                   ")),
       shiny::column(3,
                     shiny::HTML("<h2><b>Downloading Data</b></h2>
@@ -34,8 +35,8 @@ mod_landing_page_ui <- function(id){
                     shiny::HTML("<h2><b>Viewing Summary Plots</b></h2>
                                 <p>There are currently <b>three plotting tabs</b> you can work with.</p>
                       <li><b>Bigram Network</b> is for rendering a bigram network from your highlighted data. This will help you to gauge how clean your selections are. </li>
-                      <li><b>Distribution Tab</b> is for looking at your selection's volume over time, sentiment distribution, and frequent words.</li>
-                  <li><b>Weighted Log-odds</b> is for comparing the distinctness of text between groups</li>
+                      <li><b>Distributions Tab</b> is for looking at your selection's volume over time, sentiment distribution, and frequent words.</li>
+                  <li><b>Compare Groups</b> is for comparing the distinctness of text between groups</li>
                   <br>")
                     )
     )
