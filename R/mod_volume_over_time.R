@@ -29,7 +29,8 @@ mod_volume_over_time_ui <- function(id){
         shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning", style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
       ),
       shiny::mainPanel(width = 6,
-        shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
+        shinycssloaders::withSpinner(
+          shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
       )
     )
     )
@@ -122,7 +123,10 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
     }) %>%
       shiny::debounce(500)
 
-    output$saveVolume <- LandscapeR::download_box("volume_plot", volume_reactive())
+    output$saveVolume <- LandscapeR::download_box("volume_plot",
+                                                  volume_reactive(),
+                                                  width = input$width,
+                                                  height = input$height)
   })
 }
 

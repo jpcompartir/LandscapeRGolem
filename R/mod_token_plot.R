@@ -59,7 +59,10 @@ mod_token_plot_server <- function(id, highlighted_dataframe){
       height = function() input$height
     )
 
-    output$saveToken <- LandscapeR::download_box("token_plot", token_reactive())
+    output$saveToken <- LandscapeR::download_box("token_plot",
+                                                 token_reactive(),
+                                                 width = input$width,
+                                                 height = input$height)
     delayedTokenHex <- shiny::reactive({
       input$tokenHex
     }) %>%
