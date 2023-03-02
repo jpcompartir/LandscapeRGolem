@@ -5,17 +5,27 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+  shiny::shinyOptions(plot.autocolors = TRUE)
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
+    tags$head(
+      tags$link( # link to the inst/www/styles.css sheet for styling of various elements
+        rel = "stylesheet",
+        type = "text/css",
+        href = "styles.css"
+      ),
+    ),
+    shinyjs::useShinyjs(),
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
     shiny::navbarPage(title = "Conversation Landscape",
+                      id = "navBar",
                       theme = shinythemes::shinytheme("cosmo"),
-                      htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"), # Prevents the navbar from eating body of app
+                      htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
+                      # Prevents the navbar from eating body of app
                       # colours all 10  sliders orange
-                      shinyWidgets::setSliderColor(color = rep("#ff7518", 10), sliderId = c(1:10)),
-
+                      shinyWidgets::setSliderColor(color = rep("#ff7518", 20), sliderId = c(1:20)),
                       # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
                         "Landing Page",
@@ -24,17 +34,17 @@ app_ui <- function(request) {
                       shiny::tabPanel(
                         "Survey Landscape",
                         mod_conversation_landscape_ui("landscapeTag")),
-                      # shiny::tabPanel(
-                      #   "Distribution Plots",
-                      #   mod_distribution_tab_ui(id = "distributionTab")),
-                      shiny::tabPanel(
-                        "Bigram Network",
-                        mod_bigram_network_ui(id = "bigramPlot")
-                      ),
+                        shiny::tabPanel(
+                          "Bigram Network",
+                            mod_bigram_network_ui(id = "bigramTag")),
                       shiny::tabPanel(
                         "Distribution Tab",
-                        mod_distribution_tab_ui(id = "distributionTab")
+                        mod_distribution_tab_ui(id = "distributionTag")
                       ),
+                      shiny::tabPanel(
+                        "Compare Groups",
+                        mod_wlos_ui(id = "wlosTag")
+                      )
     )
   )
 }

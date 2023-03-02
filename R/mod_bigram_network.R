@@ -11,22 +11,68 @@ mod_bigram_network_ui <- function(id){
   ns <- NS(id)
   tagList(
     shiny::fluidRow(
-      shiny::plotOutput(ns("bigramPlot"), width = "450px", height = "450px")
+      shinyFeedback::useShinyFeedback(),
+      shiny::column(
+        4,
+        shiny::p("Below you'll find a bigram network, this network will help you estimate how clean your selected data is. Remember that long and connected chains of words may represent spam or unwanted mentions."),
+        shiny::br(),
+        shiny::p("This bigram network is restricted to a maximum of 5,000 data points for speed and user experience. It is therefore not recommended to be saved or exported. If the data looks clean, download the selection and create the network in the standard way in R/Rstudio"),
+      )
+    ),
+    shiny::sidebarPanel(
+      width = 2,
+      shiny::sliderInput(ns("height"), "Height", min = 100, max = 1200, value = 600, step = 50),
+      shiny::sliderInput(ns("width"), "Width", min = 100, max = 1200, value = 800, step = 50),
+    ),
+    shiny::mainPanel(
+      shinycssloaders::withSpinner(shiny::plotOutput(ns("bigramPlot"), height = "800px", width = "800px"))
     )
-    )
+  )
 }
 
 #' bigram_network Server Functions
+#'
+#' @param id Tab's ID set in mod_*_ui
+#' @param highlighted_dataframe The selected data frame passed by app.server to module
 #'
 #' @noRd
 mod_bigram_network_server <- function(id, highlighted_dataframe){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-    output$bigramPlot <- renderPlot({
-      highlighted_dataframe() %>%
-        JPackage::make_bigram_viz(text)
-      })
+    bigram_reactive <- reactive({
+
+      if(nrow(highlighted_dataframe()) < 1){
+        validate("You must select data first to view a bigram network")
+      }
+        if (!nrow(highlighted_dataframe()) >= 5000) { #Check rows are fewer than 5k for speed
+          bigram <- highlighted_dataframe() %>%
+            JPackage::make_bigram_viz(
+              text_var = clean_text,
+              clean_text = FALSE, #for speed - clean text outside of app functioning
+              min = 5,
+              remove_stops = FALSE #for speed - remove stopwords in clean text variable outside of app
+            )
+        } else { #If > 5k rows take a sample
+          bigram <- highlighted_dataframe() %>%
+            dplyr::sample_n(5000) %>%
+            JPackage::make_bigram_viz(
+              text_var = clean_text,
+              clean_text = FALSE,
+              min = 5,
+              remove_stops = FALSE
+            )
+        }
+      return(bigram)
+    })
+    output$bigramPlot <- shiny::renderPlot(
+      {
+        bigram_reactive()
+      },
+      res = 100,
+      width = function() input$width,
+      height = function() input$height
+    )
   })
 }
 

@@ -27,10 +27,12 @@ shiny::observeEvent(input$filterPattern, {
                                     selected_range = selected_range,
                                     r = r)
 
-  mod_distribution_tab_server(id = "distributionTab",
+  mod_distribution_tab_server(id = "distributionTag",
                               highlighted_dataframe = df_filtered)
 
-  mod_bigram_network_server("bigramPlot", highlighted_dataframe = df_filtered)
+  mod_bigram_network_server("bigramTag", highlighted_dataframe = df_filtered)
+
+  mod_wlos_server("wlosTag", highlighted_dataframe = df_filtered)
 
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
   #Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.

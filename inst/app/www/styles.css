@@ -1,0 +1,19 @@
+.irs-handle {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  cursor: pointer;
+  z-index: 1;
+  background-color: #ff7518!important;
+}
+
+.btn {
+background-color: #ff7518!important;
+border-color: white!important;
+border-radius:10px!important;
+margin-left: 5px;
+}
+
+.label-primary{
+  background-color: #ff7518!important;
+}
