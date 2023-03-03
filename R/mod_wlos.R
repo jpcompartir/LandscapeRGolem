@@ -90,7 +90,9 @@ mod_wlos_server <- function(id, highlighted_dataframe){
     width = function() input$width,
     height = function() input$height)
 
-    output$saveWLOs <- LandscapeR::download_box("wlos_plot", wlos_reactive())
+    output$saveWLOs <- LandscapeR::download_box("wlos_plot", wlos_reactive(),
+                                                width = input$width,
+                                                height = input$height)
   })
 }
 
