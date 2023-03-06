@@ -43,7 +43,7 @@ app_ui <- function(request) {
                       ),
                       shiny::tabPanel(
                         "Compare Groups",
-                        mod_wlos_ui(id = "wlosTag")
+                        mod_compare_groups_ui("compareGroupsTag")
                       )
     )
   )

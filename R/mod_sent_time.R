@@ -92,7 +92,11 @@ mod_sent_time_server <- function(id, highlighted_dataframe){
     height = function()input$height
     )
 
-    output$saveSentTime <- LandscapeR::download_box("sentiment_time_plot", sent_time_reactive(),width = input$width, height = input$height)
+    output$saveSentTime <- LandscapeR::download_box(
+      "sentiment_time_plot",
+      sent_time_reactive(),
+      width = input$width,
+      height = input$height)
   })
 }
 
