@@ -14,6 +14,9 @@ mod_compare_groups_ui <- function(id){
     mod_wlos_ui(ns("wlosTag")),
     shiny::titlePanel(title = "Group Sentiment"),
     mod_group_sentiment_ui(ns("groupSentimentTag")
+    ),
+    shiny::titlePanel(title = "Group Volume Over Time"),
+    mod_group_vol_time_ui(ns("groupVolTimeTag")
     )
   ) # nolint
 }
@@ -31,6 +34,8 @@ mod_compare_groups_server <- function(id, highlighted_dataframe){
     mod_group_sentiment_server("groupSentimentTag", 
     highlighted_dataframe = highlighted_dataframe)
  
+    mod_group_vol_time_server("groupVolTimeTag",
+    highlighted_dataframe = highlighted_dataframe)
   })
 }
     

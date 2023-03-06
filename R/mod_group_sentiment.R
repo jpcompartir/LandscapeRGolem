@@ -88,7 +88,7 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe){
 
     group_sent_reactive <- reactive({
        if(nrow(highlighted_dataframe()) < 1){
-        validate("You must select data first to view a grooped sentiment plot")}
+        validate("You must select data first to view a grouped sentiment plot")}
 
         group_sent_plot <- highlighted_dataframe() %>%
         LandscapeR::ls_plot_group_sent(
