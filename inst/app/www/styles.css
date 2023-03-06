@@ -17,3 +17,10 @@ margin-left: 5px;
 .label-primary{
   background-color: #ff7518!important;
 }
+
+.btn-warning{
+  background: #ff4e00;
+  border-radius: 100px;
+  color: #ffffff;
+  border:none;
+}
