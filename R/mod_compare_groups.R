@@ -4,9 +4,9 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd 
+#' @noRd
 #'
-#' @importFrom shiny NS tagList 
+#' @importFrom shiny NS tagList
 mod_compare_groups_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -20,27 +20,27 @@ mod_compare_groups_ui <- function(id){
     )
   ) # nolint
 }
-    
+
 #' compare_groups Server Functions
 #'
-#' @noRd 
+#' @noRd
 mod_compare_groups_server <- function(id, highlighted_dataframe){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    mod_wlos_server("wlosTag",  
-    highlighted_dataframe = highlighted_dataframe) 
-
-    mod_group_sentiment_server("groupSentimentTag", 
+    mod_wlos_server("wlosTag",
     highlighted_dataframe = highlighted_dataframe)
- 
+
+    mod_group_sentiment_server("groupSentimentTag",
+    highlighted_dataframe = highlighted_dataframe)
+
     mod_group_vol_time_server("groupVolTimeTag",
     highlighted_dataframe = highlighted_dataframe)
   })
 }
-    
+
 ## To be copied in the UI
 # mod_compare_groups_ui("compare_groups_1")
-    
+
 ## To be copied in the server
 # mod_compare_groups_server("compare_groups_1")

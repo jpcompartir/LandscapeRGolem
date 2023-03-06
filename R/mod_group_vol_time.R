@@ -4,9 +4,9 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd 
+#' @noRd
 #'
-#' @importFrom shiny NS tagList 
+#' @importFrom shiny NS tagList
 mod_group_vol_time_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -17,7 +17,7 @@ mod_group_vol_time_ui <- function(id){
           shiny::sliderInput(
             inputId = ns("height"),
             "Height",
-            min = 100, max = 800,
+            min = 100, max = 1400,
             value = 400,
             step = 50
           ),
@@ -25,8 +25,8 @@ mod_group_vol_time_ui <- function(id){
             inputId = ns("width"),
             "Width",
             min = 100,
-            max = 800,
-            value = 400,
+            max = 1400,
+            value = 600,
             step = 50
           ),
            shiny::dateRangeInput(inputId = ns("dateRangeGroupVol"),
@@ -34,15 +34,19 @@ mod_group_vol_time_ui <- function(id){
                               start = NULL,
                               end = NULL),
           shiny::selectInput(
-            inputId = ns("groupVarVol"),
+            inputId = ns("groupVolTimeVar"),
             label = "Select your grouping variable",
             choices = NULL
           ),
-          shiny::selectInput(inputId = ns("dateBreak"), label = "Unit", choices = c("day", "week", "month", "quarter", "year"), selected = "week"),
+          shiny::selectInput(inputId = ns("dateBreak"),
+                             label = "Unit",
+                             choices = c("day", "week", "month", "quarter", "year"),
+                             selected = "week"),
           shiny::sliderInput(
             inputId = ns("nrow"),
             "Number of groups",
-            min = 1, max = 12,
+            min = 1,
+            max = 12,
             value = 5,
             step = 1
           ),
@@ -51,7 +55,7 @@ mod_group_vol_time_ui <- function(id){
             outputId = ns("saveGroupVolTime"),
             class = "btn btn-warning"
           )
-    ),
+    ), #sidebarPanel
     shiny::mainPanel(
           width = 6,
           shinycssloaders::withSpinner(
@@ -61,24 +65,24 @@ mod_group_vol_time_ui <- function(id){
               width = "450px"
             )
         )
-      )
-    )
- 
+      ) #main Panel
+    ) #sidebarLayout
+
+  ) #fluidRow
   )
-  ) # nolint
 }
-    
+
 #' group_vol_time Server Functions
 #'
-#' @noRd 
-mod_group_vol_time_server <- function(id, highlighted_dataframe){
-  moduleServer( id, function(input, output, session){
+#' @noRd
+mod_group_vol_time_server <- function(id, highlighted_dataframe) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    observe({
+    shiny::observe({
       shiny::updateSelectInput(
         session = session,
-        inputId = "groupVarVol",
+        inputId = "groupVolTimeVar",
         choices = names(highlighted_dataframe()),
         selected = names(highlighted_dataframe())[3]
       )
@@ -86,53 +90,60 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe){
 
     group_vol_time_titles <- mod_reactive_labels_server("groupVolTimeTitles")
 
-  #get the minimum date range and store in a reactive
+    # get the minimum date range and store in a reactive
     date_min <- reactive(min(highlighted_dataframe()[["date"]]))
     date_max <- reactive(max(highlighted_dataframe()[["date"]]))
 
-    observe({
+    shiny::observe({
       shiny::updateDateRangeInput(
         session = session,
-        inputId = "dateRange",
+        inputId = "dateRangeGroupVol",
         start = date_min(),
         end = date_max()
       )
     })
 
-    group_vol_time_reactive <- reactive({
-      if(nrow(highlighted_dataframe()) < 1){
-          validate("You must select data first to view a grouped sentiment plot")}
+    group_vol_time_reactive <- shiny::reactive({
+      if (nrow(highlighted_dataframe()) < 1) {
+        validate("You must select data first to view a grouped volume over time plot")
+      }
 
-    group_vol_time_plot <- highlighted_dataframe() %>%
-          dplyr::filter(date >= input$dateRangeGroupVol[[1]],
-                        date <= input$dateRangeGroupVol[[2]]) %>%
-          group_vol_plot <- LandscapeR::ls_plot_group_vol_time(
-            group_var = input$groupVarVol,
-            date_var = date,
-            unit = input$dateBreak,
-            nrow = input$nrow,
-          )
+      group_vol_time_plot <- highlighted_dataframe() %>%
+        dplyr::filter(date >= input$dateRangeGroupVol[[1]],
+                      date <= input$dateRangeGroupVol[[2]]) %>%
+        LandscapeR::ls_plot_group_vol_time(
+          group_var = input$groupVolTimeVar,
+          date_var = "date",
+          unit = input$dateBreak,
+          nrow = input$nrow
+        )
 
-          group_vol_plot <- group_vol_plot + 
-          group_vol_time_titles$labels()
+      group_vol_time_plot <- group_vol_time_plot +
+        group_vol_time_titles$labels()
 
-          return(group_vol_time_plot)
+      return(group_vol_time_plot)
     })
 
     output$groupVolTime <- shiny::renderPlot({
       group_vol_time_reactive()
-    }, 
+    },
     res = 100,
-    height = input$height,
-    width = input$width
-    )
+    height = function() input$height,
+    width = function() input$width)
+
+
+    output$saveGroupVolTime <- LandscapeR::download_box(exportname = "group_vol_time",
+                                                        plot = group_vol_time_reactive(),
+                                                        width = input$width,
+                                                        height = input$height)
+
 
 
   })
 }
-    
+
 ## To be copied in the UI
 # mod_group_vol_time_ui("group_vol_time_1")
-    
+
 ## To be copied in the server
 # mod_group_vol_time_server("group_vol_time_1")
