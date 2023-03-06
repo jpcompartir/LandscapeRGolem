@@ -38,7 +38,7 @@ mod_group_sentiment_ui <- function(id){
           inputId = ns("chartType"),
           label = "Select chart type",
           choices = c("volume", "percent"),
-          selected = "volume",
+          selected = "percent",
           multiple = FALSE
         ),
         shiny::selectInput(
@@ -52,7 +52,7 @@ mod_group_sentiment_ui <- function(id){
         shiny::downloadButton(
           outputId = ns("saveGroupSentiment"),
           class = "btn btn-warning"
-        )
+        ),
       ),
       shiny::mainPanel(
         width = 6,
@@ -68,6 +68,8 @@ mod_group_sentiment_ui <- function(id){
 }
 
 #' group_sentiment Server Functions
+#' @param id The module id
+#' @param highlighted_dataframe The highlighted dataframe in app.server
 #'
 #' @noRd
 mod_group_sentiment_server <- function(id, highlighted_dataframe){
@@ -114,12 +116,12 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe){
     )
 
     # Download button
-    # output$saveGroupSentiment <- LandscapeR::download_box(
-    #   plot = group_sent_reactive(),
-    #   filename = "group_sentiment_plot",
-    #   width = input$width,
-    #   height = input$height
-    #   )
+    output$saveGroupSentiment <- LandscapeR::download_box(
+      plot = group_sent_reactive(),
+      exportname = "group_sentiment_plot",
+      width = input$width,
+      height = input$height
+      )
 
   })
 }
