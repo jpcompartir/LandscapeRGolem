@@ -34,8 +34,7 @@ mod_sent_time_ui <- function(id){
                            selected = "week"),
         mod_reactive_labels_ui(ns("sentTimeTitles")),
         shiny::downloadButton(outputId = ns("saveSentTime"),
-                              class = "btn btn-warning",
-                              style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
+                              class = "btn btn-warning"),
       ),
         shiny::mainPanel(width = 6,
                          shinycssloaders::withSpinner(
@@ -93,7 +92,11 @@ mod_sent_time_server <- function(id, highlighted_dataframe){
     height = function()input$height
     )
 
-    output$saveSentTime <- LandscapeR::download_box("sentiment_time_plot", sent_time_reactive(),width = input$width, height = input$height)
+    output$saveSentTime <- LandscapeR::download_box(
+      "sentiment_time_plot",
+      sent_time_reactive(),
+      width = input$width,
+      height = input$height)
   })
 }
 

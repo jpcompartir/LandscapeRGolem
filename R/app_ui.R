@@ -25,7 +25,7 @@ app_ui <- function(request) {
                       htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
                       # Prevents the navbar from eating body of app
                       # colours all 10  sliders orange
-                      shinyWidgets::setSliderColor(color = rep("#ff7518", 20), sliderId = c(1:20)),
+                      shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
                       # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
                         "Landing Page",
@@ -43,7 +43,7 @@ app_ui <- function(request) {
                       ),
                       shiny::tabPanel(
                         "Compare Groups",
-                        mod_wlos_ui(id = "wlosTag")
+                        mod_compare_groups_ui("compareGroupsTag")
                       )
     )
   )

@@ -10,6 +10,21 @@
 mod_distribution_tab_ui <- function(id){
   ns <- NS(id)
   tagList(
+    # shiny::HTML("
+    #             <p> Check the boxes of the plots you'd like to render, click the render button when you're ready.
+    #             "),
+    # shiny::checkboxGroupInput(
+    #   inputId = ns("togglePlots"),label = "Toggle Plots",
+    #   selected = "Volume over time",
+    #   choices = c("Volume over time",
+    #               "Sentiment over time",
+    #               "Sentiment distribution",
+    #               "Top tokens"),
+    #   inline = TRUE
+    # ),
+    # shiny::actionButton(inputId = ns("renderPlots"), label = "Render Plots"),
+    # shiny::uiOutput(ns("moduleRenders"))
+
     shiny::titlePanel(title = "Volume Over Time"),
     mod_volume_over_time_ui(id = ns("volumeModule")),
     shiny::titlePanel(title = "Sentiment Over Time"),
