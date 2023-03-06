@@ -10,8 +10,6 @@
 mod_volume_over_time_ui <- function(id){
   ns <- NS(id)
   tagList(
-    # shiny::fluidRow(
-    #   shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         width = 2,
@@ -26,7 +24,7 @@ mod_volume_over_time_ui <- function(id){
         shiny::uiOutput(ns("smoothControls")),
         shiny::textInput(ns("volumeHex"), "colour", value = "#107C10"),
         mod_reactive_labels_ui(ns("volumeTitles")),
-        shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning", style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
+        shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning"),
       ),
       shiny::mainPanel(width = 6,
         shinycssloaders::withSpinner(

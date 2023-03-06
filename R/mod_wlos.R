@@ -24,7 +24,7 @@ mod_wlos_ui <- function(id){
           </ul>")
       )
     ),
-    shiny::sidebarPanel(width = 2,
+    shiny::fluidRow(shiny::sidebarPanel(width = 2,
       shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 1400, value = 800, step = 100),
       shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 1200, value = 600, step = 100),
       shiny::sliderInput(inputId = ns("textSize"), "Text size", min = 2, max = 8, value = 4, step = 1),
@@ -43,13 +43,14 @@ mod_wlos_ui <- function(id){
       shiny::selectInput(inputId = ns("groupVar"),
                          label = "Select your grouping variable",
                          choices = NULL),
-      shiny::downloadButton(outputId = ns("saveWLOs"), class = "btn btn-warning", style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
+      shiny::downloadButton(outputId = ns("saveWLOs"), class = "btn btn-warning"),
     ),
     shiny::mainPanel(width = 8,
       shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
                                                      height = "800px",
                                                      width = "600px"))
     )
+    ),
 
   )
 }
@@ -100,4 +101,4 @@ mod_wlos_server <- function(id, highlighted_dataframe){
 # mod_wlos_ui("wlos_1")
 
 ## To be copied in the server
-# mod_wlos_server("wlos_1")
+# mod_wlos_server("wlos_1", highlighted_dataframe = reactive({})

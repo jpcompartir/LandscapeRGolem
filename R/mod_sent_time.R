@@ -34,8 +34,7 @@ mod_sent_time_ui <- function(id){
                            selected = "week"),
         mod_reactive_labels_ui(ns("sentTimeTitles")),
         shiny::downloadButton(outputId = ns("saveSentTime"),
-                              class = "btn btn-warning",
-                              style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
+                              class = "btn btn-warning"),
       ),
         shiny::mainPanel(width = 6,
                          shinycssloaders::withSpinner(

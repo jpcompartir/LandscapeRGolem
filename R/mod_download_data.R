@@ -12,11 +12,10 @@ mod_download_data_ui <- function(id, label){
   tagList(
     shiny::column(2, shiny::textInput(ns("fileName"), label, value = NULL, placeholder = "filename excluding .csv")),
     shiny::column(2, shiny::div(
-      style = "margin-top: 25px;",
+      "margin-top: 25px;",
       shiny::downloadButton(ns("download"),
                             "Download",
-                            class = "btn btn-warning",
-                            style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
+                            class = "btn btn-warning"
       )
     ))
   )

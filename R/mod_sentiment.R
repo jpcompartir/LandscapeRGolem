@@ -19,7 +19,7 @@ mod_sentiment_ui <- function(id){
         shiny::sliderInput(ns("width"), "Width",
                            min = 100, max = 800, value = 400, step = 50),
         mod_reactive_labels_ui(ns("sentimentTitles")),
-        shiny::downloadButton(outputId = ns("saveSentiment"), class = "btn btn-warning", style = "background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"),
+        shiny::downloadButton(outputId = ns("saveSentiment"), class = "btn btn-warning"),
       ),
       shiny::mainPanel(
         shinycssloaders::withSpinner(shiny::plotOutput(ns("sentimentPlot"),
