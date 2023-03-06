@@ -56,8 +56,8 @@ mod_sentiment_server <- function(id, highlighted_dataframe){
           sentiment_reactive()
         },
         res = 100,
-        width = function() input$height,
-        height = function() input$width
+        width = function() input$width,
+        height = function() input$height
       )
 
     output$saveSentiment <- LandscapeR::download_box(exportname = "sentiment_plot", plot = sentiment_reactive(),
