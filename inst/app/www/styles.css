@@ -23,8 +23,43 @@ margin-left: 5px;
 }
 
 .btn-warning{
-  background: #ff4e00;
+  background: #ff7518;
   border-radius: 100px;
   color: #ffffff;
   border:none;
 }
+
+.btn-download{
+  margin-top: 25px;
+}
+
+.btn:active{
+  background: black!important;
+  background-color: black!important;
+}
+
+.btn:focus{
+  outline:  #ff7518!important;
+}
+
+/* add a border to the bottom of the navbar's selected icon when hovered over */
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  border-bottom: 3px solid #ff7518;
+}
+
+/* when the navbar is clicked make its background colour orange */
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  background-color: #ff7518;
+  border-bottom: 3px solid white;
+}
+
+
+/*.btn-delete{
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  background: #ff4e00;
+  border-radius: 100px;
+  color: #ffffff;
+  border:none;
+}*/

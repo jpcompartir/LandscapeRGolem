@@ -24,7 +24,15 @@ mod_conversation_landscape_ui <- function(id){
         width = "100%",
         value = ""
       )),
-      mod_download_data_ui(id = ns("selectedData"), label = "Selected Data"),
+      mod_download_data_ui(id = ns("selectedData"), label = "Selected Data")
+      ),
+      shiny::fluidRow(
+          shiny::column(3,
+        offset = 0, 
+        style = "padding-left: 20px; padding-right: 10px;",
+        shiny::uiOutput(ns("labelSelection"))
+      )),
+      shiny::fluidRow(
       mod_umap_plot_ui(id = ns("umapPlot")),
       mod_data_table_ui(id = ns("dataTable"))
     )
@@ -51,9 +59,19 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe, selected_r
       r$filterPattern <- input$filterPattern
     })
 
-    # return(list(
-    #   pattern = reactive({tmp_var$pattern})
-    # ))
+    #Make label button disappear when nothing selected
+     output$labelSelection <- shiny::renderUI({
+       if (length(selected_range() > 1)) {
+         shiny::tagList(
+           shiny::textInput(
+            inputId = ns("labelText"),
+            label = "Label Selection",
+            value = "",
+            placeholder = "write your label here"
+           )
+         )
+       }
+     })
   })
 }
 

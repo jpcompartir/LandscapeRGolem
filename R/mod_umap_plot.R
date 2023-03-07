@@ -89,11 +89,12 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
              "delete",
              "Delete selections",
              class = "btn-warning",
+             icon = shiny::icon("trash"),
              style = "position: absolute; bottom 7px; right: 7px; background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
            )
          )
        }
-     })
+     }) #end output$deleteme
   })
 
 
@@ -101,25 +102,3 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
 
 ## To be copied in the UI
 # mod_umap_plot_ui("umap_plot_1")
-
-## To be copied in the server
-# mod_umap_plot_server("umap_plot_1")
-#
-# dt <- LandscapeR::ls_example %>%
-#   dplyr::mutate(cluster = factor(cluster))
-# dt %>%
-#   plotly::plot_ly(
-#     x = ~V1,
-#     y = ~V2,
-#     type = "scattergl",
-#     color = ~cluster,
-#     key = ~document,
-#     text = ~ paste("<br> Post:", text),
-#     hoverinfo = "text",
-#     market = list(size = 2), height = 600
-#   ) %>%
-#   plotly::layout(
-#     dragmode = "lasso",
-#     legend = list(itemsizing = "constant")
-#   ) %>%
-#   plotly::event_register(event = "plotly_selected")

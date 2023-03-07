@@ -28,22 +28,27 @@ app_ui <- function(request) {
                       shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
                       # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
-                        "Landing Page",
+                        "Home",
+                        icon = shiny::icon("house"),
                         mod_landing_page_ui("xd")
                       ),
                       shiny::tabPanel(
                         "Survey Landscape",
-                        mod_conversation_landscape_ui("landscapeTag")),
+                        mod_conversation_landscape_ui("landscapeTag"),
+                        icon = shiny::icon("map-location-dot")),
                         shiny::tabPanel(
                           "Bigram Network",
-                            mod_bigram_network_ui(id = "bigramTag")),
+                            mod_bigram_network_ui(id = "bigramTag"),
+                            icon = shiny::icon("network-wired")),
                       shiny::tabPanel(
                         "Distribution Tab",
-                        mod_distribution_tab_ui(id = "distributionTag")
+                        mod_distribution_tab_ui(id = "distributionTag"),
+                        icon = shiny::icon("chart-simple")
                       ),
                       shiny::tabPanel(
                         "Compare Groups",
-                        mod_compare_groups_ui("compareGroupsTag")
+                        mod_compare_groups_ui("compareGroupsTag"),
+                        icon = shiny::icon("not-equal")
                       )
     )
   )
