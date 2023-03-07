@@ -28,7 +28,8 @@ app_ui <- function(request) {
                       shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
                       # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
-                        "Landing Page",
+                        "Home",
+                        icon = shiny::icon("house"),
                         mod_landing_page_ui("xd")
                       ),
                       shiny::tabPanel(
