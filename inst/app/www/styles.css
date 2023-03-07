@@ -23,8 +23,28 @@ margin-left: 5px;
 }
 
 .btn-warning{
-  background: #ff4e00;
+  background: #ff7518;
   border-radius: 100px;
   color: #ffffff;
   border:none;
 }
+
+.btn-download{
+  margin-top: 25px;
+}
+
+.btn:active{
+  background: black!important;
+  background-color: black!important;
+}
+
+
+/*.btn-delete{
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  background: #ff4e00;
+  border-radius: 100px;
+  color: #ffffff;
+  border:none;
+}*/
