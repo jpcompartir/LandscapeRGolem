@@ -38,6 +38,12 @@ margin-left: 5px;
   background-color: black!important;
 }
 
+.btn:focus{
+  outline:  #ff7518!important;
+}
+
+
+
 
 /*.btn-delete{
   position: absolute;
