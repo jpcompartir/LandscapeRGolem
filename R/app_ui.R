@@ -33,17 +33,21 @@ app_ui <- function(request) {
                       ),
                       shiny::tabPanel(
                         "Survey Landscape",
-                        mod_conversation_landscape_ui("landscapeTag")),
+                        mod_conversation_landscape_ui("landscapeTag"),
+                        icon = shiny::icon("map-location-dot")),
                         shiny::tabPanel(
                           "Bigram Network",
-                            mod_bigram_network_ui(id = "bigramTag")),
+                            mod_bigram_network_ui(id = "bigramTag"),
+                            icon = shiny::icon("network-wired")),
                       shiny::tabPanel(
                         "Distribution Tab",
-                        mod_distribution_tab_ui(id = "distributionTag")
+                        mod_distribution_tab_ui(id = "distributionTag"),
+                        icon = shiny::icon("chart-simple")
                       ),
                       shiny::tabPanel(
                         "Compare Groups",
-                        mod_compare_groups_ui("compareGroupsTag")
+                        mod_compare_groups_ui("compareGroupsTag"),
+                        icon = shiny::icon("not-equal")
                       )
     )
   )
