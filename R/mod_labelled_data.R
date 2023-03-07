@@ -22,7 +22,7 @@ mod_labelled_data_ui <- function(id){
     ),
     shiny::fluidRow(
       DT::dataTableOutput(outputId = ns("labelledDT"))
-    ),
+    )
 
   )
 }
@@ -30,28 +30,27 @@ mod_labelled_data_ui <- function(id){
 #' labelled_data Server Functions
 #'
 #' @noRd
-mod_labelled_data_server <- function(id, r, highlighted_dataframe, selected_range){
+mod_labelled_data_server <- function(id, r,
+                                     reactive_dataframe,
+                                     selected_range){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-
-    #Experimental
-
-
-    # labels_and_ids <- shiny::reactiveValues(
-    #   labels = NULL,
-    #   ids = NULL
-    # )
-    #
-    # shiny::observeEvent(input$labelNow,{
-    #     labels_and_ids$labels <- input$labelText
-    #     labels_and_ids$ids <- selected_range()$key
-    # })
-
-
     shiny::observeEvent(input$labelNow,{
-      r$labels <- input$labelText
-      r$label_ids <- selected_range()$key
+      if(length(r$labels) == 0){
+        label_ids <- selected_range()$key
+        reps <- length(label_ids)
+        labels <- rep(x = input$labelText, reps)
+        r$label_ids <- label_ids
+        r$labels <- labels
+      }else{
+        label_ids <- as.numeric(selected_range()$key)
+        reps <- length(label_ids)
+        labels <- rep(x = input$labelText, reps)
+        r$labels <- c(r$labels, labels)
+        r$label_ids <- c(r$label_ids, label_ids)
+      }
+
     })
 
     labelled_df <- reactive({
@@ -65,7 +64,7 @@ mod_labelled_data_server <- function(id, r, highlighted_dataframe, selected_rang
       )
 
       labelled_lookup %>%
-        dplyr::left_join(highlighted_dataframe())
+        dplyr::left_join(reactive_dataframe())
     })
 
     output$labelledDT <- DT::renderDataTable({
