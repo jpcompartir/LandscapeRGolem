@@ -42,7 +42,16 @@ margin-left: 5px;
   outline:  #ff7518!important;
 }
 
+/* add a border to the bottom of the navbar's selected icon when hovered over */
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  border-bottom: 3px solid #ff7518;
+}
 
+/* when the navbar is clicked make its background colour orange */
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  background-color: #ff7518;
+  border-bottom: 3px solid white;
+}
 
 
 /*.btn-delete{
