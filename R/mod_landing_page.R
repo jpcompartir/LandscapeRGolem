@@ -13,11 +13,11 @@ mod_landing_page_ui <- function(id){
     shiny::fluidRow(
       shiny::column(6,
                     shiny::HTML("
-<h1>Welcome to <span style='color: #0f50d2;'>LandscapeR!</span></h1>
+<h1>Welcome to <span style='color: #ff7518;'>LandscapeR!</span></h1>
                   <br>
-                  <p><span style='color: #0f50d2;'>LandscapeR</span> is SHARE and Capture's application for creating navigable conversation maps from unstructured text data. This application will allow you to interactively clean, inspect and chart a conversation which has been embedded, clustered, and had its dimensions reduced.</p>
+                  <p><span style='color: #ff7518;'>LandscapeR</span> is SHARE and Capture's application for creating navigable conversation maps from unstructured text data. This application will allow you to interactively clean, inspect and chart a conversation which has been embedded, clustered, and had its dimensions reduced.</p>
                   <br>
-                  <p><b>If you are familiar</b> with  <span style='color: #0f50d2;'>LandscapeR</span>, you should <b>move directly</b> to the <b>Survey Landscape tab</b> to start analysing your mapped conversation. If not: <a href='https://jpcompartir.github.io/LandscapeR/' target='blank'>click here</a>
+                  <p><b>If you are familiar</b> with  <span style='color: #ff7518;'>LandscapeR</span>, you should <b>move directly</b> to the <b>Survey Landscape tab</b> to start analysing your mapped conversation. If not: <a href='https://jpcompartir.github.io/LandscapeR/' target='blank'>click here</a>
                   </p>
                   "),
                     ),
@@ -26,8 +26,12 @@ mod_landing_page_ui <- function(id){
       shiny::column(3,
                     shiny::HTML("<h2><b>Starting Out</b></h2>
                   <p>Head over to the Survey Landscape tab, use your mouse or trackpad to select regions of the conversation landscape, and watch the data table populate to the right. You cannot render any of the exploratory charts until you have selected some data. Use plotly's lasso or box selection tools to highlight interesting areas of the map.<br> <br>
-                  <i><b>Pro tip</b>: You can filter for specific keywords or regex patterns using the pattern widget.</i></p>
-                  ")),
+                  "),
+                  shiny::tagList(
+                    shiny::HTML('<div class="tipblock">
+                      <i><b>Pro tip</b>: You can filter for specific keywords or regex patterns using the pattern widget.</i></p>
+                      </div>')
+                  )),
       shiny::column(3,
                     shiny::HTML("<h2><b>Downloading Data</b></h2>
                                <p>You can download all of the remaining data, or only the selected data using the download widgets. If you want to delete some data, you must highlight it first and then click the delete button found in the bottom right corner of the map. Your deletions will be reflected when you download all data.</p>")),
