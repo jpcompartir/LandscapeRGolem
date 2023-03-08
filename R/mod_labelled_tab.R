@@ -65,20 +65,8 @@ mod_labelled_tab_server <- function(id,
           escape = FALSE)
     })
 
-
-
-    # output$labelledDT <- DT::renderDataTable({
-    #   labelled_df() %>%
-    #     DT::datatable(
-    #       filter = "top",
-    #       options = list(
-    #         pagelength = 10,
-    #         dom = '<"top" ifp> rt<"bottom"lp>',
-    #         autowidth = FALSE),
-    #         style = "bootstrap",
-    #         rownames = FALSE,
-    #         escape = FALSE)
-    #   })
+    mod_download_data_server("downloadLabelledData",
+                             data_object = labelled_df) #the module calls the reactive object when saving
 
   })
 }
