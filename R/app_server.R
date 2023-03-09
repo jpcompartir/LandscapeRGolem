@@ -35,6 +35,10 @@ shiny::observeEvent(input$filterPattern, {
   mod_compare_groups_server("compareGroupsTag",
   highlighted_dataframe = df_filtered)
 
+  mod_labelled_tab_server(id = "labelledTag",
+                          reactive_dataframe = reactive_data,
+                          r = r)
+
   #Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
   #Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.
   #Keys from selected_range move into remove_range$remove_keys when the delete button is pressed. $remove_keys and $keep_keys are the inverse of one another.

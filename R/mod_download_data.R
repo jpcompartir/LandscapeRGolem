@@ -1,8 +1,9 @@
 #' download_data UI Function
 #'
-#' @description A shiny Module.
+#' @param id link to module's server
+#' @param label Element's visible label when app is rendered
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @description A shiny Module.
 #'
 #' @noRd
 #'
@@ -12,16 +13,18 @@ mod_download_data_ui <- function(id, label){
   tagList(
     shiny::column(2, shiny::textInput(ns("fileName"), label, value = NULL, placeholder = "filename excluding .csv")),
     shiny::column(2, shiny::div(
-      style = "margin-top: 25px;",
       shiny::downloadButton(ns("download"),
                             "Download",
-                            class = "btn btn-warning"
+                            class = "btn btn-warning btn-download "
       )
     ))
   )
 }
 
 #' download_data Server Functions
+#'
+#' @param id link to module's ui
+#' @param data_object the object the user will download
 #'
 #' @noRd
 mod_download_data_server <- function(id, data_object){
@@ -30,7 +33,8 @@ mod_download_data_server <- function(id, data_object){
 
     output$download <- shiny::downloadHandler(
       filename = function() {
-        paste0(input$fileName, ".csv")
+        time <- stringr::str_replace(Sys.time()," ", "_")
+        paste0(input$fileName,"_", time, ".csv")
       },
       content = function(file) {
         utils::write.csv(data_object(), file)

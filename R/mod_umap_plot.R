@@ -60,8 +60,6 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
     })
 
      output$umapPlot <- plotly::renderPlotly({
-       # dt <- LandscapeR::ls_example %>%
-       #   dplyr::mutate(cluster = factor(cluster))
 
        reactive_dataframe() %>%
          dplyr::mutate(cluster = factor(cluster)) %>%
@@ -76,8 +74,30 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
          ) %>%
          plotly::layout(
            dragmode = "lasso",
-           legend = list(itemsizing = "constant")
+           legend = list(itemsizing = "constant"),
+           xaxis = list(showgrid = FALSE,
+                        showline = FALSE,
+                        zeroline = FALSE,
+                        linewidth = 0,
+                        tickwidth = 0,
+                        showticklabels = FALSE,
+                        title = ""),
+           yaxis = list(showgrid = FALSE,
+                        showline = FALSE,
+                        zeroline = FALSE,
+                        linewidth = 0,
+                        tickwidth = 0,
+                        showticklabels = FALSE,
+                        title = ""),
+           newshape=list(fillcolor="#ff5718", opacity=0.2)
          ) %>%
+         plotly::config(
+           editable = TRUE,
+           modeBarButtonsToAdd =
+                          list("drawline",
+                               "drawcircle",
+                               "drawrect",
+                               "eraseshape")) %>%
          plotly::event_register(event = "plotly_selected")
      })
 

@@ -17,8 +17,8 @@ mod_conversation_landscape_ui <- function(id){
       shiny::column(3, style = "padding-left: 20px; padding-right: 10px;", shinyWidgets::searchInput(
         #Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
         inputId = ns("filterPattern"),
-        label = "Pattern to search text with",
-        placeholder = "A placeholder",
+        label = "Search text",
+        placeholder = "Regex pattern",
         btnSearch = shiny::icon("search"),
         btnReset = shiny::icon("remove"),
         width = "100%",
@@ -26,12 +26,9 @@ mod_conversation_landscape_ui <- function(id){
       )),
       mod_download_data_ui(id = ns("selectedData"), label = "Selected Data")
       ),
-      shiny::fluidRow(
-          shiny::column(3,
-        offset = 0, 
-        style = "padding-left: 20px; padding-right: 10px;",
-        shiny::uiOutput(ns("labelSelection"))
-      )),
+    shiny::fluidRow(
+      mod_label_data_ui(id = ns("labelData"))
+    ),
       shiny::fluidRow(
       mod_umap_plot_ui(id = ns("umapPlot")),
       mod_data_table_ui(id = ns("dataTable"))
@@ -44,7 +41,10 @@ mod_conversation_landscape_ui <- function(id){
 #' @param xd The reactive data frame from app_server
 #'
 #' @noRd
-mod_conversation_landscape_server <- function(id, reactive_dataframe, selected_range, highlighted_dataframe, r){
+mod_conversation_landscape_server <- function(id, reactive_dataframe,
+                                              selected_range,
+                                              highlighted_dataframe,
+                                              r){
   moduleServer(
     id,
     function(input, output, session){
@@ -54,24 +54,15 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe, selected_r
     mod_umap_plot_server("umapPlot", reactive_dataframe, selected_range, r)
     mod_download_data_server("allData", data_object = highlighted_dataframe)
     mod_download_data_server("selectedData", data_object = highlighted_dataframe)
+    mod_label_data_server("labelData", r = r,
+                             reactive_dataframe = reactive_dataframe,
+                             selected_range = selected_range)
+
 
     observe({
       r$filterPattern <- input$filterPattern
     })
 
-    #Make label button disappear when nothing selected
-     output$labelSelection <- shiny::renderUI({
-       if (length(selected_range() > 1)) {
-         shiny::tagList(
-           shiny::textInput(
-            inputId = ns("labelText"),
-            label = "Label Selection",
-            value = "",
-            placeholder = "write your label here"
-           )
-         )
-       }
-     })
   })
 }
 

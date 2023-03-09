@@ -6,6 +6,7 @@
 #' @noRd
 app_ui <- function(request) {
   shiny::shinyOptions(plot.autocolors = TRUE)
+  options(spinner.color = "#ff7518")
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
     tags$head(
@@ -19,7 +20,7 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    shiny::navbarPage(title = "Conversation Landscape",
+    shiny::navbarPage(title = "LandscapeR - Proj Name",
                       id = "navBar",
                       theme = shinythemes::shinytheme("cosmo"),
                       htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
@@ -28,16 +29,16 @@ app_ui <- function(request) {
                       shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
                       # Render each tab via its respective module
                       shiny::tabPanel( #First page of the app
-                        "Home",
+                        title = "Home",
                         icon = shiny::icon("house"),
                         mod_landing_page_ui("xd")
                       ),
                       shiny::tabPanel(
-                        "Survey Landscape",
+                        title = "Survey Landscape",
                         mod_conversation_landscape_ui("landscapeTag"),
                         icon = shiny::icon("map-location-dot")),
                         shiny::tabPanel(
-                          "Bigram Network",
+                        title = "Bigram Network",
                             mod_bigram_network_ui(id = "bigramTag"),
                             icon = shiny::icon("network-wired")),
                       shiny::tabPanel(
@@ -46,10 +47,15 @@ app_ui <- function(request) {
                         icon = shiny::icon("chart-simple")
                       ),
                       shiny::tabPanel(
-                        "Compare Groups",
+                        title = "Compare Groups",
                         mod_compare_groups_ui("compareGroupsTag"),
                         icon = shiny::icon("not-equal")
-                      )
+                      ),
+                      shiny::tabPanel(
+                        title = "Labelled Data",
+                        mod_labelled_tab_ui("labelledTag"),
+                        icon = shiny::icon("check"),
+                        )
     )
   )
 }

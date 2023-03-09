@@ -1,0 +1,9 @@
+library(shiny)
+library(golem)
+library(devtools)
+library(usethis)
+library(LandscapeR)
+
+load_all()
+run_app()
+
