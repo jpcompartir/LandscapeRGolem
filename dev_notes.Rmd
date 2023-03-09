@@ -1,0 +1,389 @@
+These notes are added to .gitignore after a mishap with using News.md
+
+Tuesday 7th March -
+Status update:
+Yesterday added the compare groups module fit with wlos, group sentiment and group volume over time. Not sure how useful the latter will be. 
+
+Build out the label in app feature. Probably a case of:
+Pre-app:
+Add a 'custom_label' column with all NULL
+
+UI:
+Textbox Input that renders once something is selected and disappears again when it's not/is greyed out?
+
+Server:
+Highlighting data 
+Use selected_range/keys to add the textbox input to the custom_label column on the reactive_data() object, and the highlighted_dataframe() too?
+  - should this be a mutate with ifelse
+    -
+  - or a join:
+    - store the id and the label (pasted and separated by ;?)
+
+One problem with this approach is we then have to re-render the plot & the data table. Might be better to just store the reactive labels and values.
+
+delete button should reset selected_range() to nothing
+
+Fix height issues - when plots are expanded to be too big, they can overlap with the following plot. May want to figure out how to responsively add spacing
+
+Tomorrow 8th March/9th or Friday if we get no time at conference:
+Come back to the reactiveValues not saving and figure out how to append reactiveValues rather than overwrite - DONE
+
+build out the new labelledd data tab which shows the data table, and then ideally maybe a product summary
+
+
+Wednesday 8th March
+Following on from yesterday's build of the data-labelling pipeline. Today we add a tab and its module, for labelled data. This will display the data table of labelled data and allow the user to download. Could add a gt summary table or some form of comparison.
+
+Add tabPanel to app_ui.R - Labelled Data, get the fontawesome icon
+module parameters - `[id, labelled data, r]`
+submodules - download data
+
+?maybe a ggplot which shows the landscape of the labelled data?
+
+UI:
+HTML explanation of what the tab is/what it's for
+download box + filename (module)
+data table output
+
+Server
+Access r$labels + r$label_id
+
+added - fix various aesthetics -
+the blue glow around the text inputs
+spacing between elements - e.g. creating custom divs for the textInput and the label
+
+Thursday 9th March
+shinyWidgets - dropdownButton for cleaner UI + smaller plots in columns?
+check out ?show_alert
+pickerInput over checkboxInput?
+checkboxGroup or prettycheckboxGroup
+sweetAlerts for pop ups of mandatory fields
+
+Docs all found here, with examples
+https://dreamrs.github.io/shinyWidgets/reference/index.html
+
+
+#plotly proxy to add traces and annotations
+```{r}
+library(plotly)
+
+ui <- fluidPage(
+  plotlyOutput("plot"),
+  actionButton("add_annotation", "Add Annotation")
+)
+
+server <- function(input, output, session) {
+  output$plot <- renderPlotly({
+    p <- plot_ly(mtcars, x = ~wt, y = ~mpg, type = "scatter", mode = "markers")
+    p
+  })
+  
+  observeEvent(input$add_annotation, {
+    plotlyProxy("plot", session) %>%
+      plotlyProxyInvoke("add_annotations", 
+                        list(text = "New Annotation", 
+                             x = 3.5, y = 15, 
+                             editable = TRUE, 
+                             draggable = TRUE))
+  })
+}
+
+shinyApp(ui, server)
+
+
+if (require("shiny") && interactive()) {
+  plotly_example("shiny", "proxy_relayout")
+  plotly_example("shiny", "proxy_mapbox")
+}
+```
+
+Sweet alerts
+```{r}
+
+# Input in alert ----
+
+library(shiny)
+library(shinyWidgets)
+
+
+ui <- fluidPage(
+  tags$h1("Input sweet alert"),
+  
+  actionButton("btn_text", "Text Input"),
+  verbatimTextOutput(outputId = "text"),
+  
+  actionButton("btn_password", "Password Input"),
+  verbatimTextOutput(outputId = "password"),
+  
+  actionButton("btn_radio", "Radio Input"),
+  verbatimTextOutput(outputId = "radio"),
+  
+  actionButton("btn_checkbox", "Checkbox Input"),
+  verbatimTextOutput(outputId = "checkbox"),
+  
+  actionButton("btn_select", "Select Input"),
+  verbatimTextOutput(outputId = "select"),
+  
+  actionButton("btn_email", "Email Input"),
+  verbatimTextOutput(outputId = "email")
+)
+server <- function(input, output, session) {
+  
+  observeEvent(input$btn_text, {
+    inputSweetAlert(
+      session = session,
+      "mytext",
+      input = "text",
+      title = "What's your name ?",
+      inputPlaceholder = "e.g.: Victor",
+      allowOutsideClick = FALSE,
+      showCloseButton = TRUE
+    )
+  })
+  output$text <- renderPrint(input$mytext)
+  
+  observeEvent(input$btn_password, {
+    inputSweetAlert(
+      session = session,
+      "mypassword",
+      input = "password",
+      title = "What's your password ?"
+    )
+  })
+  output$password <- renderPrint(input$mypassword)
+  
+  observeEvent(input$btn_radio, {
+    inputSweetAlert(
+      session = session,
+      "myradio",
+      input = "radio",
+      inputOptions = c("Banana" , "Orange", "Apple"),
+      title = "What's your favorite fruit ?",
+      inputValidator = I(
+        "function(value) {
+          if (!value) {
+            return 'You need to choose something!';
+          }
+        }"
+      )
+    )
+  })
+  output$radio <- renderPrint(input$myradio)
+  
+  observeEvent(input$btn_checkbox, {
+    inputSweetAlert(
+      session = session,
+      "mycheckbox",
+      input = "checkbox",
+      inputPlaceholder = "Yes I agree",
+      title = "Do you agree ?"
+    )
+  })
+  output$checkbox <- renderPrint(input$mycheckbox)
+  
+  observeEvent(input$btn_select, {
+    inputSweetAlert(
+      session = session,
+      "myselect",
+      input = "select",
+      inputOptions = c("Banana" , "Orange", "Apple"),
+      title = "What's your favorite fruit ?"
+    )
+  })
+  output$select <- renderPrint(input$myselect)
+  
+  observeEvent(input$btn_email, {
+    inputSweetAlert(
+      session = session,
+      inputId = "myemail",
+      input = "email",
+      title = "What's your email ?",
+      validationMessage= "this does not look like a valid email!"
+    )
+  })
+  output$email <- renderPrint(input$myemail)
+  
+}
+
+if (interactive())
+  shinyApp(ui = ui, server = server)
+
+```
+
+```{r}
+library(plotly)
+
+# Define data
+x <- c(1, 2, 3, 4, 5)
+y <- c(1, 4, 2, 3, 6)
+
+# Create a scatter plot
+p <- plot_ly(x = x, y = y, type = "scatter", mode = "markers")
+
+# Add custom modebar button
+p <- p %>% config(modeBarButtonsToAdd = list(
+  list(
+    name = "Add Annotation",
+    # icon = list(
+    #   transform = "scale(0.5,0.5)",
+    #   fillcolor = "rgba(0,0,0,0.6)"
+    # ),
+    click = function(gd) {
+      add_annotations(gd, 
+                      list(text = "New Annotation", 
+                           x = mean(gd$data[[1]]$x), 
+                           y = mean(gd$data[[1]]$y), 
+                           editable = TRUE, 
+                           showarrow = FALSE))
+    }
+  )
+))
+
+# Display plot
+p
+
+```
+
+```{r}
+library(plotly)
+
+# Create data
+x <- c(1, 2, 3, 4, 5)
+y <- c(1, 4, 2, 3, 6)
+
+# Create scatter plot
+p <- plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  config(
+    editable = TRUE,
+    # edits = list(annotations = TRUE,
+    #              shapePosition = TRUE),
+    modeBarButtonsToAdd = #Allow drawing on shapes in app
+                          list("drawline",
+                               "drawcircle",
+                               "drawrect",
+                               "eraseshape",
+                               "annotation")
+    )
+
+# Add annotation
+p <- add_annotations(p, 
+                     text = "Sample Annotation", 
+                     x = 3, 
+                     y = 4, 
+                     editable = TRUE)
+
+
+p
+
+# Display plot
+p <- add_annotations(p, text = "Dickhead",
+                     x = 3, y = 4, editable = TRUE)
+
+```
+
+
+```{r}
+library(plotly)
+library(htmlwidgets)
+
+# Define the custom icon as an SVG path
+icon_path <- "M3,3h10v1.5h-10v-1.5zm0,3h7v1.5h-7v-1.5zm0,3h5v1.5h-5v-1.5z"
+
+# Define the JavaScript function to add annotations
+js_function <- "function() {
+                   var new_annotation = {
+                       x: 2,
+                       y: 7,
+                       xref: 'x',
+                       yref: 'y',
+                       text: 'New annotation',
+                       showarrow: false,
+                       editable: true
+                   };
+                   var update = {
+                       annotations: [new_annotation]
+                   };
+                   Plotly.relayout(this, update);
+               }"
+
+# Define the custom modebar button
+button <- list(
+  name = "Add Annotation",
+  icon = list(
+    path = "~/Downloads/pen.svg",
+    transform = 'matrix(1 0 0 1 -2 -2) scale(0.7)'
+  ),
+  click = htmlwidgets::JS(
+    "function() {
+                   var new_annotation = {
+                       x: 2,
+                       y: 7,
+                       xref: 'x',
+                       yref: 'y',
+                       text: 'New annotation',
+                       showarrow: false,
+                       editable: true
+                   };
+                   var update = {
+                       annotations: [new_annotation]
+                   };
+                   Plotly.relayout(this, update);
+               }"
+  )
+)
+
+# Create the plot
+p <- plot_ly(x = 1:10, y = 1:10, type = "scatter", mode = "markers")
+
+# Configure the plot with the custom modebar button
+config(p, modeBarButtonsToAdd = list(button))
+
+# Display the plot
+p
+
+```
+
+
+#Adding a custom button which adds text
+```{r}
+octocat <- list(
+  name = "octocat",
+  icon = list(
+    path =  "~/Downloads/pen.svg",
+    transform = 'matrix(1 0 0 1 -2 -2) scale(0.7)'
+  ),
+  click = htmlwidgets::JS(
+    "function(gd) {
+       var txt = {x: [1], y: [1], text: 'Octocat!', mode: 'text', editable: 'true'};
+       Plotly.addTraces(gd, txt);
+    }"
+  )
+)
+
+plot_ly() %>%
+  config(modeBarButtonsToAdd = list(octocat,
+                                    "drawline",
+                               "drawcircle",
+                               "drawrect",
+                               "eraseshape",
+                               "annotation"),
+         edititable = TRUE)
+```
+
+
+```{r}
+octocat <- list(
+         name = "octocat",
+         icon = list(
+           path =  "M60.64,62.3a11.29,11.29,0,0,0,6.09-6.72l6.35-17.72L60.54,25.31l-17.82,6.4c-2.36.86-5.57,3.41-6.6,6L24.48,65.5l8.42,8.42ZM40.79,39.63a7.89,7.89,0,0,1,3.65-3.17l14.79-5.31,8,8L61.94,54l-.06.19a6.44,6.44,0,0,1-3,3.43L34.07,68l-3.62-3.63Zm16.57,7.81a6.9,6.9,0,1,0-6.89,6.9A6.9,6.9,0,0,0,57.36,47.44Zm-4,0a2.86,2.86,0,1,1-2.85-2.85A2.86,2.86,0,0,1,53.32,47.44Zm-4.13,5.22L46.33,49.8,30.08,66.05l2.86,2.86ZM83.65,29,70,15.34,61.4,23.9,75.09,37.59ZM70,21.06l8,8-2.84,2.85-8-8ZM87,80.49H10.67V87H87Z",
+           transform = 'matrix(1 0 0 1 -15 -15)'
+         ),
+         click = htmlwidgets::JS(
+           "function(gd) {
+       var txt = {x: [1], y: [1], text: 'Octocat!', mode: 'text', editable: 'true'};
+       Plotly.addTraces(gd, txt);
+    }"
+         )
+       )
+```
+

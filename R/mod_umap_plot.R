@@ -59,7 +59,13 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       r$y1 <- input$y1
     })
 
+
+
+
      output$umapPlot <- plotly::renderPlotly({
+
+
+
 
        reactive_dataframe() %>%
          dplyr::mutate(cluster = factor(cluster)) %>%
@@ -70,17 +76,19 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
            color = ~cluster,
            key = ~document,
            text = ~ paste("<br> Post:", text),
-           hoverinfo = "text", marker = list(size = 2), height = 600
+           hoverinfo = "text",
+           marker = list(size = 2),
+           height = 600
          ) %>%
          plotly::layout(
            dragmode = "lasso",
            legend = list(itemsizing = "constant"),
-           xaxis = list(showgrid = FALSE,
-                        showline = FALSE,
-                        zeroline = FALSE,
+           xaxis = list(showgrid = FALSE, #Turn off grid lines
+                        showline = FALSE, #Turn off axis line
+                        zeroline = FALSE, #Turn off line at 0
                         linewidth = 0,
                         tickwidth = 0,
-                        showticklabels = FALSE,
+                        showticklabels = FALSE, #Remove axis tick labels
                         title = ""),
            yaxis = list(showgrid = FALSE,
                         showline = FALSE,
@@ -89,12 +97,18 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
                         tickwidth = 0,
                         showticklabels = FALSE,
                         title = ""),
-           newshape=list(fillcolor="#ff5718", opacity=0.2)
+           newshape=list(fillcolor="#ff5718", #Colour for shapes
+                         linecolor = "black",
+                         opacity=0.2)
          ) %>%
          plotly::config(
-           editable = TRUE,
-           modeBarButtonsToAdd =
-                          list("drawline",
+           displaylogo = FALSE,
+           edits = list(shapePosition = TRUE,
+                        annotation = TRUE), #Allow shapes to be edited
+           # editable = TRUE,
+           modeBarButtonsToAdd = #Allow drawing on shapes in app
+                          list(
+                              "drawline",
                                "drawcircle",
                                "drawrect",
                                "eraseshape")) %>%
