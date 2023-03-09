@@ -59,60 +59,20 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       r$y1 <- input$y1
     })
 
-
-
-
      output$umapPlot <- plotly::renderPlotly({
-
-
-
 
        reactive_dataframe() %>%
          dplyr::mutate(cluster = factor(cluster)) %>%
-         plotly::plot_ly(
-           x = ~V1,
-           y = ~V2,
+         LandscapeR::ls_plotly_umap(
+           x = "V1",
+           y = "V2",
            type = "scattergl",
-           color = ~cluster,
-           key = ~document,
-           text = ~ paste("<br> Post:", text),
-           hoverinfo = "text",
-           marker = list(size = 2),
-           height = 600
-         ) %>%
-         plotly::layout(
-           dragmode = "lasso",
-           legend = list(itemsizing = "constant"),
-           xaxis = list(showgrid = FALSE, #Turn off grid lines
-                        showline = FALSE, #Turn off axis line
-                        zeroline = FALSE, #Turn off line at 0
-                        linewidth = 0,
-                        tickwidth = 0,
-                        showticklabels = FALSE, #Remove axis tick labels
-                        title = ""),
-           yaxis = list(showgrid = FALSE,
-                        showline = FALSE,
-                        zeroline = FALSE,
-                        linewidth = 0,
-                        tickwidth = 0,
-                        showticklabels = FALSE,
-                        title = ""),
-           newshape=list(fillcolor="#ff5718", #Colour for shapes
-                         linecolor = "black",
-                         opacity=0.2)
-         ) %>%
-         plotly::config(
-           displaylogo = FALSE,
-           edits = list(shapePosition = TRUE,
-                        annotation = TRUE), #Allow shapes to be edited
-           # editable = TRUE,
-           modeBarButtonsToAdd = #Allow drawing on shapes in app
-                          list(
-                              "drawline",
-                               "drawcircle",
-                               "drawrect",
-                               "eraseshape")) %>%
-         plotly::event_register(event = "plotly_selected")
+           group_var = "cluster",
+           key = "document",
+           text_var = "text",
+           height = 600,
+           width = "100%"
+         )
      })
 
      #Make delete button disappear when nothing selected
