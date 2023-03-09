@@ -1,8 +1,9 @@
 #' download_data UI Function
 #'
-#' @description A shiny Module.
+#' @param id link to module's server
+#' @param label Element's visible label when app is rendered
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @description A shiny Module.
 #'
 #' @noRd
 #'
@@ -21,6 +22,9 @@ mod_download_data_ui <- function(id, label){
 }
 
 #' download_data Server Functions
+#'
+#' @param id link to module's ui
+#' @param data_object the object the user will download
 #'
 #' @noRd
 mod_download_data_server <- function(id, data_object){

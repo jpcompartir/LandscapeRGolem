@@ -17,8 +17,8 @@ mod_conversation_landscape_ui <- function(id){
       shiny::column(3, style = "padding-left: 20px; padding-right: 10px;", shinyWidgets::searchInput(
         #Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
         inputId = ns("filterPattern"),
-        label = "Pattern to search text with",
-        placeholder = "A placeholder",
+        label = "Search text",
+        placeholder = "Regex pattern",
         btnSearch = shiny::icon("search"),
         btnReset = shiny::icon("remove"),
         width = "100%",

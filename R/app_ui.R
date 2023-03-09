@@ -20,7 +20,7 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    shiny::navbarPage(title = "Conversation Landscape",
+    shiny::navbarPage(title = "LandscapeR - Proj Name",
                       id = "navBar",
                       theme = shinythemes::shinytheme("cosmo"),
                       htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
