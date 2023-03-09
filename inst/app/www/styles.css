@@ -82,11 +82,33 @@ margin-left: 5px;
     top: 14px;
 }
 
+/* give form control a 10px border radius */
+.form-control {
+    border-radius: 10px!important;
+}
+
 /* remove the blue outline when form control is focus */
 .form-control:focus {
     border-color: #ff7518!important;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(999 750 180 / 60%)!important;
     box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(999 750 180 / 60%)!important;
+}
+
+/* give select inputs a 10px border radius */
+.selectize-input {
+    border-radius: 10px!important;
+}
+
+/* when the selectize-input is clicked or is active, make its shadow colour #ff7518 orange */
+.selectize-input.focus {
+    -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(999 750 180 / 60%)!important;
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(999 750 180 / 60%)!important;
+    border-color: #ff7518!important;
+}
+
+
+.well {
+  border-radius: 10px!important;
 }
 
