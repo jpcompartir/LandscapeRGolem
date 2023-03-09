@@ -6,6 +6,7 @@
 #' @noRd
 app_ui <- function(request) {
   shiny::shinyOptions(plot.autocolors = TRUE)
+  options(spinner.color = "#ff7518")
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
     tags$head(
