@@ -116,7 +116,9 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
                     "drawrect",
                     "eraseshape")) %>%
            plotly::event_register(event = "plotly_selected") %>%
-           htmlwidgets::onRender("
+           htmlwidgets::onRender(
+             #Javascript function which labels the most recently added shape with some editable text
+             "
   function(el) {
     var annotationCount = 0;
     el.on('plotly_relayout', function(d) {
@@ -151,9 +153,6 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
     });
   }
 ")
-
-
-
        })
 
      #Make delete button disappear when nothing selected
