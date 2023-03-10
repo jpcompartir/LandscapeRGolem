@@ -55,29 +55,6 @@ mod_label_data_server <- function(id, r,
 
     })
 
-    labelled_df <- reactive({
-      if (length(r$label_id < 1)) {
-        validate("You must label data first to join the tables")
-      }
-
-      labelled_lookup <- tibble::tibble(
-        document = as.numeric(r$label_ids),
-        label = r$labels
-      )
-
-      labelled_lookup %>%
-        dplyr::left_join(reactive_dataframe())
-    })
-
-    output$labelledDT <- DT::renderDataTable({
-      if (nrow(labelled_df()) < 1) {
-        validate("You must label data first to view the labelled data table")
-      }
-
-      labelled_df() %>%
-        DT::datatable()
-    })
-
     #Make label button disappear when nothing selected
     output$labelSelection <- shiny::renderUI({
       if (length(selected_range() > 0)) {
