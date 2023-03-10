@@ -115,7 +115,44 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
                     "drawcircle",
                     "drawrect",
                     "eraseshape")) %>%
-           plotly::event_register(event = "plotly_selected")
+           plotly::event_register(event = "plotly_selected") %>%
+           htmlwidgets::onRender(
+             #Javascript function which labels the most recently added shape with some editable text
+             "
+  function(el) {
+    var annotationCount = 0;
+    el.on('plotly_relayout', function(d) {
+      var shapes = d['shapes'];
+      if (shapes && shapes.length > 0) {
+        var lastShape = shapes[shapes.length - 1];
+        var newAnnotation = {
+          x: lastShape['x0'] + (lastShape['x1'] - lastShape['x0']) / 2,
+          y: lastShape['y0'] + (lastShape['y1'] - lastShape['y0']) / 2 - 0.15,
+          text: 'Custom Shape',
+          showarrow: true,
+          arrowhead: 3,
+          ax: 0,
+          ay: lastShape['y0'] - lastShape['y1'],
+          arrowcolor: 'black',
+          arrowwidth: 1,
+          arrowhead: 0,
+          alpha: 0.25,
+          draggable: true,
+          editable: true
+        };
+        if (annotationCount < shapes.length) {
+          Plotly.relayout(el, 'annotations[' + annotationCount + ']', newAnnotation);
+          annotationCount++;
+        } else {
+          Plotly.relayout(el, {
+            annotations: [newAnnotation]
+          });
+          annotationCount = 1;
+        }
+      }
+    });
+  }
+")
        })
 
      #Make delete button disappear when nothing selected
