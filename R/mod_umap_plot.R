@@ -59,21 +59,64 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       r$y1 <- input$y1
     })
 
-     output$umapPlot <- plotly::renderPlotly({
+      # output$umapPlot <- plotly::renderPlotly({
+      #   p <- reactive_dataframe() %>%
+      #     dplyr::mutate(cluster = factor(cluster)) %>%
+      #     LandscapeR::ls_plotly_umap(
+      #       x = "V1",
+      #       y = "V2",
+      #       type = "scattergl",
+      #       group_var = "cluster",
+      #       key = "document",
+      #       text_var = "text",
+      #       height = 600,
+      #       width = "100%"
+      #     )
+      #
+      #   p %>%
+      #     plotly::event_register(event = "plotly_selected")
+      # })
+       output$umapPlot <- plotly::renderPlotly({
 
-       reactive_dataframe() %>%
-         dplyr::mutate(cluster = factor(cluster)) %>%
-         LandscapeR::ls_plotly_umap(
-           x = "V1",
-           y = "V2",
-           type = "scattergl",
-           group_var = "cluster",
-           key = "document",
-           text_var = "text",
-           height = 600,
-           width = "100%"
-         )
-     })
+         reactive_dataframe() %>%
+           dplyr::mutate(cluster = factor(cluster)) %>%
+           plotly::plot_ly(
+             x = ~V1,
+             y = ~V2,
+             type = "scattergl",
+             color = ~cluster,
+             key = ~document,
+             text = ~ paste("<br> Post:", text),
+             hoverinfo = "text", marker = list(size = 2), height = 600
+           ) %>%
+           plotly::layout(
+             dragmode = "lasso",
+             legend = list(itemsizing = "constant"),
+             xaxis = list(showgrid = FALSE,
+                          showline = FALSE,
+                          zeroline = FALSE,
+                          linewidth = 0,
+                          tickwidth = 0,
+                          showticklabels = FALSE,
+                          title = ""),
+             yaxis = list(showgrid = FALSE,
+                          showline = FALSE,
+                          zeroline = FALSE,
+                          linewidth = 0,
+                          tickwidth = 0,
+                          showticklabels = FALSE,
+                          title = ""),
+             newshape=list(fillcolor="#ff5718", opacity=0.2)
+           ) %>%
+           plotly::config(
+             editable = TRUE,
+             modeBarButtonsToAdd =
+               list("drawline",
+                    "drawcircle",
+                    "drawrect",
+                    "eraseshape")) %>%
+           plotly::event_register(event = "plotly_selected")
+       })
 
      #Make delete button disappear when nothing selected
      output$deleteme <- shiny::renderUI({
