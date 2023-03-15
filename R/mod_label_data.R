@@ -14,10 +14,11 @@ mod_label_data_ui <- function(id){
       shiny::column(3,
                     offset = 0,
                     style = "padding-left: 20px; padding-right: 10px;",
-                    shiny::uiOutput(ns("labelSelection"))
+                    shiny::tags$div(
+                      style = "display: flex; align-items: center;",
+                      shiny::uiOutput(ns("labelSelection")),
+                      shiny::uiOutput(ns("labelButton"))
       ),
-      shiny::column(1,
-                    shiny::uiOutput(ns("labelButton")),
       )
     ),
     shiny::fluidRow(
@@ -74,8 +75,10 @@ mod_label_data_server <- function(id, r,
         shiny::actionButton(
           inputId = ns("labelNow"),
           label = "Label",
-          icon = shiny::icon("check"),
-          style = "margin-top: 25px; margin-left: 5px;"
+          class="btn-label",
+          style = "margin-top: 10px!important;",
+          icon = shiny::icon("check") #,
+          # style = "margin-top: 10px; margin-left: 5px;"
         )
       }
     })

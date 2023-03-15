@@ -156,19 +156,19 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
        })
 
      #Make delete button disappear when nothing selected
-     output$deleteme <- shiny::renderUI({
-       if (length(selected_range() > 1)) {
-         shiny::tagList(
-           shiny::actionButton(
-             "delete",
-             "Delete selections",
-             class = "btn-warning",
-             icon = shiny::icon("trash"),
-             style = "position: absolute; bottom 7px; right: 7px; background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
+       output$deleteme <- shiny::renderUI({
+         if (length(selected_range()$key) > 0) {
+           shiny::tagList(
+             shiny::actionButton(
+               "delete",
+               "Delete selections",
+               class = "btn-warning",
+               icon = shiny::icon("trash"),
+               style = "position: absolute; bottom 7px; right: 7px; background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
+             )
            )
-         )
-       }
-     }) #end output$deleteme
+         }
+       })
   })
 
 

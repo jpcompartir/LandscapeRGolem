@@ -27,11 +27,11 @@ mod_volume_over_time_ui <- function(id){
         shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning"),
       ),
       shiny::mainPanel(width = 6,
-        shinycssloaders::withSpinner(
-          shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
+                       shinycssloaders::withSpinner(
+                         shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
       )
     )
-    )
+  )
 
 }
 
@@ -45,16 +45,16 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
     vol_titles <- mod_reactive_labels_server("volumeTitles")
 
     #get the minimum date range and store in a reactive
-   date_min <- reactive(min(highlighted_dataframe()[["date"]]))
-   date_max <- reactive(max(highlighted_dataframe()[["date"]]))
+    date_min <- reactive(min(highlighted_dataframe()[["date"]]))
+    date_max <- reactive(max(highlighted_dataframe()[["date"]]))
 
 
-  observe({shiny::updateDateRangeInput(session = session,
-                                inputId = "dateRange", #Link to UI's dateRange
-                                label = "Date Range",
-                                start = date_min(), #ensure called reactively
-                                end = date_max()) #ensure called reactively
-  })
+    observe({shiny::updateDateRangeInput(session = session,
+                                         inputId = "dateRange", #Link to UI's dateRange
+                                         label = "Date Range",
+                                         start = date_min(), #ensure called reactively
+                                         end = date_max()) #ensure called reactively
+    })
 
     volume_reactive <- reactive({
       if(nrow(highlighted_dataframe()) < 1){
@@ -94,12 +94,12 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
     })
 
     output$volumePlot<- shiny::renderPlot({
-          volume_reactive()
-        },
-        res = 100,
-        width = function() input$width,
-        height = function() input$height
-      )
+      volume_reactive()
+    },
+    res = 100,
+    width = function() input$width,
+    height = function() input$height
+    )
 
     # Volume plot smooth controls
     output$smoothControls <- shiny::renderUI({
@@ -122,12 +122,11 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe){
       shiny::debounce(500)
 
     output$saveVolume <- LandscapeR::download_box("volume_plot",
-                                                  volume_reactive(),
-                                                  width = input$width,
-                                                  height = input$height)
+                                                  volume_reactive,
+                                                  width = shiny::reactive(input$width),
+                                                  height = shiny::reactive(input$height))
   })
 }
-
 ## To be copied in the UI
 # mod_volume_over_time_ui("volume_over_time_1")
 

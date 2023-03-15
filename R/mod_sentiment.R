@@ -60,9 +60,12 @@ mod_sentiment_server <- function(id, highlighted_dataframe){
         height = function() input$height
       )
 
-    output$saveSentiment <- LandscapeR::download_box(exportname = "sentiment_plot", plot = sentiment_reactive(),
-                                                     width = input$width,
-                                                     height = input$height)
+
+      output$saveSentiment <- LandscapeR::download_box(exportname = "sentiment_plot",
+                                                       plot = sentiment_reactive,
+                                                       width = shiny::reactive(input$width),
+                                                       height = shiny::reactive(input$height))
+
   })
 }
 

@@ -18,6 +18,10 @@ border-radius:10px!important;
 margin-left: 5px;
 }
 
+.btn-label {
+  margin-top: 10px;
+}
+
 .label-primary{
   background-color: #ff7518!important;
 }
@@ -112,3 +116,17 @@ margin-left: 5px;
   border-radius: 10px!important;
 }
 
+/* come back to this */
+.bttn-material-circle.bttn-md.bttn-primary {
+  background: #ff7518!important;
+  color: #fff!importantl;
+}
+
+.pagination>li>a, .pagination>li>span {
+    color: #ff7518!important;
+}
+
+:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(255, 117, 24, 0.5) !important;
+}

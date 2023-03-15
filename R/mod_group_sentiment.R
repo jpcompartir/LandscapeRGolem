@@ -115,12 +115,13 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe){
       height = function() input$height
     )
 
-    # Download button
-    output$saveGroupSentiment <- LandscapeR::download_box(
-      plot = group_sent_reactive(),
-      exportname = "group_sentiment_plot",
-      width = input$width,
-      height = input$height
+
+      # Download button
+      output$saveGroupSentiment <- LandscapeR::download_box(
+        plot = group_sent_reactive,
+        exportname = "group_sentiment_plot",
+        width = shiny::reactive(input$width),
+        height = shiny::reactive(input$height)
       )
 
   })
