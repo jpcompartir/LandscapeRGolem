@@ -13,6 +13,17 @@ shiny::observeEvent(input$filterPattern, {
   pattern(input$Regex)
 })
 
+# Add this observer to your Shiny app_server function
+shiny::observeEvent(input$delete, {
+  # Original functionality: update remove_range's values on delete button press
+  req(length(remove_range$keep_keys) > 0)
+  remove_range$remove_keys <- selected_range()$key
+  remove_range$keep_keys <- remove_range$keep_keys[!remove_range$keep_keys %in% remove_range$remove_keys]
+
+  # Clear the values in selected_range()
+  selected_range(list())
+})
+
 
   #This is for passing reactive values to and from modules
   r <- reactiveValues()
