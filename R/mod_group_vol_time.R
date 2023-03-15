@@ -133,9 +133,9 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe) {
 
 
     output$saveGroupVolTime <- LandscapeR::download_box(exportname = "group_vol_time",
-                                                        plot = group_vol_time_reactive(),
-                                                        width = input$width,
-                                                        height = input$height)
+                                                        plot = group_vol_time_reactive,
+                                                        width = shiny::reactive(input$width),
+                                                        height = shiny::reactive(input$height))
 
 
 
