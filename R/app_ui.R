@@ -15,6 +15,16 @@ app_ui <- function(request) {
         type = "text/css",
         href = "styles.css"
       ),
+        tags$style(HTML("
+    .dataTables_wrapper .dataTables_paginate a:focus,
+    .dataTables_wrapper .dataTables_paginate a:focus:hover {
+      background-color: #ff7518 !important;
+      border-color: #ff7518 !important;
+      outline: none !important;
+      box-shadow: none !important;
+      color: #ffffff !important;
+    }
+  "))
     ),
     shinyjs::useShinyjs(),
     # Leave this function for adding external resources
