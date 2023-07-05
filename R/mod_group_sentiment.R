@@ -80,7 +80,7 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe){
       shiny::updateSelectInput(session,
                                inputId = "groupVarSent",
                                choices = colnames(highlighted_dataframe()),
-                               selected = colnames(highlighted_dataframe())[3]
+                               selected = "cluster"
       )
     })
 

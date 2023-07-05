@@ -77,6 +77,26 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       #     plotly::event_register(event = "plotly_selected")
       # })
        output$umapPlot <- plotly::renderPlotly({
+         virid_colours <- viridis::viridis_pal(option = "H")(50)
+         microsoft_colours <- c(
+           "#D83B01",
+                    "#FFB900",
+                    "#107C10",
+                    "#008575",
+                    "#0078D4",
+                    "#8661C5",
+                    "#FF9349",
+                    "#3b2e58",
+                    "#9BF00B",
+                    "#30E5D0",
+                    "#50E6FF",
+                    "#D59DFF",
+                    "#6b2929",
+                    "#6a4b16",
+                    "#054b17",
+                    "#274b47",
+                    "#243a5e"
+         )
 
          reactive_dataframe() %>%
            dplyr::mutate(cluster = factor(cluster)) %>%
@@ -85,6 +105,7 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
              y = ~V2,
              type = "scattergl",
              color = ~cluster,
+             colors = virid_colours,
              key = ~document,
              text = ~ paste("<br> Post:", text),
              hoverinfo = "text", marker = list(size = 2), height = 600
