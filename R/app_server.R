@@ -4,9 +4,36 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-app_server <- function(input, output, session) {
+app_server <- function(input, output, session, data) {
 
-  data <- LandscapeR::ls_example
+
+  if(is.null(data)) {
+    data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+      dplyr::select(-cluster) %>%
+      dplyr::rename(cluster = topic)
+
+  }
+  #604
+  # data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/604_artificial_intelligence/data_audit/data/umap_604_jack.csv") %>%
+  #   mutate(sentiment = tolower(sentiment)) %>%
+  #   relocate(text, permalink, cluster, clean_text, date, V1, V2, sentiment) %>% rename(document = doc_id)
+
+  #topics
+  data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+    dplyr::select(-cluster) %>%
+    dplyr::rename(cluster = topic)
+
+  #624
+  # data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_landscape_umap_df_new.csv") %>%  624
+    # dplyr::filter(date >= as.Date("2022-12-01"), date < as.Date("2023-01-")) %>%
+    # dplyr::sample_n(50000) %>%
+    # dplyr::mutate(sentiment = tolower(sentiment)) %>%
+    # dplyr::rename(
+      # clean_text = text,
+      # text = text_copy,
+                  # old_clusters = cluster,
+                  # cluster = fifty_clusters) %>%
+    # dplyr::relocate(cluster, .after = 2)
 
 pattern <- shiny::reactiveVal(value = "", {})
 shiny::observeEvent(input$filterPattern, {
