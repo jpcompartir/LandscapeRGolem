@@ -84,7 +84,7 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe) {
         session = session,
         inputId = "groupVolTimeVar",
         choices = names(highlighted_dataframe()),
-        selected = names(highlighted_dataframe())[3]
+        selected = "cluster"
       )
     })
 

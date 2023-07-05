@@ -2,6 +2,7 @@
 
 export("%>%")
 export(run_app)
+export(run_app_from_other_project)
 import(shiny)
 importFrom(golem,activate_js)
 importFrom(golem,add_resource_path)

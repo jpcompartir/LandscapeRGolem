@@ -66,7 +66,7 @@ mod_wlos_server <- function(id, highlighted_dataframe){
       shiny::updateSelectInput(session,
                                inputId = "groupVar",
                                choices = names(highlighted_dataframe()),
-                               selected = names(highlighted_dataframe())[3]
+                               selected = "cluster"
                                )
     })
 
