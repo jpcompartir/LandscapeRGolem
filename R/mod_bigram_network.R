@@ -40,6 +40,18 @@ mod_bigram_network_server <- function(id, highlighted_dataframe){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
+    make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...){
+
+      requireNamespace("ParseR")
+
+      plot <- data %>%
+        ParseR::count_ngram(text_var = {{text_var }}, top_n = top_n, min_freq = min, ...) %>%
+        purrr::pluck("viz")%>%
+        ParseR::viz_ngram()
+
+      return(plot)
+    }
+
     bigram_reactive <- reactive({
 
       if(nrow(highlighted_dataframe()) < 1){
@@ -47,7 +59,7 @@ mod_bigram_network_server <- function(id, highlighted_dataframe){
       }
         if (!nrow(highlighted_dataframe()) >= 5000) { #Check rows are fewer than 5k for speed
           bigram <- highlighted_dataframe() %>%
-            JPackage::make_bigram_viz(
+            make_bigram_viz(
               text_var = clean_text,
               clean_text = FALSE, #for speed - clean text outside of app functioning
               min = 5,
@@ -56,7 +68,7 @@ mod_bigram_network_server <- function(id, highlighted_dataframe){
         } else { #If > 5k rows take a sample
           bigram <- highlighted_dataframe() %>%
             dplyr::sample_n(5000) %>%
-            JPackage::make_bigram_viz(
+            make_bigram_viz(
               text_var = clean_text,
               clean_text = FALSE,
               min = 5,
