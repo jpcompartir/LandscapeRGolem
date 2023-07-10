@@ -45,11 +45,14 @@ mod_wlos_ui <- function(id){
                          choices = NULL),
       shiny::downloadButton(outputId = ns("saveWLOs"), class = "btn btn-warning"),
     ),
-    shiny::mainPanel(width = 8,
-      shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
-                                                     height = "800px",
-                                                     width = "600px"))
+    shinyjqui::jqui_resizable(
+      shiny::mainPanel(width = 8,
+                       shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
+                                                                      height = "800px",
+                                                                      width = "600px"))
+      )
     )
+
     ),
 
   )
