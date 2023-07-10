@@ -12,8 +12,9 @@ mod_conversation_landscape_ui <- function(id){
   tagList(
     gotop::use_gotop(),
     shiny::fluidRow(
+      shiny::column(2, shiny::selectInput(inputId = ns("colourVar"), selected = NULL, choices = NULL, label = "Colour Variable", selectize = FALSE #can set this to TRUE but will adjust height, and not sure it needs selectize for now. Unclear where to edit the selectize's height
+                                          )),
       mod_download_data_ui(id = ns("allData"), label = "All Data"),
-
       shiny::column(3, style = "padding-left: 20px; padding-right: 10px;", shinyWidgets::searchInput(
         #Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
         inputId = ns("filterPattern"),
@@ -24,7 +25,7 @@ mod_conversation_landscape_ui <- function(id){
         width = "100%",
         value = ""
       )),
-      mod_download_data_ui(id = ns("selectedData"), label = "Selected Data")
+      mod_download_data_ui(id = ns("selectedData"), label = "Selected Data"),
       ),
     shiny::fluidRow(
       mod_label_data_ui(id = ns("labelData"))
@@ -58,9 +59,20 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe,
                              reactive_dataframe = reactive_dataframe,
                              selected_range = selected_range)
 
-
     observe({
       r$filterPattern <- input$filterPattern
+    })
+
+    observe({
+      shiny::updateSelectInput(session,
+                               inputId = "colourVar",
+                               choices = r$column_names,
+                               selected = "cluster"
+      )
+    })
+
+    observe({
+      r$colour_var <- input$colourVar
     })
 
   })

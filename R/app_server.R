@@ -11,7 +11,6 @@ app_server <- function(input, output, session, data) {
     data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
       dplyr::select(-cluster) %>%
       dplyr::rename(cluster = topic)
-
   }
 
 pattern <- shiny::reactiveVal(value = "", {})
@@ -32,7 +31,7 @@ shiny::observeEvent(input$delete, {
 
 
   #This is for passing reactive values to and from modules
-  r <- reactiveValues()
+  r <- reactiveValues(colour_var = NULL, column_names = colnames(data))
 
   r$date_min = min(data$date)
   r$date_max = max(data$date)

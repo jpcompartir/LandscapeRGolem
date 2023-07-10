@@ -59,24 +59,12 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       r$y1 <- input$y1
     })
 
-      # output$umapPlot <- plotly::renderPlotly({
-      #   p <- reactive_dataframe() %>%
-      #     dplyr::mutate(cluster = factor(cluster)) %>%
-      #     LandscapeR::ls_plotly_umap(
-      #       x = "V1",
-      #       y = "V2",
-      #       type = "scattergl",
-      #       group_var = "cluster",
-      #       key = "document",
-      #       text_var = "text",
-      #       height = 600,
-      #       width = "100%"
-      #     )
-      #
-      #   p %>%
-      #     plotly::event_register(event = "plotly_selected")
-      # })
        output$umapPlot <- plotly::renderPlotly({
+
+         req(r$colour_var)
+
+         colour_var <- rlang::as_string(r$colour_var)
+
          virid_colours <- viridis::viridis_pal(option = "H")(50)
          microsoft_colours <- c(
            "#D83B01",
@@ -100,13 +88,16 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
 
          reactive_dataframe() %>%
            dplyr::mutate(
-             cluster = stringr::str_wrap(cluster, width = 20),
-             cluster = factor(cluster)) %>%
+             # cluster = stringr::str_wrap(cluster, width = 20),
+             # cluster = factor(cluster),
+             colour_var = factor(.data[[r$colour_var]]),
+             colour_var = stringr::str_wrap(.data[[r$colour_var]], width = 20)
+             ) %>%
            plotly::plot_ly(
              x = ~V1,
              y = ~V2,
              type = "scattergl",
-             color = ~cluster,
+             color = ~.data[[r$colour_var]],
              colors = virid_colours,
              key = ~document,
              text = ~ paste("<br> Post:", text),

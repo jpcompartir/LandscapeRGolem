@@ -1,8 +1,10 @@
 These notes are added to .gitignore after a mishap with using News.md
+Golem allows us to cleanly modularise our app and provides us some nice utilities. 
 
 July -
 
-Golem allows us to cleanly modularise our app and provides us some nice utilities. 
+# PROBLEM 2 - long cluster/topic names 
+solutions: wrap them with str_wrap, trim them for display?
 
 # PROBLEM 1 - Strict column names
 
@@ -11,9 +13,14 @@ Cluster also has to be in the third index of column names, which is clearly not 
 
 Ah no - it was actually in the compare groups tab
 
+# New session to run landscapergolem from one function and with data input:
 ```{r}
-prepare_data_for_landscapergolem <- function(data, document_var, date_var, text_var, clean_text_var, colour_var, x_var, y_var,permalink_var){
+library(LandscapeRGolem)
+library(dplyr)
+library(readr)
+options(shiny.port = 3838)
 
+prepare_data_for_landscaper <- function(data, document_var, date_var, text_var, clean_text_var, colour_var, x_var, y_var,permalink_var){
   data <- data %>%
     dplyr::rename(document = {{document_var}},
                   date = {{date_var}},
@@ -23,23 +30,30 @@ prepare_data_for_landscapergolem <- function(data, document_var, date_var, text_
                   V1 = {{x_var}},
                   V2 = {{y_var}},
                   permalink = {{permalink_var}})
-  
   return(data)
-  
 }
-data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+
+data <- read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
   dplyr::select(-cluster)
 
-data <- prepare_data_for_landscapergolem(data, document_var =  document, date_var = date, text_var = text, clean_text_var = clean_text, colour_var = topic, x_var = V1, y_var = V2, permalink_var = permalink)
+data <- prepare_data_for_landscaper(data, document, date, text, clean_text, topic, V1, V2, permalink)
 
+LandscapeRGolem::run_app_from_other_project(data = data)
 ```
 
+If you saved that script as 'run_landscaper_golem.R' then you could open up an Rmd or whatever else, and load the processx library and:
+```{r}
+library(processx)
 
-Running app from another package:
-1. library(LandscapeRGolem)
-2. library(callr)
-3. callr::r_bg(run_app, `host = "127.0.0.1"`, `port = 5000`)
-4. http://127.0.0.1:5000
+r_process <- process$new("Rscript", "run_landscaper_golem.R")
+r_process #check it's running
+
+# r_process$kill() #Uncomment to kill
+
+# r_process # check it's killed
+```
+
+Once you know it's running, go to http://localhost:3838/ or if you changed the shiny.port option, go to that number. 
 
 ```{r}
 r_process <- callr::r_bg(function() {
@@ -66,27 +80,6 @@ r_bg(function(){
   run_app()
 })
 ```
-
-
-```{r}
-find_free_port <- function(start_port = 3000, end_port = 8000){
-  for(port in start_port:end_port){
-    # Try to make a socket connection
-    socket_conn <- try(socketConnection("localhost", port = port, server = TRUE, open = "a+"), silent = TRUE)
-
-    # Check if the connection was successful
-    if(!inherits(socket_conn, "try-error")){
-      # Connection was successful, close it and return the port
-      close(socket_conn)
-      return(port)
-    }
-  }
-  
-  stop("No free port found")
-}
-find_free_port()
-```
-
 
 Tuesday 7th March -
 Status update:
