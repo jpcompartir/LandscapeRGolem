@@ -99,7 +99,9 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
          )
 
          reactive_dataframe() %>%
-           dplyr::mutate(cluster = factor(cluster)) %>%
+           dplyr::mutate(
+             cluster = stringr::str_wrap(cluster, width = 20),
+             cluster = factor(cluster)) %>%
            plotly::plot_ly(
              x = ~V1,
              y = ~V2,
