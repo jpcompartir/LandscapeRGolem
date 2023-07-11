@@ -44,8 +44,10 @@ mod_labelled_tab_server <- function(id,
         label = r$labels
       )
 
-      labelled_lookup %>%
-        dplyr::left_join(reactive_dataframe()) #Keep the rows in labelled_lookup and add the original columns
+      labelled_data <- labelled_lookup %>%
+        dplyr::left_join(reactive_dataframe(), by = "document") #Keep the rows in labelled_lookup and add the original columns
+
+      return(labelled_data)
     })
 
     output$labelledDT <- DT::renderDataTable({

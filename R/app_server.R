@@ -68,7 +68,7 @@ shiny::observeEvent(input$delete, {
       dplyr::filter(document %in% remove_range$keep_keys) %>% #Filtering for the keys not in remove_range$remove_keys
       dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
 
-      return(data)
+    return(data)
 
   })
 
