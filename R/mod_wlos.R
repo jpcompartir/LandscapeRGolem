@@ -20,7 +20,7 @@ mod_wlos_ui <- function(id){
             <li><b>top_n</b> = <i>the number of terms to show on each chart</i></li>
             <li><b>nrow</b> = <i>the number of rows to place the charts on</i></li>
             <li><b>top_terms_cutoff</b> = <i>the rank, in order of frequency, for a term to be included</i></li>
-            <li><b>group_var</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment </i></li>
+            <li><b>Select your grouping Variable</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment </i></li>
           </ul>")
       )
     ),
