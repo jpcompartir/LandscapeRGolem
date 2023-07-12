@@ -89,6 +89,6 @@ Open a terminal and execute
 `Rscript ~~/projects/my_project/run_app_locally.R`
 
 You should see
-'Listening on http://127.0.0.1:3838' this means you can copy that http url, or type 'localhost:3838' into your browser to open the app. Your R console will remain free. Remember to close the app when you are done by entering the terminal and typing 'control + c' then hitting enter.
+'Listening on http://127.0.0.1:3838' this means you can copy that http url, or type 'localhost:3838' into your browser to open the app. Your R console will remain free. Remember to close the app when you are done by entering the terminal and (on a Mac) typing 'control + c' then hitting enter.   
 
 You should see 'Execution halted'.
