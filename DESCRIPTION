@@ -32,8 +32,11 @@ Suggests:
     spelling (>= 2.2.1),
     testthat (>= 3.0.0),
     LandscapeR,
-    ParseR
+    ParseR,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Language: en-US
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr

@@ -23,7 +23,7 @@ mod_landing_page_ui <- function(id){
                   "),
       ),
 shiny::column(3,
-              shiny::tags$img(width = 300, height = 300, src = "www/images/landscaper.png", )
+              shiny::tags$img(width = 300, height = 300, src = "www/images/landscaper.png")
               ),
     ),
 shiny::fluidRow(
@@ -61,14 +61,7 @@ shiny::fluidRow(
                                 <p>It's important to remember that unless you tell the application to do so, it will reload with the data as it was when you first encountered it.</p>")
   )
   ),
-shiny::fluidRow(
 
-  shiny::column(6,
-                offset = 1,
-                shiny::HTML("<h1>Running Your App Locally</h1>"),
-                shiny::includeMarkdown("docs/run_app_locally.Rmd")
-                )
-)
 )
 }
 

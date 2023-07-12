@@ -199,7 +199,7 @@ if (require("shiny") && interactive()) {
 }
 ```
 
-Sweet alerts
+# Sweet alerts
 ```{r}
 
 # Input in alert ----
@@ -487,5 +487,283 @@ octocat <- list(
     }"
          )
        )
+```
+
+# Settings Cog
+
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+  actionButton("settings", label = "", icon = icon("cog"))
+)
+
+server <- function(input, output, session) {
+  observeEvent(input$settings, {
+    showModal(modalDialog(
+      title = "Settings",
+      textInput("text1", "Text Input 1"),
+      textInput("text2", "Text Input 2"),
+      numericInput("num1", "Numeric Input 1", value = 1),
+      footer = modalButton("Close")
+    ))
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+```{r}
+library(shiny)
+library(shinyjs)
+
+ui <- fluidPage(
+  useShinyjs(),  # Setup shinyjs
+  actionButton("btn", "Toggle boxes"),
+  div(id = "box1", h3("Box 1"), "Box 1 Content"),
+  div(id = "box2", h3("Box 2"), "Box 2 Content", style = "display: none;")  # Hide box 2 initially
+)
+
+server <- function(input, output) {
+  observeEvent(input$btn, {
+    # When button is clicked, toggle the boxes
+    toggle("box1")
+    toggle("box2")
+  })
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+
+```{r}
+library(shiny)
+library(shiny.semantic)
+library(shinyjs)
+
+ui <- semanticPage(
+  useShinyjs(),
+  tags$head(
+    tags$style(HTML("
+      .code_block {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+      .code_header {
+        cursor: pointer;
+      }
+      .hidden_code {
+        display: none;
+      }
+    "))
+  ),
+  div(
+    class = "code_block",
+    div(class = "code_header", "Code Block 1", onclick = "toggleCode('code1')"),
+    div(class = "hidden_code", verbatimTextOutput("code1"))
+  ),
+  div(
+    class = "code_block",
+    div(class = "code_header", "Code Block 2", onclick = "toggleCode('code2')"),
+    div(class = "hidden_code", verbatimTextOutput("code2"))
+  )
+)
+
+server <- function(input, output, session) {
+  output$code1 <- renderPrint({
+    cat("# This is a code block 1\nprint('Hello, world!')")
+  })
+  
+  output$code2 <- renderPrint({
+    cat("# This is a code block 2\nprint('Goodbye, world!')")
+  })
+
+  runjs("
+    function toggleCode(id) {
+      var codeBlock = document.getElementById(id).parentNode;
+      if (codeBlock.style.display === 'none' || codeBlock.style.display === '') {
+        codeBlock.style.display = 'block';
+      } else {
+        codeBlock.style.display = 'none';
+      }
+    }
+  ")
+}
+
+shinyApp(ui, server)
+
+
+```
+
+```{r}
+library(shiny)
+library(shiny.semantic)
+library(shinyjs)
+
+ui <- semanticPage(
+  useShinyjs(),
+  tags$head(
+    tags$style(HTML("
+      .code_block {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .code_button {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+      .hidden_code {
+        display: none;
+      }
+    ")),
+    tags$script("
+      function toggleCode(codeId, btnId) {
+        var codeBlock = document.getElementById(codeId);
+        var btn = document.getElementById(btnId);
+        if (codeBlock.style.display === 'none' || codeBlock.style.display === '') {
+          codeBlock.style.display = 'block';
+          btn.textContent = 'Hide';
+        } else {
+          codeBlock.style.display = 'none';
+          btn.textContent = 'Show';
+        }
+      }
+    ")
+  ),
+  div(
+    class = "code_block",
+    actionButton("btn1", "Hide", class = "code_button", onclick = "toggleCode('code1', 'btn1')"),
+    div(id = "code1", verbatimTextOutput("code_output1"))
+  )
+)
+
+server <- function(input, output, session) {
+  output$code_output1 <- renderPrint({
+    cat("# This is a code block 1\nprint('Hello, world!')")
+  })
+}
+
+shinyApp(ui, server)
+
+
+```
+
+```{r}
+  shiny::column(5,
+                shiny::div(
+                  class = "code_block",
+                  shiny::actionButton(inputId = ns("code_button1"),
+                                      "Hide",
+                                      class = "code_button",
+                                      onclick = "toggleCode('code_chunk1', 'code_button1')"),
+                  shiny::div(id = ns("code_chunk1"),
+                             shiny::verbatimTextOutput(outputId = ns("code_output1")))
+                ))
+
+output$code_output1 <- renderPrint({
+      cat("This is a test")
+    })
+```
+
+```{r}
+"<div class='tipblock'>
+                  <b>Tip</b>: <i>Some plots have a draggable element, you can use this to make sure the plot doesn't overlap the plot below.</i>"
+```
+
+This is a pretty rubbish way of doing it
+
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+  shiny::helpText("test the helptext"),
+  shiny::code("
+                          library(LandscapeRGolem)\n
+                          library(dplyr)\n
+                          library(readr)\n
+                          options(shiny.port = 3838)\n
+                          prepare_data_for_landscaper <- function(data, document_var, date_var, text_var, clean_text_var, colour_var, x_var, y_var,permalink_var) \n{
+  data <- data %>%\n
+    dplyr::rename(document = {{document_var}},\n
+                  date = {{date_var}},\n
+                  text = {{text_var}},\n
+                  clean_text = {{clean_text_var}},\n
+                  cluster = {{colour_var}},\n
+                  V1 = {{x_var}},\n
+                  V2 = {{y_var}},\n
+                  permalink = {{permalink_var}})\n
+  return(data)\n
+}
+data <- read_csv('~/my_docs/my_pretend_data.csv')\n
+
+data <- prepare_data_for_landscaper(data, document, date, text, clean_text, cluster_name, V1, V2, permalink)\n
+
+LandscapeRGolem::run_app_from_other_project(data = data)\n
+")
+  
+)
+server <-function(input, output, session){
+  
+}
+
+shinyApp(ui, server)
+```
+
+
+
+```{r}
+library(shiny)
+library(rmarkdown)
+
+ui <- fluidPage(
+  titlePanel("Dynamic Report"),
+  sidebarLayout(
+    sidebarPanel(
+      actionButton("render", "Render Report")
+    ),
+    mainPanel(
+      uiOutput("report")
+    )
+  )
+)
+
+server <- function(input, output) {
+  
+  observeEvent(input$render, {
+    # Render R Markdown, and store the output file in a temporary file
+    output_file <- tempfile(fileext = ".html")
+    rmarkdown::render("report.Rmd", output_file = output_file, quiet = TRUE)
+
+    # Render the output file in the UI
+    output$report <- renderUI({
+      includeHTML(output_file)
+    })
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+```{r}
+shiny::HTML('<img src="path_to_your_image.jpg" width="100"/>')
+
+shiny::tags$img(src = "path_to_your_image.jpg", width = 100)
+
+```
+
+```{r}
+shiny::fluidRow(
+
+  shiny::column(6,
+                offset = 1,
+                shiny::HTML("<h1>Running Your App Locally</h1>"),
+                shiny::includeMarkdown(here::here("inst/app/www/run_app_locally.Rmd"))
+                )
+)
 ```
 
