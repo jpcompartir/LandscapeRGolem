@@ -29,8 +29,8 @@ mod_distribution_tab_ui <- function(id){
     mod_volume_over_time_ui(id = ns("volumeModule")),
     shiny::titlePanel(title = "Sentiment Over Time"),
     mod_sent_time_ui(id = ns("sentTimeModule")),
-    shiny::titlePanel(title = "Sentiment Distribution"),
-    mod_sentiment_ui(ns("sentimentModule")),
+    shinyjqui::jqui_resizable(shiny::titlePanel(title = "Sentiment Distribution"),
+                              mod_sentiment_ui(ns("sentimentModule"))),
     shiny::titlePanel(title = "Top Tokens"),
     mod_token_plot_ui(id = ns("tokenModule"))
   )

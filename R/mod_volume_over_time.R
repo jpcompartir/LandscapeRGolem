@@ -13,7 +13,7 @@ mod_volume_over_time_ui <- function(id){
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         width = 2,
-        shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 800, value = 400, step = 50),
+        shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 600, value = 400, step = 50),
         shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 800, value = 400, step = 50),
         shiny::dateRangeInput(inputId = ns("dateRange"),
                               label = "Date Range",
@@ -26,10 +26,10 @@ mod_volume_over_time_ui <- function(id){
         mod_reactive_labels_ui(ns("volumeTitles")),
         shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning"),
       ),
-      shiny::mainPanel(width = 6,
-                       shinycssloaders::withSpinner(
-                         shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
-      )
+      shinyjqui::jqui_resizable(
+        shiny::mainPanel(width = 6,
+                         shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px",width = "450px"))
+      ))
     )
   )
 

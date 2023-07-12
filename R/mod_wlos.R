@@ -20,7 +20,7 @@ mod_wlos_ui <- function(id){
             <li><b>top_n</b> = <i>the number of terms to show on each chart</i></li>
             <li><b>nrow</b> = <i>the number of rows to place the charts on</i></li>
             <li><b>top_terms_cutoff</b> = <i>the rank, in order of frequency, for a term to be included</i></li>
-            <li><b>group_var</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment </i></li>
+            <li><b>Select your grouping Variable</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment </i></li>
           </ul>")
       )
     ),
@@ -45,11 +45,14 @@ mod_wlos_ui <- function(id){
                          choices = NULL),
       shiny::downloadButton(outputId = ns("saveWLOs"), class = "btn btn-warning"),
     ),
-    shiny::mainPanel(width = 8,
-      shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
-                                                     height = "800px",
-                                                     width = "600px"))
+    shinyjqui::jqui_resizable(
+      shiny::mainPanel(width = 8,
+                       shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
+                                                                      height = "800px",
+                                                                      width = "600px"))
+      )
     )
+
     ),
 
   )

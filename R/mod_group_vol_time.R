@@ -56,16 +56,17 @@ mod_group_vol_time_ui <- function(id){
             class = "btn btn-warning"
           )
     ), #sidebarPanel
-    shiny::mainPanel(
-          width = 6,
-          shinycssloaders::withSpinner(
-            shiny::plotOutput(
-              outputId = ns("groupVolTime"),
-              height = "450px",
-              width = "450px"
-            )
+    shinyjqui::jqui_resizable(
+      shiny::mainPanel(
+      width = 6,
+      shinycssloaders::withSpinner(
+        shiny::plotOutput(
+          outputId = ns("groupVolTime"),
+          height = "450px",
+          width = "450px"
         )
-      ) #main Panel
+      )
+    ))
     ) #sidebarLayout
 
   ) #fluidRow
