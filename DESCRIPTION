@@ -2,7 +2,7 @@ Package: LandscapeRGolem
 Title: Golem Learning
 Version: 0.0.0.9000
 Authors@R: person('Jack', 'Penzer', email = 'jackpenzer@sharecreative.com', role = c('cre', 'aut'))
-Description: Package for learning Golem and modularising LandscapeR app. 
+Description: Modularised version of the LandscapeR via Golem. 
 License: MIT + file LICENSE
 Imports: 
     config (>= 0.3.1),
