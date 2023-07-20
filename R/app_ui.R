@@ -44,7 +44,7 @@ app_ui <- function(request) {
                       mod_landing_page_ui("xd")
                     ),
                     shiny::tabPanel(
-                      title = "Survey Landscape",
+                      title = "Landscape",
                       mod_conversation_landscape_ui("landscapeTag"),
                       icon = shiny::icon("map-location-dot")),
                     shiny::tabPanel(
