@@ -7,35 +7,6 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-# mod_volume_over_time_ui <- function(id){
-#   ns <- NS(id)
-#   tagList(
-#     shiny::sidebarLayout(
-#       shiny::sidebarPanel(
-#         width = 2,
-#         shiny::sliderInput(inputId = ns("height"), "height", min = 100, max = 600, value = 400, step = 50),
-#         shiny::sliderInput(inputId = ns("width"), "width", min = 100, max = 800, value = 400, step = 50),
-#         shiny::dateRangeInput(inputId = ns("dateRange"),
-#                               label = "date range",
-#                               start = NULL,
-#                               end = NULL), #This being hardcoded in is not ideal but it works for now
-#         shiny::selectInput(inputId = ns("dateBreak"), label = "unit", choices = c("day", "week", "month", "quarter", "year"), selected = "week"),
-#         shiny::selectInput(inputId = ns("dateSmooth"), label = "smooth", choices = c("none", "loess", "lm", "glm", "gam"), selected = "none"),
-#         shiny::uiOutput(ns("smoothControls")),
-#         colourpicker::colourInput(ns("volumeHex"), label = "colour", value =  "#107C10"),
-#         # shiny::textInput(ns("volumeHex"), "colour", value = "#107C10"),
-#         mod_reactive_labels_ui(ns("volumeTitles")),
-#         shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning"),
-#       ),
-#       shinyjqui::jqui_resizable(
-#         shiny::mainPanel(width = 6,
-#                          shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px",width = "450px"))
-#       ))
-#     )
-#   )
-#
-# }
-
 mod_volume_over_time_ui <- function(id) {
   ns <- NS(id)
 
