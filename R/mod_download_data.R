@@ -8,23 +8,26 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_download_data_ui <- function(id, label){
+mod_download_data_ui <- function(id, label) {
   ns <- NS(id)
   tagList(
-    shiny::column(3,
-                  shiny::tags$div(
-                    style = "display: flex; align-items: center;",
-                    shiny::textInput(ns("fileName"),
-                                     label,
-                                     value = NULL,
-                                     placeholder = "filename excluding .csv"),
-                    shiny::downloadButton(ns("download"),
-                                          "Download",
-                                          class = "btn btn-warning btn-download",
-                                          style = "margin-bottom: 15px;")
-                  )
-                  )
+    shiny::column(
+      3,
+      shiny::tags$div(
+        style = "display: flex; align-items: center;",
+        shiny::textInput(ns("fileName"),
+          label,
+          value = NULL,
+          placeholder = "filename excluding .csv"
+        ),
+        shiny::downloadButton(ns("download"),
+          "Download",
+          class = "btn btn-warning btn-download",
+          style = "margin-bottom: 15px;"
+        )
+      )
     )
+  )
 }
 
 #' download_data Server Functions
@@ -33,14 +36,14 @@ mod_download_data_ui <- function(id, label){
 #' @param data_object the object the user will download
 #'
 #' @noRd
-mod_download_data_server <- function(id, data_object){
-  moduleServer( id, function(input, output, session){
+mod_download_data_server <- function(id, data_object) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$download <- shiny::downloadHandler(
       filename = function() {
-        time <- stringr::str_replace(Sys.time()," ", "_")
-        paste0(input$fileName,"_", time, ".csv")
+        time <- stringr::str_replace(Sys.time(), " ", "_")
+        paste0(input$fileName, "_", time, ".csv")
       },
       content = function(file) {
         utils::write.csv(data_object(), file)

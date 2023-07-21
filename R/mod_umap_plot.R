@@ -7,49 +7,47 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_umap_plot_ui <- function(id){
+mod_umap_plot_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    #Using some CSS for styling, and adding a spinner (that indicates something is loading) build out a UI tab which takes up 6/12 columns of the screen for the interactive landscape plot. Add the dynamically rendered delete me button to the UI in the bottom right corner of the landscape - rendering once selections have been made. Then place the V1 and V2 sliders below the landscape
+    # Using some CSS for styling, and adding a spinner (that indicates something is loading) build out a UI tab which takes up 6/12 columns of the screen for the interactive landscape plot. Add the dynamically rendered delete me button to the UI in the bottom right corner of the landscape - rendering once selections have been made. Then place the V1 and V2 sliders below the landscape
     shiny::column(6,
-                 style = "width:50%; height: 10000px; position: relative;",
-                 htmltools::div(
-                   id = "graph",
-                   shinycssloaders::withSpinner(plotly::plotlyOutput(ns("umapPlot"), height = 600)),
-                   htmltools::div(
-                     id = "button",
-                     shiny::fluidRow(
-                       shiny::uiOutput(ns("deleteme")), #Dynamic UI placeholder (renders once a selection has been made)
-                     ),
-                   ),
-                   shiny::br(),
-                   shiny::br(),
-                   shiny::fluidRow(
-                     shiny::column(6, htmltools::div(
-                       id = "slider1",
-                       style = "width: 100%;",
-                       shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20)) #not using ns(x1) as don't want this input to be restricted to the namespace
-                     ),
-                     ), #Slider 1
-                     shiny::column(
-                       6,
-                       htmltools::div(
-                         id = "slider2", style = "width: 100%;",
-                         shiny::sliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20))
-                       )
-                     ), #Slider2
-                   )
-                 )
+      style = "width:50%; height: 10000px; position: relative;",
+      htmltools::div(
+        id = "graph",
+        shinycssloaders::withSpinner(plotly::plotlyOutput(ns("umapPlot"), height = 600)),
+        htmltools::div(
+          id = "button",
+          shiny::fluidRow(
+            shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
+          ),
+        ),
+        shiny::br(),
+        shiny::br(),
+        shiny::fluidRow(
+          shiny::column(6, htmltools::div(
+            id = "slider1",
+            style = "width: 100%;",
+            shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20)) # not using ns(x1) as don't want this input to be restricted to the namespace
+          ), ), # Slider 1
+          shiny::column(
+            6,
+            htmltools::div(
+              id = "slider2", style = "width: 100%;",
+              shiny::sliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20))
+            )
+          ), # Slider2
+        )
+      )
     )
-
   )
 }
 
 #' umap_plot Server Functions
 #'
 #' @noRd
-mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
-  moduleServer(id, function(input, output, session){
+mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     observe({
@@ -59,82 +57,88 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       r$y1 <- input$y1
     })
 
-       output$umapPlot <- plotly::renderPlotly({
+    output$umapPlot <- plotly::renderPlotly({
+      req(r$colour_var)
 
-         req(r$colour_var)
+      colour_var <- rlang::as_string(r$colour_var)
 
-         colour_var <- rlang::as_string(r$colour_var)
-
-         virid_colours <- viridis::viridis_pal(option = "H")(50)
-         microsoft_colours <- c(
-           "#D83B01",
-                    "#FFB900",
-                    "#107C10",
-                    "#008575",
-                    "#0078D4",
-                    "#8661C5",
-                    "#FF9349",
-                    "#3b2e58",
-                    "#9BF00B",
-                    "#30E5D0",
-                    "#50E6FF",
-                    "#D59DFF",
-                    "#6b2929",
-                    "#6a4b16",
-                    "#054b17",
-                    "#274b47",
-                    "#243a5e"
-         )
-
+      virid_colours <- viridis::viridis_pal(option = "H")(50)
+      microsoft_colours <- c(
+        "#D83B01",
+        "#FFB900",
+        "#107C10",
+        "#008575",
+        "#0078D4",
+        "#8661C5",
+        "#FF9349",
+        "#3b2e58",
+        "#9BF00B",
+        "#30E5D0",
+        "#50E6FF",
+        "#D59DFF",
+        "#6b2929",
+        "#6a4b16",
+        "#054b17",
+        "#274b47",
+        "#243a5e"
+      )
 
 
-         reactive_dataframe() %>%
-           dplyr::mutate(
-             # cluster = stringr::str_wrap(cluster, width = 20),
-             # cluster = factor(cluster),
-             !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
-             !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
-             ) %>%
-           plotly::plot_ly(
-             x = ~V1,
-             y = ~V2,
-             type = "scattergl",
-             color = ~.data[[r$colour_var]],
-             colors = virid_colours,
-             key = ~document,
-             text = ~ paste("<br> Post:", text),
-             hoverinfo = "text", marker = list(size = 2), height = 600
-           ) %>%
-           plotly::layout(
-             dragmode = "lasso",
-             legend = list(itemsizing = "constant"),
-             xaxis = list(showgrid = FALSE,
-                          showline = FALSE,
-                          zeroline = FALSE,
-                          linewidth = 0,
-                          tickwidth = 0,
-                          showticklabels = FALSE,
-                          title = ""),
-             yaxis = list(showgrid = FALSE,
-                          showline = FALSE,
-                          zeroline = FALSE,
-                          linewidth = 0,
-                          tickwidth = 0,
-                          showticklabels = FALSE,
-                          title = ""),
-             newshape=list(fillcolor="#ff5718", opacity=0.2)
-           ) %>%
-           plotly::config(
-             editable = TRUE,
-             modeBarButtonsToAdd =
-               list("drawline",
-                    "drawcircle",
-                    "drawrect",
-                    "eraseshape")) %>%
-           plotly::event_register(event = "plotly_selected") %>%
-           htmlwidgets::onRender(
-             #Javascript function which labels the most recently added shape with some editable text
-             "
+
+      reactive_dataframe() %>%
+        dplyr::mutate(
+          # cluster = stringr::str_wrap(cluster, width = 20),
+          # cluster = factor(cluster),
+          !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
+          !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
+        ) %>%
+        plotly::plot_ly(
+          x = ~V1,
+          y = ~V2,
+          type = "scattergl",
+          color = ~ .data[[r$colour_var]],
+          colors = virid_colours,
+          key = ~document,
+          text = ~ paste("<br> Post:", text),
+          hoverinfo = "text", marker = list(size = 2), height = 600
+        ) %>%
+        plotly::layout(
+          dragmode = "lasso",
+          legend = list(itemsizing = "constant"),
+          xaxis = list(
+            showgrid = FALSE,
+            showline = FALSE,
+            zeroline = FALSE,
+            linewidth = 0,
+            tickwidth = 0,
+            showticklabels = FALSE,
+            title = ""
+          ),
+          yaxis = list(
+            showgrid = FALSE,
+            showline = FALSE,
+            zeroline = FALSE,
+            linewidth = 0,
+            tickwidth = 0,
+            showticklabels = FALSE,
+            title = ""
+          ),
+          newshape = list(fillcolor = "#ff5718", opacity = 0.2)
+        ) %>%
+        plotly::config(
+          editable = TRUE,
+          modeBarButtonsToAdd =
+            list(
+              "drawline",
+              "drawcircle",
+              "drawrect",
+              "eraseshape"
+            )
+        ) %>%
+        plotly::event_register(event = "plotly_selected") %>%
+        htmlwidgets::onRender(
+          # Javascript function which labels the most recently added shape with some editable text
+          "
   function(el) {
     var annotationCount = 0;
     el.on('plotly_relayout', function(d) {
@@ -168,26 +172,25 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r){
       }
     });
   }
-")
-       })
+"
+        )
+    })
 
-     #Make delete button disappear when nothing selected
-       output$deleteme <- shiny::renderUI({
-         if (length(selected_range()$key) > 0) {
-           shiny::tagList(
-             shiny::actionButton(
-               "delete",
-               "Delete selections",
-               class = "btn-warning",
-               icon = shiny::icon("trash"),
-               style = "position: absolute; bottom 7px; right: 7px; background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
-             )
-           )
-         }
-       })
+    # Make delete button disappear when nothing selected
+    output$deleteme <- shiny::renderUI({
+      if (length(selected_range()$key) > 0) {
+        shiny::tagList(
+          shiny::actionButton(
+            "delete",
+            "Delete selections",
+            class = "btn-warning",
+            icon = shiny::icon("trash"),
+            style = "position: absolute; bottom 7px; right: 7px; background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
+          )
+        )
+      }
+    })
   })
-
-
 }
 
 ## To be copied in the UI

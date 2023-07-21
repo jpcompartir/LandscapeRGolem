@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_reactive_labels_ui <- function(id){
+mod_reactive_labels_ui <- function(id) {
   ns <- NS(id)
   tagList(
     shinyWidgets::materialSwitch(
@@ -23,16 +23,16 @@ mod_reactive_labels_ui <- function(id){
 #' reactive_labels Server Functions
 #'
 #' @noRd
-mod_reactive_labels_server <- function(id){
-  moduleServer(id, function(input, output, session){
+mod_reactive_labels_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$titles <- shiny::renderUI({
-      if(input$toggle == TRUE){ #Render te ui when the toggle input is TRUE
+      if (input$toggle == TRUE) { # Render te ui when the toggle input is TRUE
         shiny::tagList(
           shiny::textInput(
             inputId = ns("Title"), label = "Title",
-            placeholder = "Write title here...", value =""
+            placeholder = "Write title here...", value = ""
           ),
           shiny::textInput(
             inputId = ns("Subtitle"), label = "Subtitle",
@@ -54,7 +54,7 @@ mod_reactive_labels_server <- function(id){
       }
     })
 
-    labels <- shiny::reactive({ #Store labels to then return
+    labels <- shiny::reactive({ # Store labels to then return
       ggplot2::labs(
         title = input$Title,
         subtitle = input$Subtitle,
@@ -64,7 +64,7 @@ mod_reactive_labels_server <- function(id){
       )
     })
 
-    return(list(labels = labels)) #Return the labels as a named object inside a list
+    return(list(labels = labels)) # Return the labels as a named object inside a list
   })
 }
 

@@ -7,13 +7,11 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app <- function(
-  onStart = NULL,
-  options = list(),
-  enableBookmarking = NULL,
-  uiPattern = "/",
-  ...
-) {
+run_app <- function(onStart = NULL,
+                    options = list(),
+                    enableBookmarking = NULL,
+                    uiPattern = "/",
+                    ...) {
   golem::with_golem_options(
     app = shiny::shinyApp(
       ui = app_ui,
@@ -40,14 +38,12 @@ run_app <- function(
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app_from_other_project <- function(
-    onStart = NULL,
-    options = list(),
-    enableBookmarking = NULL,
-    uiPattern = "/",
-    data,
-    ...
-) {
+run_app_from_other_project <- function(onStart = NULL,
+                                       options = list(),
+                                       enableBookmarking = NULL,
+                                       uiPattern = "/",
+                                       data,
+                                       ...) {
   golem::with_golem_options(
     app = shiny::shinyApp(
       ui = app_ui,
