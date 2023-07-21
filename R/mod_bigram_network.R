@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_bigram_network_ui <- function(id){
+mod_bigram_network_ui <- function(id) {
   ns <- NS(id)
   tagList(
     shiny::fluidRow(
@@ -36,45 +36,43 @@ mod_bigram_network_ui <- function(id){
 #' @param highlighted_dataframe The selected data frame passed by app.server to module
 #'
 #' @noRd
-mod_bigram_network_server <- function(id, highlighted_dataframe){
-  moduleServer(id, function(input, output, session){
+mod_bigram_network_server <- function(id, highlighted_dataframe) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...){
-
+    make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
       requireNamespace("ParseR")
 
       plot <- data %>%
-        ParseR::count_ngram(text_var = {{text_var }}, top_n = top_n, min_freq = min, ...) %>%
-        purrr::pluck("viz")%>%
+        ParseR::count_ngram(text_var = {{ text_var }}, top_n = top_n, min_freq = min, ...) %>%
+        purrr::pluck("viz") %>%
         ParseR::viz_ngram()
 
       return(plot)
     }
 
     bigram_reactive <- reactive({
-
-      if(nrow(highlighted_dataframe()) < 1){
+      if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a bigram network")
       }
-        if (!nrow(highlighted_dataframe()) >= 5000) { #Check rows are fewer than 5k for speed
-          bigram <- highlighted_dataframe() %>%
-            make_bigram_viz(
-              text_var = clean_text,
-              clean_text = FALSE, #for speed - clean text outside of app functioning
-              min = 5,
-              remove_stops = FALSE #for speed - remove stopwords in clean text variable outside of app
-            )
-        } else { #If > 5k rows take a sample
-          bigram <- highlighted_dataframe() %>%
-            dplyr::sample_n(5000) %>%
-            make_bigram_viz(
-              text_var = clean_text,
-              clean_text = FALSE,
-              min = 5,
-              remove_stops = FALSE
-            )
-        }
+      if (!nrow(highlighted_dataframe()) >= 5000) { # Check rows are fewer than 5k for speed
+        bigram <- highlighted_dataframe() %>%
+          make_bigram_viz(
+            text_var = clean_text,
+            clean_text = FALSE, # for speed - clean text outside of app functioning
+            min = 5,
+            remove_stops = FALSE # for speed - remove stopwords in clean text variable outside of app
+          )
+      } else { # If > 5k rows take a sample
+        bigram <- highlighted_dataframe() %>%
+          dplyr::sample_n(5000) %>%
+          make_bigram_viz(
+            text_var = clean_text,
+            clean_text = FALSE,
+            min = 5,
+            remove_stops = FALSE
+          )
+      }
       return(bigram)
     })
     output$bigramPlot <- shiny::renderPlot(

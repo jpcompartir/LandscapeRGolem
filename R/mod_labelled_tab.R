@@ -7,13 +7,15 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_labelled_tab_ui <- function(id){
+mod_labelled_tab_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    #Module which will be called by app.ui to render the data processed by mod_label_data
+    # Module which will be called by app.ui to render the data processed by mod_label_data
     shiny::fluidRow(
-      mod_download_data_ui(id = ns("downloadLabelledData"),
-                           label = "Labelled Data")
+      mod_download_data_ui(
+        id = ns("downloadLabelledData"),
+        label = "Labelled Data"
+      )
     ),
     DT::dataTableOutput(
       outputId = ns("labelledDT")
@@ -30,8 +32,8 @@ mod_labelled_tab_ui <- function(id){
 #' @noRd
 mod_labelled_tab_server <- function(id,
                                     reactive_dataframe,
-                                    r){
-  moduleServer( id, function(input, output, session){
+                                    r) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     labelled_df <- reactive({
@@ -45,7 +47,7 @@ mod_labelled_tab_server <- function(id,
       )
 
       labelled_data <- labelled_lookup %>%
-        dplyr::left_join(reactive_dataframe(), by = "document") #Keep the rows in labelled_lookup and add the original columns
+        dplyr::left_join(reactive_dataframe(), by = "document") # Keep the rows in labelled_lookup and add the original columns
 
       return(labelled_data)
     })
@@ -61,15 +63,17 @@ mod_labelled_tab_server <- function(id,
           options = list(
             pagelength = 10,
             dom = '<"top" ifp> rt<"bottom"lp>',
-            autowidth = FALSE),
+            autowidth = FALSE
+          ),
           style = "bootstrap",
           rownames = FALSE,
-          escape = FALSE)
+          escape = FALSE
+        )
     })
 
     mod_download_data_server("downloadLabelledData",
-                             data_object = labelled_df) #the module calls the reactive object when saving
-
+      data_object = labelled_df
+    ) # the module calls the reactive object when saving
   })
 }
 

@@ -26,47 +26,50 @@ app_ui <- function(request) {
     }
   "))
     ),
-  shinyjs::useShinyjs(),
-  # Leave this function for adding external resources
-  golem_add_external_resources(),
-  # Your application UI logic
-  shiny::navbarPage(title = "LandscapeR",
-                    id = "navBar",
-                    theme = shinythemes::shinytheme("cosmo"),
-                    htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
-                    # Prevents the navbar from eating body of app
-                    # colours all 10  sliders orange
-                    shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
-                    # Render each tab via its respective module
-                    shiny::tabPanel( #First page of the app
-                      title = "Home",
-                      icon = shiny::icon("house"),
-                      mod_landing_page_ui("xd")
-                    ),
-                    shiny::tabPanel(
-                      title = "Survey Landscape",
-                      mod_conversation_landscape_ui("landscapeTag"),
-                      icon = shiny::icon("map-location-dot")),
-                    shiny::tabPanel(
-                      title = "Bigram Network",
-                      mod_bigram_network_ui(id = "bigramTag"),
-                      icon = shiny::icon("network-wired")),
-                    shiny::tabPanel(
-                      "Distribution Tab",
-                      mod_distribution_tab_ui(id = "distributionTag"),
-                      icon = shiny::icon("chart-simple")
-                    ),
-                    shiny::tabPanel(
-                      title = "Compare Groups",
-                      mod_compare_groups_ui("compareGroupsTag"),
-                      icon = shiny::icon("not-equal")
-                    ),
-                    shiny::tabPanel(
-                      title = "Labelled Data",
-                      mod_labelled_tab_ui("labelledTag"),
-                      icon = shiny::icon("check"),
-                    )
-  )
+    shinyjs::useShinyjs(),
+    # Leave this function for adding external resources
+    golem_add_external_resources(),
+    # Your application UI logic
+    shiny::navbarPage(
+      title = "LandscapeR",
+      id = "navBar",
+      theme = shinythemes::shinytheme("cosmo"),
+      htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
+      # Prevents the navbar from eating body of app
+      # colours all 10  sliders orange
+      shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
+      # Render each tab via its respective module
+      shiny::tabPanel( # First page of the app
+        title = "Home",
+        icon = shiny::icon("house"),
+        mod_landing_page_ui("xd")
+      ),
+      shiny::tabPanel(
+        title = "Landscape",
+        mod_conversation_landscape_ui("landscapeTag"),
+        icon = shiny::icon("map-location-dot")
+      ),
+      shiny::tabPanel(
+        title = "Bigram Network",
+        mod_bigram_network_ui(id = "bigramTag"),
+        icon = shiny::icon("network-wired")
+      ),
+      shiny::tabPanel(
+        "Distribution Tab",
+        mod_distribution_tab_ui(id = "distributionTag"),
+        icon = shiny::icon("chart-simple")
+      ),
+      shiny::tabPanel(
+        title = "Compare Groups",
+        mod_compare_groups_ui("compareGroupsTag"),
+        icon = shiny::icon("not-equal")
+      ),
+      shiny::tabPanel(
+        title = "Labelled Data",
+        mod_labelled_tab_ui("labelledTag"),
+        icon = shiny::icon("check"),
+      )
+    )
   )
 }
 

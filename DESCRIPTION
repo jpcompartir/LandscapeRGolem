@@ -5,6 +5,7 @@ Authors@R: person('Jack', 'Penzer', email = 'jackpenzer@sharecreative.com', role
 Description: Modularised version of the LandscapeR via Golem. 
 License: MIT + file LICENSE
 Imports: 
+    bslib,
     config (>= 0.3.1),
     dplyr (>= 1.1.2),
     DT (>= 0.26),
