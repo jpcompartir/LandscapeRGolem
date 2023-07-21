@@ -63,7 +63,6 @@ mod_volume_over_time_ui <- function(id) {
         ),
         # ... starts here and is the mainPanel
         shiny::mainPanel(
-          width = 6,
           shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
         )
       )

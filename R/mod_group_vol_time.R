@@ -10,70 +10,67 @@
 mod_group_vol_time_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shiny::fluidRow(
-      shiny::sidebarLayout(
-        shiny::sidebarPanel(
-          width = 2,
-          shiny::sliderInput(
-            inputId = ns("height"),
-            "height",
-            min = 100, max = 1400,
-            value = 400,
-            step = 50
-          ),
-          shiny::sliderInput(
-            inputId = ns("width"),
-            "width",
-            min = 100,
-            max = 1400,
-            value = 600,
-            step = 50
-          ),
-          shiny::dateRangeInput(
-            inputId = ns("dateRangeGroupVol"),
-            label = "date range",
-            start = NULL,
-            end = NULL
-          ),
-          shiny::selectInput(
-            inputId = ns("groupVolTimeVar"),
-            label = "select your grouping variable",
-            choices = NULL
-          ),
-          shiny::selectInput(
-            inputId = ns("dateBreak"),
-            label = "unit",
-            choices = c("day", "week", "month", "quarter", "year"),
-            selected = "week"
-          ),
-          shiny::sliderInput(
-            inputId = ns("nrow"),
-            "Number of Rows",
-            min = 1,
-            max = 12,
-            value = 5,
-            step = 1
-          ),
-          mod_reactive_labels_ui(ns("groupVolTimeTitles")),
-          shiny::downloadButton(
-            outputId = ns("saveGroupVolTime"),
-            class = "btn btn-warning"
-          )
-        ), # sidebarPanel
-        shinyjqui::jqui_resizable(
-          shiny::mainPanel(
-            width = 6,
-            shinycssloaders::withSpinner(
-              shiny::plotOutput(
-                outputId = ns("groupVolTime"),
-                height = "450px",
-                width = "450px"
-              )
+    bslib::page_fillable(
+      bslib::layout_sidebar(
+        fill = TRUE,
+        bslib::sidebar(
+          shiny::tagList(
+            shiny::sliderInput(
+              inputId = ns("height"),
+              "height",
+              min = 100, max = 1400,
+              value = 400,
+              step = 50
+            ),
+            shiny::sliderInput(
+              inputId = ns("width"),
+              "width",
+              min = 100,
+              max = 1400,
+              value = 600,
+              step = 50
+            ),
+            shiny::dateRangeInput(
+              inputId = ns("dateRangeGroupVol"),
+              label = "date range",
+              start = NULL,
+              end = NULL
+            ),
+            shiny::selectInput(
+              inputId = ns("groupVolTimeVar"),
+              label = "select your grouping variable",
+              choices = NULL
+            ),
+            shiny::selectInput(
+              inputId = ns("dateBreak"),
+              label = "unit",
+              choices = c("day", "week", "month", "quarter", "year"),
+              selected = "week"
+            ),
+            shiny::sliderInput(
+              inputId = ns("nrow"),
+              "Number of Rows",
+              min = 1,
+              max = 12,
+              value = 5,
+              step = 1
+            ),
+            mod_reactive_labels_ui(ns("groupVolTimeTitles")),
+            shiny::downloadButton(
+              outputId = ns("saveGroupVolTime"),
+              class = "btn btn-warning"
             )
           )
+        ),
+        shiny::mainPanel(
+          shinycssloaders::withSpinner(
+            shiny::plotOutput(
+              outputId = ns("groupVolTime"),
+              height = "450px",
+              width = "450px"))
         )
-      ) # sidebarLayout
-    ) # fluidRow
+      )
+    )
   )
 }
 

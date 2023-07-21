@@ -10,61 +10,57 @@
 mod_group_sentiment_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shiny::fluidRow(
-      shiny::sidebarLayout(
-        shiny::sidebarPanel(
-          width = 2,
-          shiny::sliderInput(
-            inputId = ns("height"),
-            "height",
-            min = 100, max = 800,
-            value = 400,
-            step = 50
-          ),
-          shiny::sliderInput(
-            inputId = ns("width"),
-            "width",
-            min = 100,
-            max = 800,
-            value = 400,
-            step = 50
-          ),
-          shiny::selectInput(
-            inputId = ns("groupVarSent"),
-            label = "select your grouping variable",
-            choices = NULL
-          ),
-          shiny::selectInput(
-            inputId = ns("chartType"),
-            label = "select chart type",
-            choices = c("volume", "percent"),
-            selected = "percent",
-            multiple = FALSE
-          ),
-          shiny::selectInput(
-            inputId = ns("labelsType"),
-            label = "select bar labels type",
-            choices = c("none", "volume", "percent"),
-            selected = "none",
-            multiple = FALSE
-          ),
-          mod_reactive_labels_ui(ns("groupSentimentTitles")),
-          shiny::downloadButton(
-            outputId = ns("saveGroupSentiment"),
-            class = "btn btn-warning"
-          ),
-        ),
-        shinyjqui::jqui_resizable(
-          shiny::mainPanel(
-            width = 6,
-            shinycssloaders::withSpinner(
-              shiny::plotOutput(
-                outputId = ns("groupSentimentPlot"),
-                height = "450px",
-                width = "450px"
-              )
+    bslib::page_fillable(
+      bslib::layout_sidebar(
+        bslib::sidebar(
+          shiny::tagList(
+            shiny::sliderInput(
+              inputId = ns("height"),
+              "height",
+              min = 100, max = 800,
+              value = 400,
+              step = 50
+            ),
+            shiny::sliderInput(
+              inputId = ns("width"),
+              "width",
+              min = 100,
+              max = 800,
+              value = 400,
+              step = 50
+            ),
+            shiny::selectInput(
+              inputId = ns("groupVarSent"),
+              label = "select your grouping variable",
+              choices = NULL
+            ),
+            shiny::selectInput(
+              inputId = ns("chartType"),
+              label = "select chart type",
+              choices = c("volume", "percent"),
+              selected = "percent",
+              multiple = FALSE
+            ),
+            shiny::selectInput(
+              inputId = ns("labelsType"),
+              label = "select bar labels type",
+              choices = c("none", "volume", "percent"),
+              selected = "none",
+              multiple = FALSE
+            ),
+            mod_reactive_labels_ui(ns("groupSentimentTitles")),
+            shiny::downloadButton(
+              outputId = ns("saveGroupSentiment"),
+              class = "btn btn-warning"
             )
-          ),
+          )
+        ),
+        shiny::mainPanel(
+          shinycssloaders::withSpinner(
+            shiny::plotOutput(
+              outputId = ns("groupSentimentPlot"),
+              height = "450px",
+              width = "450px"))
         )
       )
     )

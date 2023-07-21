@@ -50,7 +50,6 @@ mod_sent_time_ui <- function(id) {
           )
         ),
         shiny::mainPanel(
-          width = 6,
           shinycssloaders::withSpinner(
             shiny::plotOutput(outputId = ns("sentTimePlot"), height = "450px", width = "450px"))
         )
