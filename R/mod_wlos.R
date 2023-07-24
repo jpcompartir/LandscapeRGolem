@@ -62,12 +62,17 @@ mod_wlos_ui <- function(id) {
             ),
           ),
         ),
-        shiny::mainPanel(
-          width = 8,
-          shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
-                                                         height = "800px",
-                                                         width = "600px"
-          ))
+        bslib::accordion(
+          id = ns("accordion3"),
+          bslib::accordion_panel(
+            id = ns("item3"),
+            title = "WLOs plot",
+            active = FALSE,
+            shinycssloaders::withSpinner(shiny::plotOutput(ns("wlosPlot"),
+                                                           height = "800px",
+                                                           width = "600px")
+            )
+          )
         )
       )
     )
