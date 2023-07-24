@@ -46,6 +46,11 @@ margin-left: 5px;
   outline:  #ff7518!important;
 }
 
+.navbar .nav-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* add a border to the bottom of the navbar's selected icon when hovered over */
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
   border-bottom: 3px solid #ff7518;
