@@ -31,15 +31,20 @@ mod_landing_page_ui <- function(id) {
       shiny::column(
         offset = 1,
         width = 3,
-        shiny::HTML("<h2><b>Start</b></h2>
+        shiny::HTML("
+                    <div>
+                    <h2><b>Start</b></h2>
                   <p>Head over to the Landscape tab, use your mouse or trackpad to select regions of the conversation landscape, and watch the data table populate to the right. Use plotly's lasso or box selection tools to highlight interesting areas of the map.</p>
                   <p> Once you've highlighted some data, you can delete it by clicking the delete button which appears, or label it by typing a label and clicking the label button that appears. Your labelled data will populate a data table in the Labelled Data tab.</p>
-                  "),
-        shiny::tagList(
-          shiny::HTML('<div class="tipblock">
+                  <div class='tipblock'>
                       <b>Tip</b>: <i>You can filter for specific keywords or regex patterns using the pattern widget.</i>
-                      </div>')
-        )
+                      </div>
+                  </div>"),
+        # shiny::tagList(
+        #   shiny::HTML('<div class="tipblock">
+        #               <b>Tip</b>: <i>You can filter for specific keywords or regex patterns using the pattern widget.</i>
+        #               </div>')
+        # )
       ),
       shiny::column(
         2,
@@ -49,23 +54,29 @@ mod_landing_page_ui <- function(id) {
       ),
       shiny::column(
         3,
-        shiny::HTML("<h2><b>Visualise</b></h2>
+        shiny::HTML("
+                    <div>
+                    <h2><b>Visualise</b></h2>
                                 <p>There are currently <b>three plotting tabs</b> you can work with. Each plotting tab will use the data you have selected to create its plots; so make sure to select data in the Landscape tab before moving to the plotting tabs. </p>
                       <li><b>Bigram Network</b> is for rendering a bigram network from your highlighted data. This will help you to gauge how clean your selections are. </li>
                       <li><b>Distribution Tab</b> is for looking at your selection's volume over time, sentiment distribution, and frequent words.</li>
                   <li><b>Compare Groups</b> is for comparing the distinctness of text between groups, and grouped sentiment + volume comparisons.</li>
                   <br>
-                  "),
-        shiny::tagList(
-          shiny::HTML("<div class='tipblock'>
-                  <b>Tip</b>: <i>Some plots have a draggable element, you can use this to make sure the plot doesn't overlap the plot below.</i></div>")
-        )
+                  <div class='tipblock'>
+                  <b>Tip</b>: <i>Some plots have a draggable element, you can use this to make sure the plot doesn't overlap the plot below.</i>
+                  </div>
+                </div>
+                  "
+                  )
       ),
       shiny::column(
         2,
-        shiny::HTML("<h2><b>Reset</b></h2>
-                                <p>If you make a mistake, or wish to reset the application to its initial state for any reason, you can refresh the page, or restart the application. <b> Be careful </b> when doing this as your progress will <b>not be saved</b>. Make sure that you have downloaded any data that you wish to keep.</p>
-                                <p>It's important to remember that unless you tell the application to do so, it will reload with the data as it was when you first encountered it.</p>")
+        shiny::HTML("
+                    <div>
+                    <h2><b>Reset</b></h2>
+                    <p>If you make a mistake, or wish to reset the application to its initial state for any reason, you can refresh the page, or restart the application. <b> Be careful </b> when doing this as your progress will <b>not be saved</b>. Make sure that you have downloaded any data that you wish to keep.</p>
+                    <p>It's important to remember that unless you tell the application to do so, it will reload with the data as it was when you first encountered it.</p>
+                    </div>")
       )
     ),
   )
