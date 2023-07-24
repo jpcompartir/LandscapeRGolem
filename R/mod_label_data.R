@@ -74,7 +74,6 @@ mod_label_data_server <- function(id, r,
           inputId = ns("labelNow"),
           label = "Label",
           class = "btn-label",
-          style = "margin-top: 10px!important;",
           icon = shiny::icon("check") # ,
           # style = "margin-top: 10px; margin-left: 5px;"
         )

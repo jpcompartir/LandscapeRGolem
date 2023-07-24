@@ -11,7 +11,6 @@ mod_bigram_network_ui <- function(id) {
   ns <- NS(id)
   tagList(
     shiny::fluidRow(
-      shinyFeedback::useShinyFeedback(),
       shiny::column(
         4,
         shiny::p("Below you'll find a bigram network, this network will help you estimate how clean your selected data is. Remember that long and connected chains of words may represent spam or unwanted mentions."),
