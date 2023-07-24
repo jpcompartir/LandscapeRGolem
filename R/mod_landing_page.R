@@ -39,12 +39,7 @@ mod_landing_page_ui <- function(id) {
                   <div class='tipblock'>
                       <b>Tip</b>: <i>You can filter for specific keywords or regex patterns using the pattern widget.</i>
                       </div>
-                  </div>"),
-        # shiny::tagList(
-        #   shiny::HTML('<div class="tipblock">
-        #               <b>Tip</b>: <i>You can filter for specific keywords or regex patterns using the pattern widget.</i>
-        #               </div>')
-        # )
+                  </div>")
       ),
       shiny::column(
         2,
@@ -57,7 +52,7 @@ mod_landing_page_ui <- function(id) {
         shiny::HTML("
                     <div>
                     <h2><b>Visualise</b></h2>
-                                <p>There are currently <b>three plotting tabs</b> you can work with. Each plotting tab will use the data you have selected to create its plots; so make sure to select data in the Landscape tab before moving to the plotting tabs. </p>
+                    <p>There are currently <b>three plotting tabs</b> you can work with. Each plotting tab will use the data you have selected to create its plots; so make sure to select data in the Landscape tab before moving to the plotting tabs. </p>
                       <li><b>Bigram Network</b> is for rendering a bigram network from your highlighted data. This will help you to gauge how clean your selections are. </li>
                       <li><b>Distribution Tab</b> is for looking at your selection's volume over time, sentiment distribution, and frequent words.</li>
                   <li><b>Compare Groups</b> is for comparing the distinctness of text between groups, and grouped sentiment + volume comparisons.</li>
