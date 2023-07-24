@@ -16,14 +16,20 @@ app_ui <- function(request) {
         href = "styles.css"
       ),
       tags$style(HTML("
-    .dataTables_wrapper .dataTables_paginate a:focus,
-    .dataTables_wrapper .dataTables_paginate a:focus:hover {
-      background-color: #ff7518 !important;
-      border-color: #ff7518 !important;
-      outline: none !important;
-      box-shadow: none !important;
-      color: #ffffff !important;
-    }
+
+.dataTables_wrapper .dataTables_paginate .page-link:focus, .dataTables_wrapper .dataTables_paginate .page-link:focus:hover {
+  background-color: #ff7518 !important;
+  border-color: #ff7518 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+
+.page-item.active .page-link {
+  background-color: #ff7518 !important;
+  border-color: #ff7518 !important;
+  color: #ffffff !important;
+}
   "))
     ),
     shinyjs::useShinyjs(),
@@ -31,9 +37,18 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     shiny::navbarPage(
+      theme = bslib::bs_theme(
+        version = 5,
+        bootswatch = "cosmo",
+        `enable-rounded` = TRUE,
+        `navbar-bg` = "#000000",
+        primary = "#ff7518",
+        secondary = "#000000",
+        fg = "#000",
+        bg = "white"),
+      # theme = shinythemes::shinytheme("cosmo"),
       title = "LandscapeR",
       id = "navBar",
-      theme = shinythemes::shinytheme("cosmo"),
       htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
       # Prevents the navbar from eating body of app
       # colours all 10  sliders orange
