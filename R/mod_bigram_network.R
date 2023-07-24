@@ -10,21 +10,28 @@
 mod_bigram_network_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shiny::fluidRow(
-      shiny::column(
-        4,
-        shiny::p("Below you'll find a bigram network, this network will help you estimate how clean your selected data is. Remember that long and connected chains of words may represent spam or unwanted mentions."),
-        shiny::br(),
-        shiny::p("This bigram network is restricted to a maximum of 5,000 data points for speed and user experience. It is therefore not recommended to be saved or exported. If the data looks clean, download the selection and create the network in the standard way in R/Rstudio"),
+    bslib::page_fillable(
+      bslib::accordion(
+        id = ns("accordion"),
+        bslib::accordion_panel(
+          id = ns("item1"),
+          title = "Bigram Network",
+          active = TRUE,
+          bigram_text()
+        )
+      ),
+      bslib::layout_sidebar(
+        fill = TRUE,
+        bslib::sidebar(bg = "white",
+          shiny::sliderInput(ns("height"), "height", min = 100, max = 1200, value = 600, step = 50),
+          shiny::sliderInput(ns("width"), "width", min = 100, max = 1200, value = 800, step = 50)
+        ),
+        bslib::card(
+          full_screen = TRUE,
+          fill = TRUE,
+          shinycssloaders::withSpinner(shiny::plotOutput(ns("bigramPlot"), height = "600px", width = "800px"))
+        )
       )
-    ),
-    shiny::sidebarPanel(
-      width = 2,
-      shiny::sliderInput(ns("height"), "Height", min = 100, max = 1200, value = 600, step = 50),
-      shiny::sliderInput(ns("width"), "Width", min = 100, max = 1200, value = 800, step = 50),
-    ),
-    shiny::mainPanel(
-      shinycssloaders::withSpinner(shiny::plotOutput(ns("bigramPlot"), height = "800px", width = "800px"))
     )
   )
 }
