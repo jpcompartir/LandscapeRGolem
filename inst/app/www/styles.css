@@ -23,12 +23,18 @@ margin-left: 5px;
   height: 38px!important;
 }
 
+.btn-download{
+  margin-top: 25px;
+}
+
 .btn-download-custom {
   height: 38px;
   width: 38px;
   padding: .375rem .375rem;
   overflow: hidden;
   margin-top: 16px!important;
+  padding-right: 30px;
+  padding-left: 15px;
 }
 
 .search-text input {
@@ -76,13 +82,10 @@ margin-left: 5px;
   outline:  #ff7518!important;
 }
 
-.btn-download{
-  margin-top: 25px;
-}
-
 .navbar .nav-link:focus {
   outline: none !important;
   box-shadow: none !important;
+
 }
 
 /* add a border to the bottom of the navbar's selected icon when hovered over */
@@ -168,4 +171,12 @@ margin-left: 5px;
 :focus {
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(255, 117, 24, 0.5) !important;
+}
+
+.input-daterange .input-group-addon.input-group-prepend.input-group-append .input-group-text {
+  border-radius: 16px!important;
+  background-color: #ff7518!important;
+  margin-left: 2px;
+  margin-right: 7px;
+  color: white;
 }

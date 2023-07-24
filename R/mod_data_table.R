@@ -10,7 +10,7 @@
 mod_data_table_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shiny::column(5, shinycssloaders::withSpinner(
+    shiny::column(5, shinycssloaders::withSpinner(color = "#ff7518", type = 1,
       DT::dataTableOutput(ns("highlightedTable"))
     ))
   )
@@ -35,7 +35,7 @@ mod_data_table_server <- function(id, highlighted_dataframe) {
             dom = '<"top" ifp> rt<"bottom"lp>',
             autoWidth = FALSE
           ),
-          style = "bootstrap",
+          style = "bootstrap5",
           rownames = FALSE,
           escape = FALSE
         )
