@@ -32,30 +32,39 @@ search_widget <- function (inputId, label = NULL, value = "", placeholder = NULL
 }
 
 
-wlos_text <- function(){
+wlos_text <- function() {
   text <- shiny::HTML(
     "
-             <div class='row'>
-              <div class='col-sm-6'>
-              <p> Below you'll find a Weighted Log-odds (WLOs) Chart, this chart helps you to identify the key textual differences between groups. You can use this chart to understand why one cluster, topic, or grouping variable has been separated from the others.</p>
-            <p> You can use the side panel to play with and set arguments. The important arguments to consider when rendering a WLOs chart are:</p>
-                                   <ul>
-                                   <li><b>top_n</b> = <i>the number of terms to show on each chart</i></li>
-                                   <li><b>nrow</b> = <i>the number of rows to place the charts on</i></li>
-                                   <li><b>top_terms_cutoff</b> = <i>the rank, in order of frequency, for a term to be included</i></li>
-                                   <li><b>Select your grouping Variable</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment
-            </i>
-            </li>
-            </ul>
-              </div>
-            </div>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <p> Below you'll find a Weighted Log-odds (WLOs) Chart, this chart helps you to identify the key textual differences between groups. You can use this chart to understand why one cluster, topic, or grouping variable has been separated from the others.
+  <br>
+  The important arguments to consider when rendering a WLOs chart are:
+  </p>
+    <ul>
+    <li><b>top_n</b> = <i>the number of terms to show on each chart</i></li>
+    <li><b>nrow</b> = <i>the number of rows to place the charts on</i></li>
+    <li><b>top_terms_cutoff</b> = <i>the minimum rank, in order of frequency, for a term to be included</i></li>
+    <li><b>Select your grouping Variable</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment
+    </i></li></ul>
+    </div>
+    <div class='col-sm-6'>
+      <p>The top_terms_cutoff input will have a big effect on the output of your chart. If you wish to see how <strong> the most frequent terms from the entire data set</strong> are spread across groups, set this to a lower number.
+    <br>
+  However, the highest frequency terms will usually be present in <strong>all groups</strong> so may <strong>understate</strong> the differences between groups.
+  <br>
+  On the other hand, if the number is <strong>too high</strong>, you risk filling the plot with low-frequency terms which are only present in a <strong>small number of documents</strong>, this can <strong>exaggerate</strong> the differences between groups.
+  <br>
+      </p>
+    </div>
+  </div>
             "
   )
 
   return(text)
 }
 
-bigram_text <- function(){
+bigram_text <- function() {
   text <- shiny::HTML(
     "
             <div class='row'>
@@ -68,3 +77,41 @@ bigram_text <- function(){
 
   return(text)
 }
+
+
+# nested_accordions <- function(id,) {
+#
+  # ns <- NS(id)
+  #
+  # shiny::tagList(
+  #   bslib::accordion(
+  #     id = "",
+  #     bslib::accordion_panel(
+  #       id = "top_panel",
+  #       bslib::accordion_panel(
+  #         id = "nested_panel1",
+  #         title = ,
+  #         active = ,
+  #         top_level_lements
+  #       ),
+  #       bslib::layout_sidebar(
+  #         fillable = TRUE,
+  #         fill = TRUE,
+  #         sidebar = bslib::sidebar(
+  #           bslib::accordion(
+  #             id = "nested_accordion",
+  #             bslib::accordion_panel(
+  #
+  #             ),
+  #             bslib::accordion_panel(
+  #
+  #             ),
+  #           )
+  #         ), #main component of sidebar
+  #
+  #       ),
+  #     ),
+  #   )
+  # )
+
+# }
