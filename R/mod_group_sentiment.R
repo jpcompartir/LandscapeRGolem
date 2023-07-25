@@ -12,8 +12,7 @@ mod_group_sentiment_ui <- function(id) {
   tagList(
     bslib::page_fillable(
       bslib::layout_sidebar(
-        bslib::sidebar(
-          shiny::tagList(
+        bslib::sidebar(bg = "white",
             shiny::sliderInput(
               inputId = ns("height"),
               "height",
@@ -29,11 +28,11 @@ mod_group_sentiment_ui <- function(id) {
               value = 400,
               step = 50
             ),
-            shiny::selectInput(
-              inputId = ns("groupVarSent"),
-              label = "select your grouping variable",
-              choices = NULL
-            ),
+            # shiny::selectInput(
+            #   inputId = ns("groupVarSent"),
+            #   label = "select your grouping variable",
+            #   choices = NULL
+            # ),
             shiny::selectInput(
               inputId = ns("chartType"),
               label = "select chart type",
@@ -53,7 +52,6 @@ mod_group_sentiment_ui <- function(id) {
               outputId = ns("saveGroupSentiment"),
               class = "btn btn-warning"
             )
-          )
         ),
         shiny::mainPanel(
           shinycssloaders::withSpinner(
@@ -72,7 +70,7 @@ mod_group_sentiment_ui <- function(id) {
 #' @param highlighted_dataframe The highlighted dataframe in app.server
 #'
 #' @noRd
-mod_group_sentiment_server <- function(id, highlighted_dataframe) {
+mod_group_sentiment_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -93,9 +91,7 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe) {
 
       group_sent_plot <- highlighted_dataframe() %>%
         LandscapeR::ls_plot_group_sent(
-          # group_var = cluster,
-          group_var = input$groupVarSent,
-          # group_var = .data[[input$groupVarSent]],
+          group_var = r$globalGroupVar,
           sentiment_var = sentiment,
           type = input$chartType,
           bar_labels = input$labelsType

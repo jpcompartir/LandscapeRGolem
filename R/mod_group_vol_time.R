@@ -13,7 +13,7 @@ mod_group_vol_time_ui <- function(id) {
     bslib::page_fillable(
       bslib::layout_sidebar(
         fill = TRUE,
-        bslib::sidebar(
+        bslib::sidebar(bg = "white",
           shiny::tagList(
             shiny::sliderInput(
               inputId = ns("height"),
@@ -36,11 +36,12 @@ mod_group_vol_time_ui <- function(id) {
               start = NULL,
               end = NULL
             ),
-            shiny::selectInput(
-              inputId = ns("groupVolTimeVar"),
-              label = "select your grouping variable",
-              choices = NULL
-            ),
+            #moving to global var
+            # shiny::selectInput(
+            #   inputId = ns("groupVolTimeVar"),
+            #   label = "select your grouping variable",
+            #   choices = NULL
+            # ),
             shiny::selectInput(
               inputId = ns("dateBreak"),
               label = "unit",
@@ -77,18 +78,19 @@ mod_group_vol_time_ui <- function(id) {
 #' group_vol_time Server Functions
 #'
 #' @noRd
-mod_group_vol_time_server <- function(id, highlighted_dataframe) {
+mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    shiny::observe({
-      shiny::updateSelectInput(
-        session = session,
-        inputId = "groupVolTimeVar",
-        choices = names(highlighted_dataframe()),
-        selected = "cluster"
-      )
-    })
+    #moving to global grouping var
+    # shiny::observe({
+    #   shiny::updateSelectInput(
+    #     session = session,
+    #     inputId = "groupVolTimeVar",
+    #     choices = names(highlighted_dataframe()),
+    #     selected = "cluster"
+    #   )
+    # })
 
     group_vol_time_titles <- mod_reactive_labels_server("groupVolTimeTitles")
 
@@ -116,7 +118,7 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe) {
           date <= input$dateRangeGroupVol[[2]]
         ) %>%
         LandscapeR::ls_plot_group_vol_time(
-          group_var = input$groupVolTimeVar,
+          group_var = r$globalGroupVar,
           date_var = "date",
           unit = input$dateBreak,
           nrow = input$nrow

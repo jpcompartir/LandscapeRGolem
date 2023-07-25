@@ -10,7 +10,9 @@
 mod_compare_groups_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shiny::titlePanel(title = "Weighted log-odds"),
+    #add the mod_c_groups_globals_ui
+    # shiny::titlePanel(title = ""),
+    mod_c_groups_global_ui(ns("groupGlobalsTag")),
     mod_wlos_ui(ns("wlosTag")),
     shiny::titlePanel(title = "Group Sentiment"),
     mod_group_sentiment_ui(ns("groupSentimentTag")),
@@ -22,20 +24,29 @@ mod_compare_groups_ui <- function(id) {
 #' compare_groups Server Functions
 #'
 #' @noRd
-mod_compare_groups_server <- function(id, highlighted_dataframe) {
+mod_compare_groups_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    #add the mod_c_groups_server
+    mod_c_groups_global_server("groupGlobalsTag",
+                    highlighted_dataframe = highlighted_dataframe,
+                    r = r
+    )
+
     mod_wlos_server("wlosTag",
-      highlighted_dataframe = highlighted_dataframe
+      highlighted_dataframe = highlighted_dataframe,
+      r = r
     )
 
     mod_group_sentiment_server("groupSentimentTag",
-      highlighted_dataframe = highlighted_dataframe
+      highlighted_dataframe = highlighted_dataframe,
+      r = r
     )
 
     mod_group_vol_time_server("groupVolTimeTag",
-      highlighted_dataframe = highlighted_dataframe
+      highlighted_dataframe = highlighted_dataframe,
+      r = r
     )
   })
 }
