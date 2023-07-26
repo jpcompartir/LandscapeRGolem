@@ -10,66 +10,72 @@
 mod_group_vol_time_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    bslib::page_fillable(
+    bslib::card(
+      full_screen = TRUE,
       bslib::layout_sidebar(
         fill = TRUE,
-        bslib::sidebar(bg = "white",
-          shiny::tagList(
-            shiny::sliderInput(
-              inputId = ns("height"),
-              "height",
-              min = 100, max = 1400,
-              value = 400,
-              step = 50
+        bslib::sidebar(
+          bslib::accordion(
+            open = "nested1item2",
+            id = ns("nestedAccordion1"),
+            bslib::accordion_panel(
+              value = "nested1item1",
+              title = "Aesthetic Controls",
+              icon = shiny::icon("wand-magic-sparkles"),
+              shiny::sliderInput(
+                inputId = ns("height"),
+                "height",
+                min = 100, max = 1400,
+                value = 400,
+                step = 50
+              ),
+              shiny::sliderInput(
+                inputId = ns("width"),
+                "width",
+                min = 100,
+                max = 1400,
+                value = 600,
+                step = 50
+              ),
+              shiny::sliderInput(
+                inputId = ns("nrow"),
+                "Number of Rows",
+                min = 1,
+                max = 12,
+                value = 5,
+                step = 1
+              )
             ),
-            shiny::sliderInput(
-              inputId = ns("width"),
-              "width",
-              min = 100,
-              max = 1400,
-              value = 600,
-              step = 50
-            ),
-            shiny::dateRangeInput(
-              inputId = ns("dateRangeGroupVol"),
-              label = "date range",
-              start = NULL,
-              end = NULL
-            ),
-            #moving to global var
-            # shiny::selectInput(
-            #   inputId = ns("groupVolTimeVar"),
-            #   label = "select your grouping variable",
-            #   choices = NULL
-            # ),
-            shiny::selectInput(
-              inputId = ns("dateBreak"),
-              label = "unit",
-              choices = c("day", "week", "month", "quarter", "year"),
-              selected = "week"
-            ),
-            shiny::sliderInput(
-              inputId = ns("nrow"),
-              "Number of Rows",
-              min = 1,
-              max = 12,
-              value = 5,
-              step = 1
-            ),
-            mod_reactive_labels_ui(ns("groupVolTimeTitles")),
-            shiny::downloadButton(
-              outputId = ns("saveGroupVolTime"),
-              class = "btn btn-warning"
+            bslib::accordion_panel(
+              title = "Parameters",
+              icon = shiny::icon("wrench"),
+              value = "nested1item2",
+              shiny::dateRangeInput(
+                inputId = ns("dateRangeGroupVol"),
+                label = "date range",
+                start = NULL,
+                end = NULL
+              ),
+              shiny::selectInput(
+                inputId = ns("dateBreak"),
+                label = "unit",
+                choices = c("day", "week", "month", "quarter", "year"),
+                selected = "week"
+              ),
+
+              mod_reactive_labels_ui(ns("groupVolTimeTitles")),
+              shiny::downloadButton(
+                outputId = ns("saveGroupVolTime"),
+                class = "btn btn-warning"
+              )
             )
           )
         ),
-        shiny::mainPanel(
-          shinycssloaders::withSpinner(
-            shiny::plotOutput(
-              outputId = ns("groupVolTime"),
-              height = "450px",
-              width = "450px"))
-        )
+        shinycssloaders::withSpinner(
+          shiny::plotOutput(
+            outputId = ns("groupVolTime"),
+            height = "450px",
+            width = "450px"))
       )
     )
   )
@@ -81,16 +87,6 @@ mod_group_vol_time_ui <- function(id) {
 mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
-    #moving to global grouping var
-    # shiny::observe({
-    #   shiny::updateSelectInput(
-    #     session = session,
-    #     inputId = "groupVolTimeVar",
-    #     choices = names(highlighted_dataframe()),
-    #     selected = "cluster"
-    #   )
-    # })
 
     group_vol_time_titles <- mod_reactive_labels_server("groupVolTimeTitles")
 
@@ -113,12 +109,13 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
       }
 
       group_vol_time_plot <- highlighted_dataframe() %>%
+        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
         dplyr::filter(
           date >= input$dateRangeGroupVol[[1]],
           date <= input$dateRangeGroupVol[[2]]
         ) %>%
         LandscapeR::ls_plot_group_vol_time(
-          group_var = r$globalGroupVar,
+          group_var = r$global_group_var,
           date_var = "date",
           unit = input$dateBreak,
           nrow = input$nrow

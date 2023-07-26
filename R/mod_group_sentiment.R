@@ -10,59 +10,68 @@
 mod_group_sentiment_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    bslib::page_fillable(
+    bslib::card(
+      full_screen = TRUE,
       bslib::layout_sidebar(
-        bslib::sidebar(bg = "white",
-            shiny::sliderInput(
-              inputId = ns("height"),
-              "height",
-              min = 100, max = 800,
-              value = 400,
-              step = 50
-            ),
-            shiny::sliderInput(
-              inputId = ns("width"),
-              "width",
-              min = 100,
-              max = 800,
-              value = 400,
-              step = 50
-            ),
-            # shiny::selectInput(
-            #   inputId = ns("groupVarSent"),
-            #   label = "select your grouping variable",
-            #   choices = NULL
-            # ),
-            shiny::selectInput(
-              inputId = ns("chartType"),
-              label = "select chart type",
-              choices = c("volume", "percent"),
-              selected = "percent",
-              multiple = FALSE
-            ),
-            shiny::selectInput(
-              inputId = ns("labelsType"),
-              label = "select bar labels type",
-              choices = c("none", "volume", "percent"),
-              selected = "none",
-              multiple = FALSE
-            ),
-            mod_reactive_labels_ui(ns("groupSentimentTitles")),
-            shiny::downloadButton(
-              outputId = ns("saveGroupSentiment"),
-              class = "btn btn-warning"
-            )
+        bslib::sidebar(
+          bslib::accordion(
+            open = "nested1item2",
+            id = ns("nestedAccordion1"),
+            bslib::accordion_panel(
+              value = "nested1item1",
+              title = "Aesthetic Controls",
+              icon = shiny::icon("wand-magic-sparkles"),
+              shiny::sliderInput(
+                inputId = ns("height"),
+                "height",
+                min = 100, max = 800,
+                value = 500,
+                step = 50
+              ),
+              shiny::sliderInput(
+                inputId = ns("width"),
+                "width",
+                min = 100,
+                max = 800,
+                value = 600,
+                step = 50
+              )),
+              bslib::accordion_panel(
+                value = "nested1item2",
+                title = "Parameters",
+                icon = shiny::icon("wrench"),
+                shiny::selectInput(
+                  inputId = ns("chartType"),
+                  label = "select chart type",
+                  choices = c("volume", "percent"),
+                  selected = "percent",
+                  multiple = FALSE
+                ),
+                shiny::selectInput(
+                  inputId = ns("labelsType"),
+                  label = "select bar labels type",
+                  choices = c("none", "volume", "percent"),
+                  selected = "none",
+                  multiple = FALSE
+                ),
+                mod_reactive_labels_ui(ns("groupSentimentTitles")),
+                shiny::downloadButton(
+                  outputId = ns("saveGroupSentiment"),
+                  class = "btn btn-warning"
+                )
+              ),
+          ),
         ),
-        shiny::mainPanel(
           shinycssloaders::withSpinner(
             shiny::plotOutput(
               outputId = ns("groupSentimentPlot"),
               height = "450px",
-              width = "450px"))
+              width = "450px")
         )
       )
     )
   )
+
 }
 
 #' group_sentiment Server Functions
@@ -74,14 +83,6 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    observe({
-      shiny::updateSelectInput(session,
-        inputId = "groupVarSent",
-        choices = colnames(highlighted_dataframe()),
-        selected = "cluster"
-      )
-    })
-
     group_sentiment_titles <- mod_reactive_labels_server("groupSentimentTitles")
 
     group_sent_reactive <- reactive({
@@ -90,8 +91,9 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe, r) {
       }
 
       group_sent_plot <- highlighted_dataframe() %>%
+        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
         LandscapeR::ls_plot_group_sent(
-          group_var = r$globalGroupVar,
+          group_var = r$global_group_var,
           sentiment_var = sentiment,
           type = input$chartType,
           bar_labels = input$labelsType
