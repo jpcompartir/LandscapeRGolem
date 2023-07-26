@@ -51,7 +51,7 @@ wlos_text <- function() {
     <div class='col-sm-6'>
       <p>The top_terms_cutoff input will have a big effect on the output of your chart. If you wish to see how <strong> the most frequent terms from the entire data set</strong> are spread across groups, set this to a lower number.
     <br>
-  However, the highest frequency terms will usually be present in <strong>all groups</strong> so may <strong>understate</strong> the differences between groups.
+  However, provided groups are of similar sizes, the highest frequency terms will usually be present in <strong>all groups</strong> so may <strong>understate</strong> the differences between groups.
   <br>
   On the other hand, if the number is <strong>too high</strong>, you risk filling the plot with low-frequency terms which are only present in a <strong>small number of documents</strong>, this can <strong>exaggerate</strong> the differences between groups.
   <br>

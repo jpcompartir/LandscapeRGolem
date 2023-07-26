@@ -29,7 +29,7 @@ app_server <- function(input, output, session, data) {
 
 
   # This is for passing reactive values to and from modules
-  r <- reactiveValues(colour_var = NULL, column_names = colnames(data), globalGroupVar = NULL)
+  r <- reactiveValues(colour_var = NULL, column_names = colnames(data), global_group_var = "cluster", global_subgroups = NULL)
 
   r$date_min <- min(data$date)
   r$date_max <- max(data$date)
