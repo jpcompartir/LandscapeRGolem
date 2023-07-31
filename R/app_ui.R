@@ -9,8 +9,9 @@ app_ui <- function(request) {
   options(spinner.color = "#ff7518")
 
   #Global UI Variables
-  distribution_tab_height <- 300 #defaults for the plots in distrbution tab
-  distribution_tab_width <-  400
+  distribution_tab_height <- 400 #defaults for the plots in distrbution tab
+  distribution_tab_width <-  450
+
 
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(

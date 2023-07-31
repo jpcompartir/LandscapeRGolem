@@ -27,7 +27,7 @@ mod_distribution_tab_ui <- function(id, distribution_tab_height, distribution_ta
 
     #Current version
     bslib::layout_column_wrap(
-      width = 1/3,
+      width = 1/2,
       bslib::card(
         full_screen = TRUE,
         mod_volume_over_time_ui(

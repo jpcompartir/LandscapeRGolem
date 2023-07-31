@@ -11,22 +11,23 @@ mod_token_plot_ui <- function(id, distribution_tab_height, distribution_tab_widt
   ns <- NS(id)
   tagList(
     bslib::page_fillable(
+      shiny::tags$h3("Token Counter"),
       bslib::layout_sidebar(
         fill = TRUE,
         bslib::sidebar(
-          open = FALSE,
+          open = TRUE,
           shiny::sliderInput(
             inputId = ns("height"),
             "height",
-            min = 100,
-            max = 600,
+            min = 300,
+            max = 1000,
             value = distribution_tab_height,
             step = 50),
           shiny::sliderInput(
             inputId = ns("width"),
             "width",
-            min = 100,
-            max = 800,
+            min = 300,
+            max = 1000,
             value = distribution_tab_width,
             step = 50),
           # shiny::textInput(inputId = ns("tokenHex"), "colour", value = "#0f50d2"),

@@ -12,23 +12,24 @@ mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_ta
 
   tagList(
     bslib::page_fillable(
+      shiny::tags$h3("Volume Over Time"),
       bslib::layout_sidebar(
         fill = TRUE,
         bslib::sidebar(
-          open = FALSE,
+          open = TRUE,
           shiny::tagList(
             shiny::sliderInput(
               inputId = ns("height"),
               "height",
-              min = 100,
-              max = 600,
+              min = 300,
+              max = 1000,
               value = distribution_tab_height,
               step = 50),
             shiny::sliderInput(
               inputId = ns("width"),
               "width",
-              min = 100,
-              max = 800,
+              min = 300,
+              max = 1000,
               value = distribution_tab_width,
               step = 50),
             shiny::dateRangeInput(
