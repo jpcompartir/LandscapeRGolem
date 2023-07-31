@@ -7,22 +7,34 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_token_plot_ui <- function(id) {
+mod_token_plot_ui <- function(id, distribution_tab_height, distribution_tab_width) {
   ns <- NS(id)
   tagList(
     bslib::page_fillable(
       bslib::layout_sidebar(
         fill = TRUE,
         bslib::sidebar(
-          shiny::sliderInput(inputId = ns("height"), "Height", min = 100, max = 800, value = 400, step = 50),
-          shiny::sliderInput(inputId = ns("width"), "Width", min = 100, max = 800, value = 400, step = 50),
+          open = FALSE,
+          shiny::sliderInput(
+            inputId = ns("height"),
+            "height",
+            min = 100,
+            max = 600,
+            value = distribution_tab_height,
+            step = 50),
+          shiny::sliderInput(
+            inputId = ns("width"),
+            "width",
+            min = 100,
+            max = 800,
+            value = distribution_tab_width,
+            step = 50),
           # shiny::textInput(inputId = ns("tokenHex"), "colour", value = "#0f50d2"),
           colourpicker::colourInput(ns("tokenHex"), label = "colour", value = "#107C10"),
           mod_reactive_labels_ui(ns("tokenTitles")),
           shiny::downloadButton(outputId = ns("saveToken"), class = "btn btn-warning")
-        ), shiny::mainPanel(
-          shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("tokenPlot"), height = "450px", width = "450px"))
-        )
+        ),
+        shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("tokenPlot"), height = "450px", width = "450px"))
       )
     )
   )
@@ -63,9 +75,9 @@ mod_token_plot_server <- function(id, highlighted_dataframe) {
 
 
     output$saveToken <- LandscapeR::download_box("token_plot",
-      token_reactive,
-      width = shiny::reactive(input$width),
-      height = shiny::reactive(input$height)
+                                                 token_reactive,
+                                                 width = shiny::reactive(input$width),
+                                                 height = shiny::reactive(input$height)
     )
 
     delayedTokenHex <- shiny::reactive({

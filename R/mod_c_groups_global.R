@@ -69,20 +69,20 @@ mod_c_groups_global_server <- function(id, highlighted_dataframe, r){
 
       r$global_group_var <- input$groupVarGlobal
 
-      my_choices <- unique(
+      subgroup_choices <- unique(
         highlighted_dataframe()[[input$groupVarGlobal]]
       )
 
       shinyWidgets::updatePickerInput(
         session,
         inputId = "subGroups",
-        choices = my_choices,
-        selected = my_choices
+        choices = subgroup_choices,
+        selected = subgroup_choices
       )
 
       #Initialise with the current selections (to render plot when tab opens)
-      r$current_subgroups <- my_choices
-      r$new_subgroups <- my_choices
+      r$current_subgroups <- subgroup_choices
+      r$new_subgroups <- subgroup_choices
     })
 
     #Pass sub groups to r$

@@ -17,7 +17,7 @@ mod_umap_plot_ui <- function(id) {
         id = "graph",
         shinycssloaders::withSpinner(plotly::plotlyOutput(ns("umapPlot"), height = 600)),
         htmltools::div(
-          id = "button",
+          id = ns("button"),
           shiny::fluidRow(
             shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
           ),
@@ -28,7 +28,7 @@ mod_umap_plot_ui <- function(id) {
           shiny::column(6, htmltools::div(
             id = "slider1",
             style = "width: 100%;",
-            shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20)) # not using ns(x1) as don't want this input to be restricted to the namespace
+            shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20)) # not using ns(x1) as don't want this input to be restricted to the namespace (am now...)
           ), ), # Slider 1
           shiny::column(
             6,

@@ -7,6 +7,11 @@
 app_ui <- function(request) {
   shiny::shinyOptions(plot.autocolors = TRUE)
   options(spinner.color = "#ff7518")
+
+  #Global UI Variables
+  distribution_tab_height <- 300 #defaults for the plots in distrbution tab
+  distribution_tab_width <-  400
+
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
     tags$head(
@@ -15,8 +20,8 @@ app_ui <- function(request) {
         type = "text/css",
         href = "styles.css"
       ),
+      #Call the tags$style here to avoid conflicts with bslib (runtime execution)
       tags$style(HTML("
-
 .dataTables_wrapper .dataTables_paginate .page-link:focus, .dataTables_wrapper .dataTables_paginate .page-link:focus:hover {
   background-color: #ff7518 !important;
   border-color: #ff7518 !important;
@@ -66,16 +71,22 @@ app_ui <- function(request) {
       ),
       shiny::tabPanel(
         title = "Bigram Network",
+        value = "bigramTab",
         mod_bigram_network_ui(id = "bigramTag"),
         icon = shiny::icon("network-wired")
       ),
       shiny::tabPanel(
-        "Distribution Tab",
-        mod_distribution_tab_ui(id = "distributionTag"),
+        title = "Distribution Tab",
+        value = "distributionTab",
+        mod_distribution_tab_ui(
+          distribution_tab_height = distribution_tab_height,
+          distribution_tab_width = distribution_tab_width,
+          id = "distributionTag"),
         icon = shiny::icon("chart-simple")
       ),
       shiny::tabPanel(
         title = "Compare Groups",
+        value = "compareGroups",
         mod_compare_groups_ui("compareGroupsTag"),
         icon = shiny::icon("not-equal")
       ),
