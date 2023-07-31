@@ -14,7 +14,7 @@ mod_compare_groups_ui <- function(id) {
       #add the mod_c_groups_globals_ui
       bslib::accordion(
         id = ns("compareGroupsAccordion"),
-        open = "groupsAccordion",
+        open = TRUE,
         bslib::accordion_panel(
           title = "Set group variable and filter subgroups",
           value = "groupsAccordion",

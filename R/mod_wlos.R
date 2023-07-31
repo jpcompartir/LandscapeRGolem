@@ -13,6 +13,7 @@ mod_wlos_ui <- function(id) {
     bslib::card(
       full_screen = TRUE,
       bslib::accordion(
+        open =  "nested1item2",
         id = ns("mainAccordion"),
         bslib::accordion_panel(
           value = ns("wlosText"),
@@ -22,19 +23,27 @@ mod_wlos_ui <- function(id) {
         bslib::layout_sidebar(
           fill = TRUE,
           bslib::sidebar(
-            bg = "white",
             bslib::accordion(
-              open = "nested1item2",
+              open = TRUE,
               id = ns("nestedAccordion1"),
               bslib::accordion_panel(
                 value = "nested1item1",
                 title = "Aesthetic Controls",
                 icon = shiny::icon("wand-magic-sparkles"),
                 shiny::sliderInput(
-                  inputId = ns("height"), "height", min = 100, max = 1400, value = 800, step = 100),
-                shiny::sliderInput(inputId = ns("width"), "width", min = 100, max = 1200, value = 600, step = 100),
-                shiny::sliderInput(inputId = ns("textSize"), "text size", min = 2, max = 8, value = 4, step = 1),
-                shiny::sliderInput(inputId = ns("nrow"), label = "number of rows", min = 1, max = 20, value = 10, step = 1),
+                  inputId = ns("height"),
+                  "height",
+                  min = 100,
+                  max = 1400,
+                  value = 800,
+                  step = 100),
+                shiny::sliderInput(
+                  inputId = ns("width"),
+                  "width",
+                  min = 100,
+                  max = 1200,
+                  value = 600,
+                  step = 100),
               ),
               bslib::accordion_panel(
                 value = "nested1item2",
@@ -56,7 +65,16 @@ mod_wlos_ui <- function(id) {
                   value = 500,
                   step = 100
                 ),
-                shiny::downloadButton(outputId = ns("saveWLOs"), class = "btn btn-warning")
+                shiny::sliderInput(inputId = ns("textSize"), "text size", min = 2, max = 8, value = 4, step = 1),
+                shiny::sliderInput(inputId = ns("nrow"), label = "number of rows", min = 1, max = 20, value = 10, step = 1),
+                shiny::actionButton(
+                  class = "btn-warning",
+                  inputId = ns("updatePlotsButton"),
+                  label = "update plot"),
+                shiny::br(),
+                shiny::downloadButton(
+                  outputId = ns("saveWLOs"),
+                  class = "btn-warning")
               ),
             ),
           ),
@@ -80,7 +98,8 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    wlos_reactive <- reactive({
+    #Update when highlighted_dataframe changes, or the updatePlotsButton is pressed (settings) or the subgroups/groups are changed.
+    wlos_reactive <- eventReactive(c(highlighted_dataframe(), input$updatePlotsButton, r$current_subgroups), {
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a weighted log-odds chart")
       }
