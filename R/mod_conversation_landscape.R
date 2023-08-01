@@ -22,7 +22,7 @@ mod_conversation_landscape_ui <- function(id) {
       mod_download_data_ui(id = ns("allData"), label = "All Data"),
       shiny::column(3,
                     search_widget(
-                      # Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
+                      # Use local version of the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
                       inputId = ns("filterPattern"),
                       label = "Search text",
                       placeholder = "Regex pattern",

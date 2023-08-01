@@ -41,7 +41,7 @@ mod_labelled_tab_server <- function(id,
         validate("You must label data first to join the tables")
       }
 
-      labelled_lookup <- tibble::tibble(
+      labelled_lookup <- data.frame(
         document = as.numeric(r$label_ids),
         label = r$labels
       )
@@ -65,7 +65,7 @@ mod_labelled_tab_server <- function(id,
             dom = '<"top" ifp> rt<"bottom"lp>',
             autowidth = FALSE
           ),
-          style = "bootstrap",
+          style = "bootstrap5",
           rownames = FALSE,
           escape = FALSE
         )

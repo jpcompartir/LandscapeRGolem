@@ -11,24 +11,32 @@ mod_bigram_network_ui <- function(id) {
   ns <- NS(id)
   tagList(
     bslib::page_fillable(
-      bslib::accordion(
-        id = ns("accordion"),
-        bslib::accordion_panel(
-          id = ns("item1"),
-          title = "Bigram Network",
-          active = TRUE,
-          bigram_text()
-        )
-      ),
-      bslib::layout_sidebar(
-        fill = TRUE,
-        bslib::sidebar(bg = "white",
-          shiny::sliderInput(ns("height"), "height", min = 100, max = 1200, value = 600, step = 50),
-          shiny::sliderInput(ns("width"), "width", min = 100, max = 1200, value = 800, step = 50)
+      bslib::card(
+        full_screen = TRUE,
+        bslib::accordion(
+          id = ns("accordion"),
+          bslib::accordion_panel(
+            id = ns("item1"),
+            title = "Bigram Network",
+            active = TRUE,
+            bigram_text()
+          )
         ),
-        bslib::card(
-          full_screen = TRUE,
+        bslib::layout_sidebar(
           fill = TRUE,
+          bslib::sidebar(
+            bg = "white",
+            shiny::sliderInput(ns("height"), "height", min = 100, max = 1200, value = 600, step = 50),
+            shiny::sliderInput(ns("width"), "width", min = 100, max = 1200, value = 800, step = 50),
+            shiny::sliderInput(ns("topN"), "top_n", min = 20, max = 100, value = 50, step = 5),
+            shiny::sliderInput(ns("minFreq"), "min_freq", min = 5, max = 100, value = 10, step = 5),
+            shinyWidgets::materialSwitch(inputId = ns("removeStopwords"), label = "remove stopwords?", status = "primary", right = TRUE, value = FALSE),
+            shiny::actionButton(
+              class = "btn-subgroups-update",
+              inputId = ns("updatePlotsButton"),
+              label = "update plot")
+          ),
+          #Main panel of bslib::sidebar()
           shinycssloaders::withSpinner(shiny::plotOutput(ns("bigramPlot"), height = "600px", width = "800px"))
         )
       )
@@ -46,41 +54,44 @@ mod_bigram_network_server <- function(id, highlighted_dataframe) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    #Utility function
     make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
       requireNamespace("ParseR")
 
-      plot <- data %>%
-        ParseR::count_ngram(text_var = {{ text_var }}, top_n = top_n, min_freq = min, ...) %>%
-        purrr::pluck("viz") %>%
+      counts <- data %>%
+        ParseR::count_ngram(text_var = {{ text_var }}, top_n = top_n, min_freq = min, ...)
+      plot <- counts[["viz"]] %>%
         ParseR::viz_ngram()
 
       return(plot)
     }
 
-    bigram_reactive <- reactive({
+    #update whenever highlighted_dataframe() updates, or the plot input button is pressed.
+    bigram_reactive <- shiny::eventReactive(c(highlighted_dataframe(), input$updatePlotsButton),{
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a bigram network")
       }
-      if (!nrow(highlighted_dataframe()) >= 5000) { # Check rows are fewer than 5k for speed
-        bigram <- highlighted_dataframe() %>%
-          make_bigram_viz(
-            text_var = clean_text,
-            clean_text = FALSE, # for speed - clean text outside of app functioning
-            min = 5,
-            remove_stops = FALSE # for speed - remove stopwords in clean text variable outside of app
-          )
-      } else { # If > 5k rows take a sample
-        bigram <- highlighted_dataframe() %>%
-          dplyr::sample_n(5000) %>%
-          make_bigram_viz(
-            text_var = clean_text,
-            clean_text = FALSE,
-            min = 5,
-            remove_stops = FALSE
-          )
+      if (nrow(highlighted_dataframe()) >= 5000) {
+        #Take a sample if the data is too big to be performant
+        bigram_data <- highlighted_dataframe() %>%
+          dplyr::sample_n(5000)
+      } else {
+        bigram_data <- highlighted_dataframe()
       }
+
+      bigram <- bigram_data %>%
+        make_bigram_viz(
+          text_var = clean_text,
+          clean_text = FALSE,
+          top_n = input$topN,
+          min = input$minFreq,
+          remove_stops = input$removeStopwords
+        )
+
       return(bigram)
     })
+
+
     output$bigramPlot <- shiny::renderPlot(
       {
         bigram_reactive()
@@ -97,3 +108,5 @@ mod_bigram_network_server <- function(id, highlighted_dataframe) {
 
 ## To be copied in the server
 # mod_bigram_network_server("bigram_network_1")
+
+
