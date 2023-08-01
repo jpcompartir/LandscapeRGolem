@@ -11,15 +11,10 @@ mod_compare_groups_ui <- function(id) {
   ns <- NS(id)
   tagList(
     bslib::page_fillable(
-      #add the mod_c_groups_globals_ui
+      mod_c_groups_global_ui(ns("groupGlobalsTag")),
       bslib::accordion(
         id = ns("compareGroupsAccordion"),
         open = TRUE,
-        bslib::accordion_panel(
-          title = "Set group variable and filter subgroups",
-          value = "groupsAccordion",
-          mod_c_groups_global_ui(ns("groupGlobalsTag")),
-        ),
         bslib::accordion_panel(
           title = "Weighted log-odds",
           value = "wlosAccordion",

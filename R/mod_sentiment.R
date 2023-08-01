@@ -47,6 +47,7 @@ mod_sentiment_ui <- function(id, distribution_tab_height, distribution_tab_width
   )
 }
 
+#Dropdown menu sentiment (in progress)
 
 # mod_sentiment_ui <- function(id, distribution_tab_height, distribution_tab_width) {
 #   ns <- NS(id)
@@ -56,7 +57,7 @@ mod_sentiment_ui <- function(id, distribution_tab_height, distribution_tab_width
 #         status = "primary",
 #         icon = shiny::icon("gear"),
 #         circle = TRUE,
-#         width = "300px",
+#         width = "100%",
 #         tooltip = shinyWidgets::tooltipOptions(title = "click for plot settings"),
 #         # Should functionise all of this and use map to render the UI elements.
 #         shiny::sliderInput(

@@ -25,16 +25,16 @@ mod_group_vol_time_ui <- function(id) {
               shiny::sliderInput(
                 inputId = ns("height"),
                 "height",
-                min = 100, max = 1400,
-                value = 400,
+                min = 300, max = 1400,
+                value = 600,
                 step = 50
               ),
               shiny::sliderInput(
                 inputId = ns("width"),
                 "width",
-                min = 100,
+                min = 300,
                 max = 1400,
-                value = 600,
+                value = 800,
                 step = 50
               ),
               shiny::sliderInput(
@@ -42,7 +42,7 @@ mod_group_vol_time_ui <- function(id) {
                 "Number of Rows",
                 min = 1,
                 max = 12,
-                value = 5,
+                value = 3,
                 step = 1
               )
             ),
@@ -116,7 +116,7 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
         ) %>%
         LandscapeR::ls_plot_group_vol_time(
           group_var = r$global_group_var,
-          date_var = "date",
+          date_var = date,
           unit = input$dateBreak,
           nrow = input$nrow
         )

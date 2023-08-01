@@ -12,14 +12,10 @@ mod_wlos_ui <- function(id) {
   tagList(
     bslib::card(
       full_screen = TRUE,
+      wlos_text(),
       bslib::accordion(
         open =  "nested1item2",
         id = ns("mainAccordion"),
-        bslib::accordion_panel(
-          value = ns("wlosText"),
-          title = "Settings & Inputs",
-          wlos_text() #saved in zzz.R
-        ),
         bslib::layout_sidebar(
           fill = TRUE,
           bslib::sidebar(
@@ -65,8 +61,20 @@ mod_wlos_ui <- function(id) {
                   value = 500,
                   step = 100
                 ),
-                shiny::sliderInput(inputId = ns("textSize"), "text size", min = 2, max = 8, value = 4, step = 1),
-                shiny::sliderInput(inputId = ns("nrow"), label = "number of rows", min = 1, max = 20, value = 10, step = 1),
+                shiny::sliderInput(
+                  inputId = ns("textSize"),
+                  "text size",
+                  min = 2,
+                  max = 8,
+                  value = 4,
+                  step = 1),
+                shiny::sliderInput(
+                  inputId = ns("nrow"),
+                  label = "number of rows",
+                  min = 1,
+                  max = 20,
+                  value = 10,
+                  step = 1),
                 shiny::actionButton(
                   class = "btn-warning",
                   inputId = ns("updatePlotsButton"),

@@ -12,22 +12,80 @@
 }
 
 .btn {
-background-color: #ff7518!important;
-border-color: white!important;
-border-radius:10px!important;
-margin-left: 5px;
+/*background-color: #ff7518!important;*/
+  border-color: white!important;
+  border-radius:10px!important;
+  margin-left: 5px;
 }
 
 .btn-label {
+  background-color:#ff7518;
   margin-top: 16px!important;
   height: 38px!important;
+}
+
+.btn-subgroups-update {
+  background-color:#ff7518;
+  margin-top: 30px!important;
+  margin-left: -15px;
+  height: 38px!important;
+}
+
+.btn-wlo-update {
+  background-color:#ff7518;
+  margin-bottom: 10px;
+}
+
+.btn-wlo-download {
+  margin-top: 10px;
 }
 
 .btn-download{
   margin-top: 25px;
 }
 
+.btn-warning{
+  background: #ff7518;
+  border-radius: 100px;
+  color: #ffffff;
+  border:none;
+}
+
+.btn:active{
+  background: black!important;
+  background-color: black!important;
+}
+
+.btn:focus{
+  outline:  #ff7518!important;
+}
+
+.bs-actionsbox .btn-group button {
+  width: 49%;
+  background-color: white;
+  border-color: #000;
+}
+
+.btn-light {
+  border-color: grey!important;
+  --bs-btn-color: #000;
+  --bs-btn-bg: white;
+  --bs-btn-border-color: white;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: white;
+  --bs-btn-hover-border-color: black;
+  --bs-btn-focus-shadow-rgb: white;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: white;
+  --bs-btn-active-border-color: black;
+  --bs-btn-active-shadow: white);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: white ;
+  --bs-btn-disabled-border-color: black
+}
+
 .btn-download-custom {
+  background-color:#ff7518;
   height: 38px;
   width: 38px;
   padding: .375rem .375rem;
@@ -52,6 +110,7 @@ margin-left: 5px;
 
 /* Adjust the position and size of the search and reset buttons */
 .search-text .input-group-btn > .btn {
+  background-color:#ff7518;
   padding: 1;
   font-size: 16px; /* adjust as needed */
   line-height: 1;
@@ -66,20 +125,20 @@ margin-left: 5px;
   background-color: #ff7518!important;
 }
 
-.btn-warning{
-  background: #ff7518;
-  border-radius: 100px;
-  color: #ffffff;
-  border:none;
+
+/* picker input colours */
+.bs-deselect-all {
+  background-color: white!important;
+  border-color:black!important;
 }
 
-.btn:active{
-  background: black!important;
-  background-color: black!important;
+.bs-select-all {
+  background-color: white!important;
+  border-color: black!important;
 }
 
-.btn:focus{
-  outline:  #ff7518!important;
+.bootstrap-select .btn:focus {
+  outline: none !important;
 }
 
 .navbar-nav {
@@ -187,6 +246,27 @@ margin-left: 5px;
 
 /* Change all the sidebars to white background */
 .bslib-sidebar-layout>.sidebar {
-    background-color:white;
-    color: #000
+  background-color:white;
+  color: #000
+}
+
+.filter-option {
+  background-color: white;
+  color: #000;
+}
+
+/* remove backgrounds from the pickerInput in mod_c_groups_global */
+.custom-picker .btn{
+  background: none !important;
+  border: lightgray !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: #333;  /* Set the text color */
+}
+
+.custom-picker .dropdown-menu.show {
+  border: none !important;
+  box-shadow: none !important;
+  --bs-dropdown-link-active-bg: transparent;
+  border-color: transparent !important;
 }

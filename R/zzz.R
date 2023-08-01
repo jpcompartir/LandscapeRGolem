@@ -39,14 +39,13 @@ wlos_text <- function() {
     <div class='col-sm-6'>
       <p> Below you'll find a Weighted Log-odds (WLOs) Chart, this chart helps you to identify the key textual differences between groups. You can use this chart to understand why one cluster, topic, or grouping variable has been separated from the others.
   <br>
-  The important arguments to consider when rendering a WLOs chart are:
+  The important inputs to consider when rendering a WLOs chart are:
   </p>
     <ul>
     <li><b>top_n</b> = <i>the number of terms to show on each chart</i></li>
-    <li><b>nrow</b> = <i>the number of rows to place the charts on</i></li>
-    <li><b>top_terms_cutoff</b> = <i>the minimum rank, in order of frequency, for a term to be included</i></li>
-    <li><b>Select your grouping Variable</b> = <i>the name of the grouping variable you'd like to compare, e.g. topic, sentiment
-    </i></li></ul>
+    <li><b>number of rows</b> = <i>the number of rows to place the charts on</i></li>
+    <li><b>top terms cutoff</b> = <i>the minimum rank, in order of frequency, for a term to be included</i></li>
+    </ul>
     </div>
     <div class='col-sm-6'>
       <p>The top_terms_cutoff input will have a big effect on the output of your chart. If you wish to see how <strong> the most frequent terms from the entire data set</strong> are spread across groups, set this to a lower number.
@@ -58,7 +57,7 @@ wlos_text <- function() {
       </p>
     </div>
   </div>
-            "
+"
   )
 
   return(text)
@@ -67,13 +66,24 @@ wlos_text <- function() {
 bigram_text <- function() {
   text <- shiny::HTML(
     "
-            <div class='row'>
-              <div class='col-sm-6'>
-            <p style='font-size: 14px;'>Below you'll find a bigram network, this network will help you estimate how clean your selected data is. Remember that long and connected chains of words may represent spam or unwanted mentions.</p>
-          <p style='font-size:14px;'>This bigram network is restricted to a maximum of 5,000 data points for speed and user experience. It is therefore not recommended to be saved or exported. If the data looks clean, download the selection and create the network in the standard way in R/Rstudio. </p>
-            </div>
-            </div>
-          ")
+<div class='row'>
+  <div class='col-sm-6'>
+    <p style='font-size: 14px;'>Below you'll find a bigram network, this network will help you estimate how clean your selected data is. Remember that long and connected chains of words may represent spam or unwanted mentions.</p>
+     <p style='font-size:14px;'>This bigram network is restricted to a maximum of 5,000 data points for speed and user experience. It is therefore not recommended to be saved or exported, hence there being no download button. If the data looks clean, download the selection and create the network in the standard way in R/Rstudio. </p>
+  </div>
+  <div class='col-sm-6'>
+    <p style-'font-size:14px;'>
+    Alongside height and width, there are three parameters you can interact with:
+    </p>
+    <ul>
+    <li><b>top_n</b> = <i>the number of <strong>bigrams</strong> to show in the network, ordered by frequency. </i></li>
+    <li><b>min_freq</b> = <i>the minimum frequency each bigram must have been seen in order to appear in the network</i></li>
+    <li><b>remove_stopwords</b> = <i>Whether to remove stopwords from the selected data. This can be time-intensive, so its default value is false.</i></li>
+    </ul>
+    <p>You'll need to click 'update plot' for these changes to take effect.</p>
+   </div>
+ </div>
+")
 
   return(text)
 }

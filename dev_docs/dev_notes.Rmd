@@ -1,6 +1,12 @@
 These notes are added to .gitignore after a mishap with using News.md
 Golem allows us to cleanly modularise our app and provides us some nice utilities. 
 
+July - 
+
+accordions & cards, when working with modules like compare groups, might be better to just wrap the whole module in cards
+
+the open argument in accordion will determine which of the accordion_panels are open. This relates to the value = argument in accordion_panel (do not use id =, and do not use ns())
+
 July -
 
 # PROBLEM 2 - long cluster/topic names 
@@ -536,65 +542,9 @@ shinyApp(ui = ui, server = server)
 
 ```
 
-```{r}
-library(shiny)
-library(shiny.semantic)
-library(shinyjs)
+# Adding code blocks
 
-ui <- semanticPage(
-  useShinyjs(),
-  tags$head(
-    tags$style(HTML("
-      .code_block {
-        border: 1px solid #ddd;
-        padding: 10px;
-        margin-bottom: 20px;
-      }
-      .code_header {
-        cursor: pointer;
-      }
-      .hidden_code {
-        display: none;
-      }
-    "))
-  ),
-  div(
-    class = "code_block",
-    div(class = "code_header", "Code Block 1", onclick = "toggleCode('code1')"),
-    div(class = "hidden_code", verbatimTextOutput("code1"))
-  ),
-  div(
-    class = "code_block",
-    div(class = "code_header", "Code Block 2", onclick = "toggleCode('code2')"),
-    div(class = "hidden_code", verbatimTextOutput("code2"))
-  )
-)
-
-server <- function(input, output, session) {
-  output$code1 <- renderPrint({
-    cat("# This is a code block 1\nprint('Hello, world!')")
-  })
-  
-  output$code2 <- renderPrint({
-    cat("# This is a code block 2\nprint('Goodbye, world!')")
-  })
-
-  runjs("
-    function toggleCode(id) {
-      var codeBlock = document.getElementById(id).parentNode;
-      if (codeBlock.style.display === 'none' || codeBlock.style.display === '') {
-        codeBlock.style.display = 'block';
-      } else {
-        codeBlock.style.display = 'none';
-      }
-    }
-  ")
-}
-
-shinyApp(ui, server)
-
-
-```
+Solution is to ignore all this and just use shiny::markdown
 
 ```{r}
 library(shiny)
@@ -713,8 +663,6 @@ server <-function(input, output, session){
 shinyApp(ui, server)
 ```
 
-
-
 ```{r}
 library(shiny)
 library(rmarkdown)
@@ -747,7 +695,6 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server)
 ```
-
 
 ```{r}
 shiny::HTML('<img src="path_to_your_image.jpg" width="100"/>')

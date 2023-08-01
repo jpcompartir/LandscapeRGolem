@@ -6,9 +6,10 @@
 #' @noRd
 app_server <- function(input, output, session, data) {
   if (is.null(data)) {
-    data <- utils::read.csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+    data <- utils::read.csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv", ) %>%
       dplyr::select(-cluster) %>%
-      dplyr::rename(cluster = topic)
+      dplyr::rename(cluster = topic) %>%
+      dplyr::mutate(date = as.Date(date))
   }
 
   pattern <- shiny::reactiveVal(value = "", {})
