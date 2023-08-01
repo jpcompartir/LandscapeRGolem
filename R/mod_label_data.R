@@ -37,7 +37,7 @@ mod_label_data_server <- function(id, r,
     ns <- session$ns
 
     shiny::observeEvent(input$labelNow, {
-      # Here we want to check if there are already some labels in r, and if there aren't, we'll replicate the label one for as many times as there are label_ids. This isn't necessary the first time as the vector would be recyled, but it is necessary the second time.
+      # Here we want to check if there are already some labels in r, and if there aren't, we'll replicate the label one for as many times as there are label_ids. This isn't necessary the first time as the vector would be recycled, but it is necessary the second time.
       # If we already have some labels, then we repeat the same thing before concatenating and updating reactiveValues
       if (length(r$labels) == 0) {
         label_ids <- selected_range()$key
@@ -74,7 +74,6 @@ mod_label_data_server <- function(id, r,
           inputId = ns("labelNow"),
           label = "Label",
           class = "btn-label",
-          style = "margin-top: 10px!important;",
           icon = shiny::icon("check") # ,
           # style = "margin-top: 10px; margin-left: 5px;"
         )

@@ -7,37 +7,87 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_sentiment_ui <- function(id) {
+mod_sentiment_ui <- function(id, distribution_tab_height, distribution_tab_width) {
   ns <- NS(id)
   tagList(
     bslib::page_fillable(
+      shiny::tags$h3("Sentiment Distribution"),
       bslib::layout_sidebar(
         fill = TRUE,
         bslib::sidebar(
-          shiny::tagList(
-            # Should functionise all of this and use map to render the UI elements.
-            shiny::sliderInput(ns("height"), "height",
-              min = 100, max = 800, value = 400, step = 50
-            ),
-            shiny::sliderInput(ns("width"), "width",
-              min = 100, max = 800, value = 400, step = 50
-            ),
-            mod_reactive_labels_ui(ns("sentimentTitles")),
-            shiny::downloadButton(outputId = ns("saveSentiment"), class = "btn btn-warning")
-          )
+          open = TRUE,
+          # Should functionise all of this and use map to render the UI elements.
+          shiny::sliderInput(
+            inputId = ns("height"),
+            "height",
+            min = 300,
+            max = 1000,
+            value = distribution_tab_height,
+            step = 50),
+          shiny::sliderInput(
+            inputId = ns("width"),
+            "width",
+            min = 300,
+            max = 1000,
+            value = distribution_tab_width,
+            step = 50),
+          mod_reactive_labels_ui(
+            ns("sentimentTitles")),
+          shiny::downloadButton(
+            outputId = ns("saveSentiment"), class = "btn btn-warning")
         ),
         # ... starts here and is mainPanel
-        shiny::mainPanel(
-          shinycssloaders::withSpinner(
-            shiny::plotOutput(ns("sentimentPlot"),
-              height = "450px", width = "450px"
-            )
+        shinycssloaders::withSpinner(
+          shiny::plotOutput(ns("sentimentPlot"),
+                            height = "450px", width = "450px"
           )
         )
       )
     )
   )
 }
+
+#Dropdown menu sentiment (in progress)
+
+# mod_sentiment_ui <- function(id, distribution_tab_height, distribution_tab_width) {
+#   ns <- NS(id)
+#   tagList(
+#     bslib::page_fillable(
+#       shinyWidgets::dropdown(
+#         status = "primary",
+#         icon = shiny::icon("gear"),
+#         circle = TRUE,
+#         width = "100%",
+#         tooltip = shinyWidgets::tooltipOptions(title = "click for plot settings"),
+#         # Should functionise all of this and use map to render the UI elements.
+#         shiny::sliderInput(
+#           inputId = ns("height"),
+#           "height",
+#           min = 100,
+#           max = 600,
+#           value = distribution_tab_height,
+#           step = 50),
+#         shiny::sliderInput(
+#           inputId = ns("width"),
+#           "width",
+#           min = 100,
+#           max = 800,
+#           value = distribution_tab_width,
+#           step = 50),
+#         mod_reactive_labels_ui(
+#           ns("sentimentTitles")),
+#         shiny::downloadButton(
+#           outputId = ns("saveSentiment"), class = "btn btn-warning")
+#       ),
+#       # ... starts here and is mainPanel
+#       shinycssloaders::withSpinner(
+#         shiny::plotOutput(ns("sentimentPlot"),
+#                           height = "450px", width = "450px"
+#         )
+#       )
+#     )
+#   )
+# }
 
 
 #' sentiment Server Functions

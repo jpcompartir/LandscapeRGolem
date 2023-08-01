@@ -16,19 +16,20 @@ mod_download_data_ui <- function(id, label) {
       shiny::tags$div(
         style = "display: flex; align-items: center;",
         shiny::textInput(ns("fileName"),
-          label,
-          value = NULL,
-          placeholder = "filename excluding .csv"
+                         label,
+                         value = NULL,
+                         placeholder = "filename excluding .csv"
         ),
-        shiny::downloadButton(ns("download"),
-          "Download",
-          class = "btn btn-warning btn-download",
-          style = "margin-bottom: 15px;"
+        shiny::downloadButton(
+          ns("download"),
+          label = "",
+          class = "btn-download-custom",
         )
       )
     )
   )
 }
+
 
 #' download_data Server Functions
 #'

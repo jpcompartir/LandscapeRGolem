@@ -7,17 +7,31 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_volume_over_time_ui <- function(id) {
+mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_tab_width) {
   ns <- NS(id)
 
   tagList(
     bslib::page_fillable(
+      shiny::tags$h3("Volume Over Time"),
       bslib::layout_sidebar(
         fill = TRUE,
         bslib::sidebar(
+          open = TRUE,
           shiny::tagList(
-            shiny::sliderInput(inputId = ns("height"), "height", min = 100, max = 600, value = 400, step = 50),
-            shiny::sliderInput(inputId = ns("width"), "width", min = 100, max = 800, value = 400, step = 50),
+            shiny::sliderInput(
+              inputId = ns("height"),
+              "height",
+              min = 300,
+              max = 1000,
+              value = distribution_tab_height,
+              step = 50),
+            shiny::sliderInput(
+              inputId = ns("width"),
+              "width",
+              min = 300,
+              max = 1000,
+              value = distribution_tab_width,
+              step = 50),
             shiny::dateRangeInput(
               inputId = ns("dateRange"),
               label = "date range",
@@ -30,12 +44,10 @@ mod_volume_over_time_ui <- function(id) {
             colourpicker::colourInput(ns("volumeHex"), label = "colour", value = "#107C10"),
             mod_reactive_labels_ui(ns("volumeTitles")),
             shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning")
-          )
+        )
         ),
         # ... starts here and is the mainPanel
-        shiny::mainPanel(
           shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
-        )
       )
     )
   )

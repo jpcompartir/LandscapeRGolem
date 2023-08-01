@@ -12,20 +12,25 @@ mod_conversation_landscape_ui <- function(id) {
   tagList(
     gotop::use_gotop(),
     shiny::fluidRow(
-      shiny::column(2, shiny::selectInput(
-        inputId = ns("colourVar"), selected = NULL, choices = NULL, label = "Colour Variable", selectize = FALSE # can set this to TRUE but will adjust height, and not sure it needs selectize for now. Unclear where to edit the selectize's height
-      )),
+      class = "d-flex align-items-center",
+      shiny::column(
+        2,
+        style = "display: flex; align-items: center;",
+        shiny::selectInput(
+          inputId = ns("colourVar"), selected = NULL, choices = NULL, label = "Colour Variable", selectize = FALSE # can set this to TRUE but will adjust height, and not sure it needs selectize for now. Unclear where to edit the selectize's height
+        )),
       mod_download_data_ui(id = ns("allData"), label = "All Data"),
-      shiny::column(3, style = "padding-left: 20px; padding-right: 10px;", shinyWidgets::searchInput(
-        # Use the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
-        inputId = ns("filterPattern"),
-        label = "Search text",
-        placeholder = "Regex pattern",
-        btnSearch = shiny::icon("search"),
-        btnReset = shiny::icon("remove"),
-        width = "100%",
-        value = ""
-      )),
+      shiny::column(3,
+                    search_widget(
+                      # Use local version of the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
+                      inputId = ns("filterPattern"),
+                      label = "Search text",
+                      placeholder = "Regex pattern",
+                      btnSearch = shiny::icon("search"),
+                      btnReset = shiny::icon("remove"),
+                      width = "100%",
+                      value = ""
+                    )),
       mod_download_data_ui(id = ns("selectedData"), label = "Selected Data"),
     ),
     shiny::fluidRow(
@@ -57,9 +62,9 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe,
       mod_download_data_server("allData", data_object = highlighted_dataframe)
       mod_download_data_server("selectedData", data_object = highlighted_dataframe)
       mod_label_data_server("labelData",
-        r = r,
-        reactive_dataframe = reactive_dataframe,
-        selected_range = selected_range
+                            r = r,
+                            reactive_dataframe = reactive_dataframe,
+                            selected_range = selected_range
       )
 
       observe({
@@ -68,9 +73,9 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe,
 
       observe({
         shiny::updateSelectInput(session,
-          inputId = "colourVar",
-          choices = r$column_names,
-          selected = "cluster"
+                                 inputId = "colourVar",
+                                 choices = r$column_names,
+                                 selected = "cluster"
         )
       })
 

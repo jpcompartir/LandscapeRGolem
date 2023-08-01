@@ -7,27 +7,28 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_sent_time_ui <- function(id) {
+mod_sent_time_ui <- function(id, distribution_tab_height, distribution_tab_width) {
   ns <- NS(id)
   tagList(
     bslib::page_fillable(
+      shiny::tags$h3("Sentiment Over Time"),
       bslib::layout_sidebar(
         fill = TRUE,
         bslib::sidebar(
-          shiny::tagList(
+          open = TRUE,
             shiny::sliderInput(
               inputId = ns("height"),
               "height",
-              min = 100, max = 800,
-              value = 400,
+              min = 300, max = 1000,
+              value = distribution_tab_height,
               step = 50
             ),
             shiny::sliderInput(
               inputId = ns("width"),
               "width",
-              min = 100,
-              max = 800,
-              value = 400,
+              min = 300,
+              max = 1000,
+              value = distribution_tab_width,
               step = 50
             ),
             shiny::dateRangeInput(
@@ -47,12 +48,9 @@ mod_sent_time_ui <- function(id) {
               outputId = ns("saveSentTime"),
               class = "btn btn-warning"
             )
-          )
         ),
-        shiny::mainPanel(
           shinycssloaders::withSpinner(
             shiny::plotOutput(outputId = ns("sentTimePlot"), height = "450px", width = "450px"))
-        )
       )
     )
   )

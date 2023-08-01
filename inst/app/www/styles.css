@@ -12,18 +12,36 @@
 }
 
 .btn {
-background-color: #ff7518!important;
-border-color: white!important;
-border-radius:10px!important;
-margin-left: 5px;
+/*background-color: #ff7518!important;*/
+  border-color: white!important;
+  border-radius:10px!important;
+  margin-left: 5px;
 }
 
 .btn-label {
+  background-color:#ff7518;
+  margin-top: 16px!important;
+  height: 38px!important;
+}
+
+.btn-subgroups-update {
+  background-color:#ff7518;
+  margin-top: 30px!important;
+  margin-left: -15px;
+  height: 38px!important;
+}
+
+.btn-wlo-update {
+  background-color:#ff7518;
+  margin-bottom: 10px;
+}
+
+.btn-wlo-download {
   margin-top: 10px;
 }
 
-.label-primary{
-  background-color: #ff7518!important;
+.btn-download{
+  margin-top: 25px;
 }
 
 .btn-warning{
@@ -31,10 +49,6 @@ margin-left: 5px;
   border-radius: 100px;
   color: #ffffff;
   border:none;
-}
-
-.btn-download{
-  margin-top: 25px;
 }
 
 .btn:active{
@@ -46,15 +60,106 @@ margin-left: 5px;
   outline:  #ff7518!important;
 }
 
-/* add a border to the bottom of the navbar's selected icon when hovered over */
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-  border-bottom: 3px solid #ff7518;
+.bs-actionsbox .btn-group button {
+  width: 49%;
+  background-color: white;
+  border-color: #000;
 }
 
-/* when the navbar is clicked make its background colour orange */
-.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-  background-color: #ff7518;
+.btn-light {
+  border-color: grey!important;
+  --bs-btn-color: #000;
+  --bs-btn-bg: white;
+  --bs-btn-border-color: white;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: white;
+  --bs-btn-hover-border-color: black;
+  --bs-btn-focus-shadow-rgb: white;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: white;
+  --bs-btn-active-border-color: black;
+  --bs-btn-active-shadow: white);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: white ;
+  --bs-btn-disabled-border-color: black
+}
+
+.btn-download-custom {
+  background-color:#ff7518;
+  height: 38px;
+  width: 38px;
+  padding: .375rem .375rem;
+  overflow: hidden;
+  margin-top: 16px!important;
+  padding-right: 30px;
+  padding-left: 15px;
+}
+
+.search-text input {
+  border-radius: 25px!important;
+  height: 38px;/
+  margin-right: 5px!important;
+  margin-top:8px!important;
+  padding: 6px 12px; /* adjust as needed */
+}
+
+/* Change the border radius of the input group */
+.search-text .input-group {
+  border-radius: 15px!important;
+}
+
+/* Adjust the position and size of the search and reset buttons */
+.search-text .input-group-btn > .btn {
+  background-color:#ff7518;
+  padding: 1;
+  font-size: 16px; /* adjust as needed */
+  line-height: 1;
+  height: 38px; /* match the height of the text input field */
+  position: relative;
+  top: -2px; /* adjust as needed to align vertically with the text input field */
+  margin-top: 8px!important;
+}
+
+
+.label-primary{
+  background-color: #ff7518!important;
+}
+
+
+/* picker input colours */
+.bs-deselect-all {
+  background-color: white!important;
+  border-color:black!important;
+}
+
+.bs-select-all {
+  background-color: white!important;
+  border-color: black!important;
+}
+
+.bootstrap-select .btn:focus {
+  outline: none !important;
+}
+
+.navbar-nav {
+  color:white;
+  margin-bottom:-6px;
+}
+
+.navbar .nav-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* add a border to the bottom of the navbar's selected icon when hovered over */
+.navbar-nav > li > a:focus {
+  border-bottom: 3px solid #ff7518;
+  color:white!important;
+}
+
+.navbar-nav > li > a:hover {
   border-bottom: 3px solid white;
+  color:lightgray!important;
 }
 /* add the div styling for the tip block on the landing page*/
 .tipblock {
@@ -88,7 +193,7 @@ margin-left: 5px;
 
 /* give form control a 10px border radius */
 .form-control {
-    border-radius: 10px!important;
+    border-radius: 16px!important;
 }
 
 /* remove the blue outline when form control is focus */
@@ -129,4 +234,39 @@ margin-left: 5px;
 :focus {
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(255, 117, 24, 0.5) !important;
+}
+
+.input-daterange .input-group-addon.input-group-prepend.input-group-append .input-group-text {
+  border-radius: 16px!important;
+  background-color: #ff7518!important;
+  margin-left: 2px;
+  margin-right: 7px;
+  color: white;
+}
+
+/* Change all the sidebars to white background */
+.bslib-sidebar-layout>.sidebar {
+  background-color:white;
+  color: #000
+}
+
+.filter-option {
+  background-color: white;
+  color: #000;
+}
+
+/* remove backgrounds from the pickerInput in mod_c_groups_global */
+.custom-picker .btn{
+  background: none !important;
+  border: lightgray !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: #333;  /* Set the text color */
+}
+
+.custom-picker .dropdown-menu.show {
+  border: none !important;
+  box-shadow: none !important;
+  --bs-dropdown-link-active-bg: transparent;
+  border-color: transparent !important;
 }
