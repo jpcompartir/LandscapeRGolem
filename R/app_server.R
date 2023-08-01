@@ -6,7 +6,7 @@
 #' @noRd
 app_server <- function(input, output, session, data) {
   if (is.null(data)) {
-    data <- readr::read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+    data <- utils::read.csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
       dplyr::select(-cluster) %>%
       dplyr::rename(cluster = topic)
   }
@@ -16,7 +16,7 @@ app_server <- function(input, output, session, data) {
     pattern(input$Regex)
   })
 
-  # Add this observer to your Shiny app_server function
+
   shiny::observeEvent(input$delete, {
     # Original functionality: update remove_range's values on delete button press
     req(length(remove_range$keep_keys) > 0)
@@ -29,10 +29,15 @@ app_server <- function(input, output, session, data) {
 
 
   # This is for passing reactive values to and from modules
-  r <- reactiveValues(colour_var = NULL, column_names = colnames(data), global_group_var = "cluster", global_subgroups = NULL)
+  r <- reactiveValues(
+    colour_var = NULL,
+    column_names = colnames(data),
+    global_group_var = "cluster",
+    global_subgroups = NULL)
 
   r$date_min <- min(data$date)
   r$date_max <- max(data$date)
+
 
   mod_conversation_landscape_server("landscapeTag",
     reactive_dataframe = reactive_data,
@@ -101,10 +106,12 @@ app_server <- function(input, output, session, data) {
   })
 
   #---- filtered_df ----
-  # Used for rendering the fully responsive data table
-  # consider changing this to highlighted_dataframe
+  # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe
   df_filtered <- reactive({
     df_filtered <- reactive_data() %>%
       dplyr::filter(document %in% key())
   })
+
+
+
 }

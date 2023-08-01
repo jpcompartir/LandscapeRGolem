@@ -27,21 +27,13 @@ mod_distribution_tab_ui <- function(id, distribution_tab_height, distribution_ta
 
     #Current version
     bslib::layout_column_wrap(
-      width = 1/2,
+      width = 1,
       bslib::card(
         full_screen = TRUE,
         mod_volume_over_time_ui(
           distribution_tab_height = distribution_tab_height,
           distribution_tab_width = distribution_tab_width,
           id = ns("volumeModule")
-        )
-      ),
-      bslib::card(
-        full_screen = TRUE,
-        mod_sent_time_ui(
-          distribution_tab_height = distribution_tab_height,
-          distribution_tab_width = distribution_tab_width,
-          id = ns("sentTimeModule")
         )
       ),
       bslib::card(
@@ -58,6 +50,14 @@ mod_distribution_tab_ui <- function(id, distribution_tab_height, distribution_ta
           distribution_tab_height = distribution_tab_height,
           distribution_tab_width = distribution_tab_width,
           id = ns("tokenModule")
+        )
+      ),
+      bslib::card(
+        full_screen = TRUE,
+        mod_sent_time_ui(
+          distribution_tab_height = distribution_tab_height,
+          distribution_tab_width = distribution_tab_width,
+          id = ns("sentTimeModule")
         )
       )
     )
