@@ -1,12 +1,12 @@
 Package: LandscapeRGolem
 Title: Golem Learning
 Version: 0.0.0.9000
-Authors@R: person('Jack', 'Penzer', email = 'jackpenzer@sharecreative.com', role = c('cre', 'aut'))
+Authors@R: person('Jack', 'Penzer', email = 'jack.penzer@sharecreative.com', role = c('cre', 'aut'))
 Description: Modularised version of the LandscapeR via Golem. 
 License: MIT + file LICENSE
 Imports: 
-    bslib,
-    colourpicker,
+    bslib (>= 0.4.2.9000),
+    colourpicker (>= 1.2.0),
     config (>= 0.3.1),
     dplyr (>= 1.1.2),
     DT (>= 0.26),
@@ -17,7 +17,7 @@ Imports:
     htmlwidgets (>= 1.6.2),
     magrittr (>= 2.0.3),
     plotly (>= 4.10.1),
-    rlang,
+    rlang (>= 1.1.1),
     shiny (>= 1.7.4),
     shinycssloaders (>= 1.0.0),
     shinyjs (>= 2.1.0),
@@ -30,10 +30,10 @@ RoxygenNote: 7.2.3
 Suggests: 
     spelling (>= 2.2.1),
     testthat (>= 3.0.0),
-    LandscapeR,
-    ParseR,
-    knitr,
-    rmarkdown
+    LandscapeR (>= 0.0.0.9000),
+    ParseR (>= 1.2.0),
+    knitr (>= 1.42),
+    rmarkdown (>= 2.21)
 Config/testthat/edition: 3
 Language: en-US
 Depends: 

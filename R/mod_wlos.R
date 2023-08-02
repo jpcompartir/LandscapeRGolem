@@ -18,7 +18,7 @@ mod_wlos_ui <- function(id) {
         id = ns("mainAccordion"),
         bslib::layout_sidebar(
           fill = TRUE,
-          bslib::sidebar(
+          sidebar = bslib::sidebar(
             bslib::accordion(
               open = TRUE,
               id = ns("nestedAccordion1"),

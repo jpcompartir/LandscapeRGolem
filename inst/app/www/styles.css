@@ -51,6 +51,17 @@
   border:none;
 }
 
+.btn-download-custom {
+  background-color:#ff7518;
+  height: 38px;
+  width: 38px;
+  padding: .375rem .375rem;
+  overflow: hidden;
+  margin-top: 16px!important;
+  padding-right: 30px;
+  padding-left: 15px;
+}
+
 .btn:active{
   background: black!important;
   background-color: black!important;
@@ -82,17 +93,6 @@
   --bs-btn-disabled-color: #000;
   --bs-btn-disabled-bg: white ;
   --bs-btn-disabled-border-color: black
-}
-
-.btn-download-custom {
-  background-color:#ff7518;
-  height: 38px;
-  width: 38px;
-  padding: .375rem .375rem;
-  overflow: hidden;
-  margin-top: 16px!important;
-  padding-right: 30px;
-  padding-left: 15px;
 }
 
 .search-text input {

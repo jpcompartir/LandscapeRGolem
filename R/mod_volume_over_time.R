@@ -15,7 +15,7 @@ mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_ta
       shiny::tags$h3("Volume Over Time"),
       bslib::layout_sidebar(
         fill = TRUE,
-        bslib::sidebar(
+        sidebar = bslib::sidebar(
           open = TRUE,
           shiny::tagList(
             shiny::sliderInput(

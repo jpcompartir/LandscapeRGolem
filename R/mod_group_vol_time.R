@@ -14,7 +14,7 @@ mod_group_vol_time_ui <- function(id) {
       full_screen = TRUE,
       bslib::layout_sidebar(
         fill = TRUE,
-        bslib::sidebar(
+        sidebar = bslib::sidebar(
           bslib::accordion(
             open = "nested1item2",
             id = ns("nestedAccordion1"),

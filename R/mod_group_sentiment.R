@@ -13,7 +13,7 @@ mod_group_sentiment_ui <- function(id) {
     bslib::card(
       full_screen = TRUE,
       bslib::layout_sidebar(
-        bslib::sidebar(
+        sidebar = bslib::sidebar(
           bslib::accordion(
             open = "nested1item2",
             id = ns("nestedAccordion1"),

@@ -23,9 +23,9 @@ mod_bigram_network_ui <- function(id) {
           )
         ),
         bslib::layout_sidebar(
+          fillable = TRUE,
           fill = TRUE,
-          bslib::sidebar(
-            bg = "white",
+          sidebar = bslib::sidebar(
             shiny::sliderInput(ns("height"), "height", min = 100, max = 1200, value = 600, step = 50),
             shiny::sliderInput(ns("width"), "width", min = 100, max = 1200, value = 800, step = 50),
             shiny::sliderInput(ns("topN"), "top_n", min = 20, max = 100, value = 50, step = 5),
@@ -36,7 +36,7 @@ mod_bigram_network_ui <- function(id) {
               inputId = ns("updatePlotsButton"),
               label = "update plot")
           ),
-          #Main panel of bslib::sidebar()
+          # Main panel of bslib::sidebar()
           shinycssloaders::withSpinner(shiny::plotOutput(ns("bigramPlot"), height = "600px", width = "800px"))
         )
       )

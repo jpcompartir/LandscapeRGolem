@@ -10,4 +10,4 @@ $run_dev.*
 ^app\.R$
 ^rsconnect$
 ^tests$
-^dev_notes.Rmd$
+^dev_docs$
