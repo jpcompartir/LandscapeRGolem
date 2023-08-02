@@ -14,7 +14,7 @@ mod_token_plot_ui <- function(id, distribution_tab_height, distribution_tab_widt
       shiny::tags$h3("Token Counter"),
       bslib::layout_sidebar(
         fill = TRUE,
-        bslib::sidebar(
+        sidebar = bslib::sidebar(
           open = TRUE,
           shiny::sliderInput(
             inputId = ns("height"),

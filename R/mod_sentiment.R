@@ -14,7 +14,7 @@ mod_sentiment_ui <- function(id, distribution_tab_height, distribution_tab_width
       shiny::tags$h3("Sentiment Distribution"),
       bslib::layout_sidebar(
         fill = TRUE,
-        bslib::sidebar(
+        sidebar = bslib::sidebar(
           open = TRUE,
           # Should functionise all of this and use map to render the UI elements.
           shiny::sliderInput(
