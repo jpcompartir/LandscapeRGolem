@@ -61,6 +61,13 @@ mod_wlos_ui <- function(id) {
                   value = 500,
                   step = 100
                 ),
+                shiny::selectInput(
+                  inputId = ns("filterType"),
+                  label = "filter by",
+                  choices = c("association", "frequency"),
+                  selected = "association",
+                  multiple = FALSE
+                ),
                 shiny::sliderInput(
                   inputId = ns("textSize"),
                   "text size",
@@ -106,6 +113,15 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+
+    observe({
+      if (input$filterType == "frequency") {
+        shinyjs::disable("termCutoff")
+      } else {
+        shinyjs::enable("termCutoff")
+      }
+    })
+
     #Update when highlighted_dataframe changes, or the updatePlotsButton is pressed (settings) or the subgroups/groups are changed.
     wlos_reactive <- eventReactive(c(highlighted_dataframe(), input$updatePlotsButton, r$current_subgroups), {
       if (nrow(highlighted_dataframe()) < 1) {
@@ -119,6 +135,7 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
           text_var = clean_text,
           top_n = input$topN,
           top_terms_cutoff = input$termCutoff,
+          filter_by = input$filterType,
           nrow = input$nrow,
           text_size = input$textSize
         )
