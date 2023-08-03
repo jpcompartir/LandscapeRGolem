@@ -10,6 +10,7 @@
 mod_label_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
+    shinyWidgets::useSweetAlert(),
     shiny::fluidRow(
       shiny::column(3,
         offset = 0,
@@ -35,6 +36,15 @@ mod_label_data_server <- function(id, r,
                                   selected_range) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+shiny::observeEvent(input$labelNow,{
+  shinyWidgets::sendSweetAlert(
+    session = session,
+    title = "Success!",
+    text = "Data labelled, visit the lablled data tab",
+    type = "success"
+  )
+})
 
     shiny::observeEvent(input$labelNow, {
       # Here we want to check if there are already some labels in r, and if there aren't, we'll replicate the label one for as many times as there are label_ids. This isn't necessary the first time as the vector would be recycled, but it is necessary the second time.
