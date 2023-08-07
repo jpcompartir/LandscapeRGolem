@@ -9,7 +9,8 @@ app_server <- function(input, output, session, data) {
     data <- utils::read.csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv", ) %>%
       dplyr::select(-cluster) %>%
       dplyr::rename(cluster = topic) %>%
-      dplyr::mutate(date = as.Date(date))
+      dplyr::mutate(date = as.Date(date)) %>%
+      dplyr::slice_sample(n = 10000)
   }
 
   pattern <- shiny::reactiveVal(value = "", {})
@@ -64,6 +65,7 @@ app_server <- function(input, output, session, data) {
   mod_labelled_tab_server(
     id = "labelledTag",
     reactive_dataframe = reactive_data,
+    data = data,
     r = r
   )
 

@@ -77,7 +77,7 @@ app_ui <- function(request) {
         icon = shiny::icon("network-wired")
       ),
       shiny::tabPanel(
-        title = "Distribution Tab",
+        title = "Distributions",
         value = "distributionTab",
         mod_distribution_tab_ui(
           distribution_tab_height = distribution_tab_height,

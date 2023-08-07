@@ -45,16 +45,24 @@ wlos_text <- function() {
     <li><b>top_n</b> = <i>the number of terms to show on each chart</i></li>
     <li><b>number of rows</b> = <i>the number of rows to place the charts on</i></li>
     <li><b>top terms cutoff</b> = <i>the minimum rank, in order of frequency, for a term to be included</i></li>
+    <li><b>filter by</b> = <i>determines how the data should be filtered</i>
+    <ul>
+  <li><b>association</b> = Take the most frequent [top terms cutoff] terms, then take the most associated [top_n] terms per group </li>
+  <li><b>frequencuy</b> = Take the [top_n] most frequent terms per group and see how associated they are with each group</li>
+  </ul>
+  </li>
     </ul>
     </div>
     <div class='col-sm-6'>
-      <p>The top_terms_cutoff input will have a big effect on the output of your chart. If you wish to see how <strong> the most frequent terms from the entire data set</strong> are spread across groups, set this to a lower number.
-    <br>
-  However, provided groups are of similar sizes, the highest frequency terms will usually be present in <strong>all groups</strong> so may <strong>understate</strong> the differences between groups.
+      <p>The top_terms_cutoff input will have a big effect on the output of your chart. If you wish to see how <strong> the most frequent terms from the entire data set</strong> are spread across groups, set this to a lower number.  However, provided groups are of similar sizes, the highest frequency terms will often be present in <strong>all groups</strong> so may <strong>understate</strong> the differences between groups.
+  <br>
+  <br>
+  <strong> Warning: </strong> <i>if one group has a very low, and another a very high, number of mentions, you may find that the very low frequency group has very few terms in its chart (even none!) when you set the top_terms_cutoff value to a low number.</i>
+  <br>
   <br>
   On the other hand, if the number is <strong>too high</strong>, you risk filling the plot with low-frequency terms which are only present in a <strong>small number of documents</strong>, this can <strong>exaggerate</strong> the differences between groups.
-  <br>
       </p>
+  <br>
     </div>
   </div>
 "

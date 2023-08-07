@@ -32,6 +32,7 @@ mod_labelled_tab_ui <- function(id) {
 #' @noRd
 mod_labelled_tab_server <- function(id,
                                     reactive_dataframe,
+                                    data,
                                     r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -47,7 +48,7 @@ mod_labelled_tab_server <- function(id,
       )
 
       labelled_data <- labelled_lookup %>%
-        dplyr::left_join(reactive_dataframe(), by = "document") # Keep the rows in labelled_lookup and add the original columns
+        dplyr::left_join(data, by = "document") # Keep the rows in labelled_lookup and add the original columns
 
       return(labelled_data)
     })

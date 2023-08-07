@@ -123,7 +123,7 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
             showticklabels = FALSE,
             title = ""
           ),
-          newshape = list(fillcolor = "#ff5718", opacity = 0.2)
+          newshape = list(fillcolor = "#ff7518", opacity = 0.2)
         ) %>%
         plotly::config(
           editable = TRUE,
@@ -183,9 +183,9 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
           shiny::actionButton(
             "delete",
             "Delete selections",
-            class = "btn-warning",
+            class = "btn",
             icon = shiny::icon("trash"),
-            style = "position: absolute; bottom 7px; right: 7px; background: #ff4e00; border-radius: 100px; color: #ffffff; border:none;"
+            style = "position: absolute; bottom 7px; right: 7px; background: #ff0000; border-radius: 100px; color: #ffffff; border:none;"
           )
         )
       }
