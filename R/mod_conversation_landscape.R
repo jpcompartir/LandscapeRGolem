@@ -21,7 +21,7 @@ mod_conversation_landscape_ui <- function(id) {
         )),
       mod_download_data_ui(id = ns("allData"), label = "All Data"),
       shiny::column(3,
-                    search_widget(
+                    shinyWidgets::searchInput(
                       # Use local version of the shinyWidget searchInput for a tidy searchable button allowing us to filter by a pattern
                       inputId = ns("filterPattern"),
                       label = "Search text",
@@ -56,6 +56,11 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe,
     id,
     function(input, output, session) {
       ns <- session$ns
+
+      #Add class to filterPattern_search & reset (as we're in the namespace, landscapeTag- doesn't need to be pre-pended - i.e. the tag when you inspect the html in the browser)
+      # shinyjs::addClass(id = "filterPattern_text", class="search-text")
+      shinyjs::addClass(id = "filterPattern_search", class="btn-download-custom")
+      shinyjs::addClass(id = "filterPattern_reset", class="btn-download-custom")
 
       mod_data_table_server("dataTable", highlighted_dataframe)
       mod_umap_plot_server("umapPlot", reactive_dataframe, selected_range, r)
