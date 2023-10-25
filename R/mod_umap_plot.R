@@ -28,13 +28,13 @@ mod_umap_plot_ui <- function(id) {
           shiny::column(6, htmltools::div(
             id = "slider1",
             style = "width: 100%;",
-            shiny::sliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20)) # not using ns(x1) as don't want this input to be restricted to the namespace (am now...)
+            shinyWidgets::noUiSliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20),color = "#ff7518"  ) # not using ns(x1) as don't want this input to be restricted to the namespace (am now...)
           ), ), # Slider 1
           shiny::column(
             6,
             htmltools::div(
               id = "slider2", style = "width: 100%;",
-              shiny::sliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20))
+              shinyWidgets::noUiSliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20), color = "#ff7618")
             )
           ), # Slider2
         )

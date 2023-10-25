@@ -22,29 +22,9 @@ mod_group_vol_time_ui <- function(id) {
               value = "nested1item1",
               title = "Aesthetic Controls",
               icon = shiny::icon("wand-magic-sparkles"),
-              shiny::sliderInput(
-                inputId = ns("height"),
-                "height",
-                min = 300, max = 1400,
-                value = 600,
-                step = 50
-              ),
-              shiny::sliderInput(
-                inputId = ns("width"),
-                "width",
-                min = 300,
-                max = 1400,
-                value = 800,
-                step = 50
-              ),
-              shiny::sliderInput(
-                inputId = ns("nrow"),
-                "Number of Rows",
-                min = 1,
-                max = 12,
-                value = 3,
-                step = 1
-              )
+              shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1400, value = 600, step = 50, color = "#ff7518"),
+              shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1400, value = 800, step = 50, color = "#ff7518"),
+              shinyWidgets::noUiSliderInput(inputId = ns("nrow"), label = "Number of Rows", min = 1, max = 20, value = 5, color = "#ff7518")
             ),
             bslib::accordion_panel(
               title = "Parameters",

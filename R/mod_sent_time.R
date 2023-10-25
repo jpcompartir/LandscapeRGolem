@@ -16,21 +16,8 @@ mod_sent_time_ui <- function(id, distribution_tab_height, distribution_tab_width
         fill = TRUE,
         sidebar = bslib::sidebar(
           open = TRUE,
-            shiny::sliderInput(
-              inputId = ns("height"),
-              "height",
-              min = 300, max = 1000,
-              value = distribution_tab_height,
-              step = 50
-            ),
-            shiny::sliderInput(
-              inputId = ns("width"),
-              "width",
-              min = 300,
-              max = 1000,
-              value = distribution_tab_width,
-              step = 50
-            ),
+          shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1000, value = distribution_tab_height, step = 50, color = "#ff7518"),
+          shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1000, value = distribution_tab_width, step = 50, color = "#ff7518"),
             shiny::dateRangeInput(
               inputId = ns("dateRangeSent"),
               label = "date range",

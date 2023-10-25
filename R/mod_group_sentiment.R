@@ -21,21 +21,18 @@ mod_group_sentiment_ui <- function(id) {
               value = "nested1item1",
               title = "Aesthetic Controls",
               icon = shiny::icon("wand-magic-sparkles"),
-              shiny::sliderInput(
-                inputId = ns("height"),
-                "height",
-                min = 100, max = 800,
-                value = 500,
-                step = 50
-              ),
-              shiny::sliderInput(
-                inputId = ns("width"),
-                "width",
-                min = 100,
-                max = 800,
-                value = 600,
-                step = 50
-              )),
+              shinyWidgets::noUiSliderInput(inputId = ns("height"),
+                                            label = "height",
+                                            min = 100, max = 800,
+                                            value = 500,
+                                            step = 50,
+                                            color = "#ff7518"),
+              shinyWidgets::noUiSliderInput(inputId = ns("width"),
+                                            label = "width",
+                                            min = 100, max = 800,
+                                            value = 600,
+                                            step = 50,
+                                            color = "#ff7518")),
               bslib::accordion_panel(
                 value = "nested1item2",
                 title = "Parameters",
@@ -60,19 +57,19 @@ mod_group_sentiment_ui <- function(id) {
                   class = "btn btn-warning"
                 )
               ),
+            ),
           ),
-        ),
           shinycssloaders::withSpinner(
             shiny::plotOutput(
               outputId = ns("groupSentimentPlot"),
               height = "450px",
               width = "450px")
+          )
         )
       )
     )
-  )
 
-}
+    }
 
 #' group_sentiment Server Functions
 #' @param id The module id

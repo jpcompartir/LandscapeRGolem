@@ -18,20 +18,8 @@ mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_ta
         sidebar = bslib::sidebar(
           open = TRUE,
           shiny::tagList(
-            shiny::sliderInput(
-              inputId = ns("height"),
-              "height",
-              min = 300,
-              max = 1000,
-              value = distribution_tab_height,
-              step = 50),
-            shiny::sliderInput(
-              inputId = ns("width"),
-              "width",
-              min = 300,
-              max = 1000,
-              value = distribution_tab_width,
-              step = 50),
+            shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1400, value = distribution_tab_height, step = 50, color = "#ff7518"),
+            shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1400, value = distribution_tab_width, step = 50, color = "#ff7518"),
             shiny::dateRangeInput(
               inputId = ns("dateRange"),
               label = "date range",
