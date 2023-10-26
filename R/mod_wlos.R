@@ -26,62 +26,17 @@ mod_wlos_ui <- function(id) {
                 value = "nested1item1",
                 title = "Aesthetic Controls",
                 icon = shiny::icon("wand-magic-sparkles"),
-                shiny::sliderInput(
-                  inputId = ns("height"),
-                  "height",
-                  min = 100,
-                  max = 1400,
-                  value = 800,
-                  step = 100),
-                shiny::sliderInput(
-                  inputId = ns("width"),
-                  "width",
-                  min = 100,
-                  max = 1200,
-                  value = 600,
-                  step = 100),
+                shinyWidgets::noUiSliderInput(inputId = ns("height"), "height", min = 100, max = 1400, value = 800, step = 100, color = "#ff7518"),
+                shinyWidgets::noUiSliderInput(inputId = ns("width"), "width", min = 100, max = 1200, value = 600, step = 100, color = "#ff7518"),
               ),
               bslib::accordion_panel(
                 value = "nested1item2",
                 title = "Parameters",
                 icon = shiny::icon("wrench"),
-                shiny::sliderInput(
-                  inputId = ns("topN"),
-                  label = "top_n",
-                  min = 15,
-                  max = 60,
-                  value = 30,
-                  step = 5
-                ),
-                shiny::sliderInput(
-                  inputId = ns("termCutoff"),
-                  label = "top terms cutoff",
-                  min = 30,
-                  max = 5000,
-                  value = 500,
-                  step = 100
-                ),
-                shiny::selectInput(
-                  inputId = ns("filterType"),
-                  label = "filter by",
-                  choices = c("association", "frequency"),
-                  selected = "association",
-                  multiple = FALSE
-                ),
-                shiny::sliderInput(
-                  inputId = ns("textSize"),
-                  "text size",
-                  min = 2,
-                  max = 8,
-                  value = 4,
-                  step = 1),
-                shiny::sliderInput(
-                  inputId = ns("nrow"),
-                  label = "number of rows",
-                  min = 1,
-                  max = 20,
-                  value = 10,
-                  step = 1),
+                shinyWidgets::noUiSliderInput(inputId = ns("topN"), "top_n", min = 15, max = 60, value = 30, step = 5, color = "#ff7518"),
+                shinyWidgets::noUiSliderInput(inputId =ns("termCutoff"), "top terms cutoff", min = 30, max = 5000, value = 500, step = 100, color = "#ff7518"),
+                shinyWidgets::noUiSliderInput(inputId = ns("textSize"), "text size", min = 2, max = 8, value = 4, step = 1, color = "#ff7518"),
+                shinyWidgets::noUiSliderInput(inputId = ns("nrow"), "number of rows", min = 1, max = 20, value = 10, step = 1, color = "#ff7518"),
                 shiny::actionButton(
                   class = "btn-warning",
                   inputId = ns("updatePlotsButton"),
@@ -113,15 +68,6 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-
-    observe({
-      if (input$filterType == "frequency") {
-        shinyjs::disable("termCutoff")
-      } else {
-        shinyjs::enable("termCutoff")
-      }
-    })
-
     #Update when highlighted_dataframe changes, or the updatePlotsButton is pressed (settings) or the subgroups/groups are changed.
     wlos_reactive <- eventReactive(c(highlighted_dataframe(), input$updatePlotsButton, r$current_subgroups), {
       if (nrow(highlighted_dataframe()) < 1) {
@@ -135,7 +81,6 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
           text_var = clean_text,
           top_n = input$topN,
           top_terms_cutoff = input$termCutoff,
-          filter_by = input$filterType,
           nrow = input$nrow,
           text_size = input$textSize
         )

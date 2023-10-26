@@ -16,21 +16,8 @@ mod_token_plot_ui <- function(id, distribution_tab_height, distribution_tab_widt
         fill = TRUE,
         sidebar = bslib::sidebar(
           open = TRUE,
-          shiny::sliderInput(
-            inputId = ns("height"),
-            "height",
-            min = 300,
-            max = 1000,
-            value = distribution_tab_height,
-            step = 50),
-          shiny::sliderInput(
-            inputId = ns("width"),
-            "width",
-            min = 300,
-            max = 1000,
-            value = distribution_tab_width,
-            step = 50),
-          # shiny::textInput(inputId = ns("tokenHex"), "colour", value = "#0f50d2"),
+          shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1000, value = distribution_tab_height, step = 50, color = "#ff7518"),
+          shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1000, value = distribution_tab_width, step = 50, color = "#ff7518"),
           colourpicker::colourInput(ns("tokenHex"), label = "colour", value = "#107C10"),
           mod_reactive_labels_ui(ns("tokenTitles")),
           shiny::downloadButton(outputId = ns("saveToken"), class = "btn btn-warning")

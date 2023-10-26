@@ -12,7 +12,6 @@ app_ui <- function(request) {
   distribution_tab_height <- 400 #defaults for the plots in distrbution tab
   distribution_tab_width <-  450
 
-
   # ns <- NS(id) #Why was this commented out, need to remember perhaps
   tagList(
     tags$head(
@@ -55,10 +54,6 @@ app_ui <- function(request) {
       # theme = shinythemes::shinytheme("cosmo"),
       title = "LandscapeR",
       id = "navBar",
-      htmltools::tags$style(type = "text/css", "body {padding-top: 70px;}"),
-      # Prevents the navbar from eating body of app
-      # colours all 10  sliders orange
-      shinyWidgets::setSliderColor(color = rep("#ff7518", 40), sliderId = c(1:40)),
       # Render each tab via its respective module
       shiny::tabPanel( # First page of the app
         title = "Home",

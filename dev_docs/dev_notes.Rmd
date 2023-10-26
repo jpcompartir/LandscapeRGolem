@@ -1,3 +1,12 @@
+October
+
+Roadmap - popovers & tooltips
+interactive plots with plotly/cards
+plotly plots in value boxes? 
+Removing redundant charts like token plot, 
+introducing terms network perhaps
+
+
 These notes are added to .gitignore after a mishap with using News.md
 Golem allows us to cleanly modularise our app and provides us some nice utilities. 
 
