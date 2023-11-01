@@ -20,22 +20,29 @@ mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_ta
           shiny::tagList(
             shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1400, value = distribution_tab_height, step = 50, color = "#ff7518"),
             shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1400, value = distribution_tab_width, step = 50, color = "#ff7518"),
-            shiny::dateRangeInput(
-              inputId = ns("dateRange"),
-              label = "date range",
-              start = NULL,
-              end = NULL
-            ),
+            mod_daterange_input_ui(id = ns("dateRangeVot")),
+            # shiny::dateRangeInput(
+            #   inputId = ns("dateRangeVot"),
+            #   label = "date range",
+            #   start = NULL,
+            #   end = NULL,
+            #   max = Sys.Date() + 1,
+            #   min = Sys.Date() - (365*5)
+            #   # start = as.Date("2023-01-01"),
+            #   # end = Sys.Date() ,
+            #   # min = Sys.Date() - (365*3),
+            #   # max = Sys.Date() + 1
+            # ),
             shiny::selectInput(inputId = ns("dateBreak"), label = "unit", choices = c("day", "week", "month", "quarter", "year"), selected = "week"),
             shiny::selectInput(inputId = ns("dateSmooth"), label = "smooth", choices = c("none", "loess", "lm", "glm", "gam"), selected = "none"),
             shiny::uiOutput(ns("smoothControls")),
             colourpicker::colourInput(ns("volumeHex"), label = "colour", value = "#107C10"),
             mod_reactive_labels_ui(ns("volumeTitles")),
             shiny::downloadButton(outputId = ns("saveVolume"), class = "btn btn-warning")
-        )
+          )
         ),
-        # ... starts here and is the mainPanel
-          shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
+        # ... of layout_sidebar() starts here and is the mainPanel
+        shinycssloaders::withSpinner(shiny::plotOutput(outputId = ns("volumePlot"), height = "450px", width = "450px"))
       )
     )
   )
@@ -45,43 +52,25 @@ mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_ta
 #' volume_over_time Server Functions
 #'
 #' @noRd
-mod_volume_over_time_server <- function(id, highlighted_dataframe) {
+mod_volume_over_time_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     vol_titles <- mod_reactive_labels_server("volumeTitles")
 
-    # get the minimum date range and store in a reactive
-    date_min <- reactive(min(highlighted_dataframe()[["date"]]))
-    date_max <- reactive(max(highlighted_dataframe()[["date"]]))
-
-
-    observe({
-      shiny::updateDateRangeInput(
-        session = session,
-        inputId = "dateRange", # Link to UI's dateRange
-        label = "date range",
-        start = date_min(), # ensure called reactively
-        end = date_max()
-      ) # ensure called reactively
-    })
+    date_range_vot <- mod_daterange_input_server("dateRangeVot", highlighted_dataframe = highlighted_dataframe, r = r) # Render the reactive plot from this.
 
     volume_reactive <- reactive({
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a volume over time plot")
       }
 
-      vol_plot <- highlighted_dataframe() %>%
-        dplyr::mutate(date = as.Date(date)) %>%
-        dplyr::filter(
-          date >= input$dateRange[[1]],
-          date <= input$dateRange[[2]]
-        ) %>%
+      vol_plot <- date_range_vot$over_time_data() %>%
         LandscapeR::ls_plot_volume_over_time(
           .date_var = date,
           unit = input$dateBreak,
           fill = delayedVolumeHex()
-        ) # Add the labels from mod_reactive_labels to the plot
+        )
 
       if (!input$dateSmooth == "none") {
         if (input$smoothSe == "FALSE") {
@@ -136,9 +125,9 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe) {
       shiny::debounce(500)
 
     output$saveVolume <- LandscapeR::download_box("volume_plot",
-      volume_reactive,
-      width = shiny::reactive(input$width),
-      height = shiny::reactive(input$height)
+                                                  volume_reactive,
+                                                  width = shiny::reactive(input$width),
+                                                  height = shiny::reactive(input$height)
     )
   })
 }

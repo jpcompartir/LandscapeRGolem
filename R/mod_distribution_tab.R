@@ -95,17 +95,17 @@ mod_distribution_tab_ui <- function(id, distribution_tab_height, distribution_ta
 #' distribution_tab Server Functions
 #'
 #' @noRd
-mod_distribution_tab_server <- function(id, highlighted_dataframe) {
+mod_distribution_tab_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    mod_volume_over_time_server(id = "volumeModule", highlighted_dataframe = highlighted_dataframe)
+    mod_volume_over_time_server(id = "volumeModule", highlighted_dataframe = highlighted_dataframe, r = r)
 
     mod_sentiment_server("sentimentModule", highlighted_dataframe = highlighted_dataframe)
 
     mod_token_plot_server("tokenModule", highlighted_dataframe = highlighted_dataframe)
 
-    mod_sent_time_server("sentTimeModule", highlighted_dataframe = highlighted_dataframe)
+    mod_sent_time_server("sentTimeModule", highlighted_dataframe = highlighted_dataframe, r = r)
   })
 }
 

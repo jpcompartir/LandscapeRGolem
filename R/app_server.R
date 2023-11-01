@@ -6,7 +6,8 @@
 #' @noRd
 app_server <- function(input, output, session, data) {
   if (is.null(data)) {
-    data <- utils::read.csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv", ) %>%
+    data <- utils::read.csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+      stats::na.omit() %>%
       dplyr::select(-cluster) %>%
       dplyr::rename(cluster = topic) %>%
       dplyr::mutate(date = as.Date(date)) %>%
@@ -37,8 +38,8 @@ app_server <- function(input, output, session, data) {
     global_group_var = "cluster",
     global_subgroups = NULL)
 
-  r$date_min <- min(data$date)
-  r$date_max <- max(data$date)
+  r$date_min <- min(data$date, na.rm = TRUE)
+  r$date_max <- max(data$date, na.rm = TRUE)
 
 
   mod_conversation_landscape_server("landscapeTag",
@@ -50,7 +51,8 @@ app_server <- function(input, output, session, data) {
 
   mod_distribution_tab_server(
     id = "distributionTag",
-    highlighted_dataframe = df_filtered
+    highlighted_dataframe = df_filtered,
+    r = r
   )
 
   mod_bigram_network_server("bigramTag",

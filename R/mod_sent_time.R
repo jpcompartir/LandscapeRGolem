@@ -18,12 +18,7 @@ mod_sent_time_ui <- function(id, distribution_tab_height, distribution_tab_width
           open = TRUE,
           shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1000, value = distribution_tab_height, step = 50, color = "#ff7518"),
           shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1000, value = distribution_tab_width, step = 50, color = "#ff7518"),
-            shiny::dateRangeInput(
-              inputId = ns("dateRangeSent"),
-              label = "date range",
-              start = NULL,
-              end = NULL
-            ),
+          mod_daterange_input_ui(ns("dateRangeSent")),
             shiny::selectInput(
               inputId = ns("dateBreak"),
               label = "unit",
@@ -46,36 +41,20 @@ mod_sent_time_ui <- function(id, distribution_tab_height, distribution_tab_width
 #' sent_time Server Functions
 #'
 #' @noRd
-mod_sent_time_server <- function(id, highlighted_dataframe) {
+mod_sent_time_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     sent_time_titles <- mod_reactive_labels_server("sentTimeTitles")
 
-    # get the minimum date range and store in a reactive
-    date_min_sent <- reactive(min(highlighted_dataframe()[["date"]]))
-    date_max_sent <- reactive(max(highlighted_dataframe()[["date"]]))
-
-    observe({
-      shiny::updateDateRangeInput(
-        session = session,
-        inputId = "dateRangeSent", # Link to UI's dateRange
-        label = "date range",
-        start = date_min_sent(), # ensure called reactively
-        end = date_max_sent()
-      ) # ensure called reactively
-    })
+    sent_date_range_vot <- mod_daterange_input_server("dateRangeSent", highlighted_dataframe, r)
 
     sent_time_reactive <- reactive({
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a sentiment over time plot")
       }
 
-      sent_time_plot <- highlighted_dataframe() %>%
-        dplyr::filter(
-          date >= input$dateRangeSent[[1]],
-          date <= input$dateRangeSent[[2]]
-        ) %>%
+      sent_time_plot <-sent_date_range_vot$over_time_data() %>%
         LandscapeR::ls_sentiment_over_time(
           sentiment_var = sentiment,
           date_var = date,
