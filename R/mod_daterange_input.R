@@ -29,10 +29,7 @@ mod_daterange_input_server <- function(id, highlighted_dataframe, r){
     ns <- session$ns
 
     observeEvent(highlighted_dataframe(), {
-
       req(!is.null(r$date_min), !is.null(r$date_max))
-
-      print(paste0("before update:", input$dateRange))
       shiny::updateDateRangeInput(
         session = session,
         inputId = "dateRange",
@@ -41,8 +38,6 @@ mod_daterange_input_server <- function(id, highlighted_dataframe, r){
         min = r$date_min - 1,
         max = r$date_max + 1
       )
-      print(paste0("After update:", input$dateRange))
-
     })
 
     over_time_data <- reactive({

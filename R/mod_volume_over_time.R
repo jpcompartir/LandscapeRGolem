@@ -58,7 +58,7 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe, r) {
 
     vol_titles <- mod_reactive_labels_server("volumeTitles")
 
-    date_range_vot <- mod_daterange_input_server("dateRangeVot", highlighted_dataframe = highlighted_dataframe, r = r)
+    date_range_vot <- mod_daterange_input_server("dateRangeVot", highlighted_dataframe = highlighted_dataframe, r = r) # Render the reactive plot from this.
 
     volume_reactive <- reactive({
       if (nrow(highlighted_dataframe()) < 1) {

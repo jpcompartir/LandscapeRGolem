@@ -30,12 +30,7 @@ mod_group_vol_time_ui <- function(id) {
               title = "Parameters",
               icon = shiny::icon("wrench"),
               value = "nested1item2",
-              shiny::dateRangeInput(
-                inputId = ns("dateRangeGroupVol"),
-                label = "date range",
-                start = NULL,
-                end = NULL
-              ),
+              mod_daterange_input_ui(ns("dateRangeGroupVol")),
               shiny::selectInput(
                 inputId = ns("dateBreak"),
                 label = "unit",
@@ -70,30 +65,14 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
 
     group_vol_time_titles <- mod_reactive_labels_server("groupVolTimeTitles")
 
-    # get the minimum date range and store in a reactive
-    date_min <- reactive(min(highlighted_dataframe()[["date"]]))
-    date_max <- reactive(max(highlighted_dataframe()[["date"]]))
-
-    shiny::observe({
-      shiny::updateDateRangeInput(
-        session = session,
-        inputId = "dateRangeGroupVol",
-        start = date_min(),
-        end = date_max()
-      )
-    })
+    group_date_range_vot <- mod_daterange_input_server("dateRangeGroupVol", highlighted_dataframe, r)
 
     group_vol_time_reactive <- shiny::reactive({
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a grouped volume over time plot")
       }
 
-      group_vol_time_plot <- highlighted_dataframe() %>%
-        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
-        dplyr::filter(
-          date >= input$dateRangeGroupVol[[1]],
-          date <= input$dateRangeGroupVol[[2]]
-        ) %>%
+      group_vol_time_plot <- group_date_range_vot$over_time_data() %>%
         LandscapeR::ls_plot_group_vol_time(
           group_var = r$global_group_var,
           date_var = date,
