@@ -107,13 +107,13 @@ app_server <- function(input, output, session, data) {
     selected_range(plotly::event_data("plotly_selected"))
   })
 
-  #---- key ----
+  #---- key for filtering reactive_data and creating df_filtered ----
   key <- reactive({
     selected_range()$key
   })
 
   #---- filtered_df ----
-  # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe
+  # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
   df_filtered <- reactive({
     df_filtered <- reactive_data() %>%
       dplyr::filter(document %in% key())
