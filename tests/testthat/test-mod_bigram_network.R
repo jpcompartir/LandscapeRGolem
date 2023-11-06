@@ -59,22 +59,31 @@ test_that("module ui works", {
   expect_false(stringr::str_detect(ui_string, stringr::fixed('id="test-bogiesN')))
 
   #Ids to be applied all at once in the the vapply line of code below:
-  ids_that_should_exist <- list(
-    stringr::fixed('id="test-topN'),
-    stringr::fixed('id="test-bigramPlot"'),
-    stringr::fixed('id="test-minFreq"'),
-    stringr::fixed('id="test-removeStopwords"'),
-    stringr::fixed('id="test-updatePlotsButton"'),
-    stringr::fixed('id="test-height-label'),
-    stringr::fixed('id="test-updatePlotsButton')
-  )
+  # ids_that_should_exist <- list(
+  #   stringr::fixed('id="test-topN'),
+  #   stringr::fixed('id="test-bigramPlot"'),
+  #   stringr::fixed('id="test-minFreq"'),
+  #   stringr::fixed('id="test-removeStopwords"'),
+  #   stringr::fixed('id="test-updatePlotsButton"'),
+  #   stringr::fixed('id="test-height-label'),
+  #   stringr::fixed('id="test-updatePlotsButton')
+  # )
+  #
+  # #Using the *apply family rather than map as LandscapeRGolem has no {purrr} dep.
+  # vapply(
+  #   ids_that_should_exist,
+  #   FUN = function(x) expect_true(stringr::str_detect(ui_string, pattern = x)),
+  #   FUN.VALUE =logical(length(1L))
+  # )
 
-  #Using the *apply family rather than map as LandscapeRGolem has no {purrr} dep.
-  vapply(
-    ids_that_should_exist,
-    FUN = function(x) expect_true(stringr::str_detect(ui_string, pattern = x)),
-    FUN.VALUE =logical(length(1L))
-  )
+  #Write the tests out individually so the error message are more informative.
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-topN')))
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-bigramPlot"')))
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-minFreq"')))
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-removeStopwords"')))
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-updatePlotsButton"')))
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-height-label')))
+  expect_true(stringr::str_detect(ui_string, pattern = stringr::fixed('id="test-updatePlotsButton')))
 })
 
 
