@@ -51,7 +51,7 @@ test_that("module ui works", {
   expect_true(stringr::str_detect(ui_char, "groupGlobalsTag"))
   expect_true(stringr::str_detect(ui_char, "wlosTag"))
   expect_true(stringr::str_detect(ui_char, "groupSentimentTag"))
-  expect_true(stringr::str_detect(ui_char, "groupVolTimeTags"))
+  expect_true(stringr::str_detect(ui_char, "groupVolTimeTag"))
 
 })
 
