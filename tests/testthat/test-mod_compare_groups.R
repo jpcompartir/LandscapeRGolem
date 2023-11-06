@@ -20,8 +20,6 @@ test_that("Module's server function accepts the right named inputs", {
   )
 })
 
-
-
 test_that("module ui works", {
   ui <- mod_compare_groups_ui(id = "test")
   golem::expect_shinytaglist(ui)

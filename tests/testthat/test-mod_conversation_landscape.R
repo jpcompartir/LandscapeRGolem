@@ -2,7 +2,8 @@ test_that("Module's server errors if given an incorrect input", {
   expect_error(testServer(
     mod_conversation_landscape_server,
     args = list(
-      bad_input = "really bad!"))
+      bad_input = "really bad!")),
+    "unused argument"
   )
 })
 
@@ -21,7 +22,6 @@ test_that("Module's server function accepts the right named inputs", {
   )
 
 })
-
 
 test_that("module ui works", {
   ui <- mod_conversation_landscape_ui(id = "test")
