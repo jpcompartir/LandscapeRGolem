@@ -124,3 +124,41 @@ In more familiar R terms, the server was waiting until it had to do anything wit
 
 ```
 
+
+# Notes from other resources
+
+## Mastering Shiny -  Testing (Chapter 21 presently)
+
+You can use browser() inside testServer to see what’s going on with specific values/what your changes do and what will / won’t work…
+
+stopifnot(is.reactive(var)) - nice little trick for input validation in modules, e.g. for highlighted_dataframe()
+
+testServer -
+Unlike the real world, time does not advance automatically. So if you want to test code that relies on reactiveTimer() or invalidateLater(), you’ll need to manually advance time by calling session$elapse(millis = 300).
+
+testServer() ignores UI. That means inputs don’t get default values, and no JavaScript works. Most importantly this means that you can’t test the update* functions, because they work by sending JavaScript to the browser to simulates user interactions. You’ll require the next technique to test such code.
+
+
+Wrap testServer in test_that
+
+## Shiny App Packages - Testing (Section 3)
+
+Testing the UI
+
+```{r}
+mod_bigram_network_ui(id = "test")
+```
+
+
+## Gotchas + Reminders
+
+Browse[1]> class(bigram_reactive)
+[1] "reactive.event" "reactiveExpr"   "reactive"       "function"      
+Browse[1]> x <- bigram_reactive()
+Browse[1]> class(x)
+[1] "ggraph" "gg"     "ggplot"
+
+bigram_reactive is the reactive expression, untriggered. bigram_reactive() is the actual ggraph/gg/ggplot object now triggered. Always good to remind onself of this and what that means when interacting with the objects at various points of the SWD process.
+
+
+Can use  `ui <- mod_bigram_network_ui(id = "test")` and type ui to see all of the shiny tags, and then type ui[[1]] to render the UI in a viewer object, maybe easier than end app, run_app() -> click to app.
