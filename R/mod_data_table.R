@@ -24,21 +24,9 @@ mod_data_table_server <- function(id, highlighted_dataframe) {
     ns <- session$ns
 
     output$highlightedTable <- DT::renderDataTable({
-      # Using this as a placeholder, will need to re-work in the reactive frames
-      highlighted_dataframe() %>%
-        # Also a question of how best to manage tidy evaluation etc. here
-        dplyr::select(date, text, cluster, sentiment, permalink) %>%
-        DT::datatable(
-          filter = "top",
-          options = list(
-            pageLength = 25,
-            dom = '<"top" ifp> rt<"bottom"lp>',
-            autoWidth = FALSE
-          ),
-          style = "bootstrap5",
-          rownames = FALSE,
-          escape = FALSE
-        )
+
+      # Function currently lives in zzz.R
+      return(make_dt_tab_output(highlighted_dataframe))
     })
   })
 }

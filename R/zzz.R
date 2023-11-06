@@ -200,3 +200,23 @@ make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 
 
   return(plot)
 }
+
+
+make_dt_tab_output <- function(data) {
+  stopifnot(is.reactive(data) | is.function(data))
+  table <- data() %>%
+    dplyr::select(date, text, cluster, sentiment, permalink) %>%
+    DT::datatable(
+      filter = "top",
+      options = list(
+        pageLength = 25,
+        dom = '<"top" ifp> rt<"bottom"lp>',
+        autoWidth = FALSE
+      ),
+      style = "bootstrap5",
+      rownames = FALSE,
+      escape = FALSE
+    )
+
+  return(table)
+}
