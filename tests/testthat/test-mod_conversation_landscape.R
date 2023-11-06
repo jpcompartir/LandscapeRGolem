@@ -1,11 +1,27 @@
-testServer(
-  mod_conversation_landscape_server,
-  # Add here your module params
-  args = list(), {
-    ns <- session$ns
+test_that("Module's server errors if given an incorrect input", {
+  expect_error(testServer(
+    mod_conversation_landscape_server,
+    args = list(
+      bad_input = "really bad!"))
+  )
+})
 
+test_that("Module's server function accepts the right named inputs", {
+  expect_silent(
+    testServer(
+      mod_conversation_landscape_server,
+      # Add here your module params
+      args = list(
+        highlighted_dataframe = list(),
+        selected_range = list(),
+        r = list()),
+        expr = {
+        ns <- session$ns
+      })
+  )
 
 })
+
 
 test_that("module ui works", {
   ui <- mod_conversation_landscape_ui(id = "test")
@@ -16,6 +32,9 @@ test_that("module ui works", {
 
   #goTop element is present
   expect_true(stringr::str_detect(ui_character, stringr::fixed("<div id='goTop'></div>")))
+
+  #ID that shouldn't exist, doesn't exist:
+  expect_false(stringr::str_detect(ui_character, stringr::fixed("id='test-shouldntexist'")))
 
   ids_that_should_exist <-
     list(
@@ -38,4 +57,3 @@ test_that("module ui works", {
     expect_true(i %in% names(fmls))
   }
 })
-
