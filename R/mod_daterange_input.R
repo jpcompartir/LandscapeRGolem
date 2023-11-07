@@ -15,8 +15,9 @@ mod_daterange_input_ui <- function(id){
       label = "date range",
       start = NULL,
       end = NULL,
-      min = Sys.Date() - (365* 5),
-      max = Sys.Date() + 1
+      min = as.character(Sys.Date() - (365* 5)),
+      max = as.character(Sys.Date() + 1)
+      # format = "yyyy-mm-dd"
     )
   )
 }
@@ -39,17 +40,16 @@ mod_daterange_input_server <- function(id, highlighted_dataframe, r){
         max = r$date_max + 1
       )
     })
-
+3
     over_time_data <- reactive({
       over_time_data <- highlighted_dataframe() %>%
-      dplyr::mutate(date = as.Date(date)) %>%
       dplyr::filter(
         date >= input$dateRange[[1]],
-        date <= input$dateRange[[2]])
+        date <= input$dateRange[[2]]
+        )
     })
 
     return(list(over_time_data = over_time_data))
-
 
   })
 }
