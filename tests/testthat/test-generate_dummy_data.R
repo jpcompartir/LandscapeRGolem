@@ -14,3 +14,17 @@ test_that("generate_dummy_data is stable", {
     )
   )
 })
+
+
+test_that("generate_date_sequence_data is stable", {
+  data <- generate_date_sequence_data(length = 20)
+
+  expect_true(
+    all(
+      names(data)  == c("document", "date", "text", "sentiment", "cluster", "permalink", "V1", "V2", "clean_text")
+    )
+  )
+  expect_true(min(data$date) < max(data$date))
+  expect_equal(nrow(data), 20)
+
+})

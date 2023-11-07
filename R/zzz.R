@@ -189,6 +189,27 @@ generate_dummy_data <- function(length = 10){
   return(data)
 }
 
+base_date <- as.Date("2023-01-01")
+
+generate_date_sequence_data <- function(length = 20) {
+  set.seed(1234)
+  base_date <- as.Date("2023-01-01")
+  data <- data.frame(
+    document = seq(1:length),
+    date = seq.Date(base_date, base_date+ length, length.out = length),
+    text = rep("This is a test with some extra words because we need them for the bigram viz test function", length),
+    sentiment = rep("positive", length),
+    cluster = 1:length,
+    permalink = rep("https://www.google.com", length),
+    V1 = runif(length, 0, 1),
+    V2 = runif(length, 0, 1)
+  )
+
+  data$clean_text = data$text
+
+  return(data)
+}
+
 # Utility function for mod_bigram_network
 make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
   requireNamespace("ParseR")
