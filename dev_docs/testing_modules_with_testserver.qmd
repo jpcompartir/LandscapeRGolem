@@ -1,0 +1,164 @@
+---
+title: "Testing a Golem module"
+format: 
+  html:
+    toc: true
+    toc-location: left
+editor: visual
+---
+
+# Testing in R
+
+When developing packages in R, we usually lean on {testthat}. Creating unit tests with {testthat} (leaving aside integration tests for now) is pretty simple, first we write a function which performs some actions, then we write some tests which check that our function still performs those actions - or if following Test Driven Development (TDD) practices, we write the tests first and then write the functionality, in either case, {testthat} makes it pretty seamless.
+
+However, {testthat} was not built with Shiny in mind, and the interaction between the UI and the server of a Shiny app is not self-evident how to test via {testthat}'s traditional testing approach. In fact, when I sat down to start testing Shiny apps, I realised that not only could I not see how to do it, I didn't know how to articulate why I couldn't `just do it`. I just sort of stared at the screen, looked at a few help pages, and eventually went back to building out more features (don't do this!).
+
+# Testing a Golem Module
+
+There is another layer of complexity if we build our apps with frameworks like {golem}. For the rest of this post, we'll assume some familiarity with {golem} and its modules.  
+
+In my case, the modules that I want to test take reactiveValues from other modules, or reactive objects, such as reactive data frames from other modules. This presents a barrier to testing, as in a general R or testthat session, we're not in a reactive context. 
+
+Now - I’m pretty sure I first read this in `Mastering Shiny by Hadley Wickham` - but it’s important to remember that in R, virtually everything is a function, and reactives are no different. This means that we can mimic the behaviour of a reactive, by passing in a function to a module.
+
+To make it more concrete, I have a module’s server function which takes an id and a data frame. The function then calls the moduleServer function, which takes the id from my_module_server, and a server function as an input.
+
+```{r, eval = FALSE}
+my_module_server <- function(id, highlighted_dataframe) {
+	moduleServer(id, 
+	             function(input, output, session) # This is what we'd usually have as our server, e.g. server <- function(input, output, session)
+	               ) {
+
+	} 
+}
+```
+
+At the moment the module doesn't actually do anything, but we have a skeleton in place and we can see that when we call `my_module_server` we have to provide an input for id and highlighted_dataframe. 
+
+Let's add some real logic, so that our module creates a reactive object, which updates whenever there's a change in our highlighted_dataframe input, or the updatePlotButton is pressed, and needs to have an x column in the highlighted_dataframe, plus an input set for topN and width + height. This module is a bit more complex, but still less complex than many modules will be.
+```{r, eval = FASLSE}
+my_module_server <- function(id, highlighted_dataframe) {
+  moduleServer(id, function(input, output, session)) {
+    
+    reactive_plot <- shiny::eventReactive( c(highlighted_dataframe(), input$updatePlotButton), {
+      module_plot <- highlighted_dataframe() %>%
+        make_module_plot(
+          x_var = x,
+          top_n = input$topN
+        )
+      return(module_plot)
+    }
+    
+    output$modulePlot <- shiny::renderPlot({
+      reactive_plot()
+    }, res = 100, width = function() input$width, height = function() input$height
+    )
+    } 
+  }
+}
+```
+
+In testing this module we want to know that given the right inputs, a plot is rendered. So how do we go about testing it?
+
+My first pass with testServer was to do something like:
+
+```{r}
+testServer(
+  app = my_module_server,
+  args = list(),
+  expr = {
+    ns <- session$ns
+    
+    #Check input isn't set
+    expect_true(is.null(session$topN))
+    
+    #Set input
+    session$setInputs(topN = 5)
+    expect_true(input$topN == 5)
+     
+    #... some other code
+  }
+)
+```
+
+This test passed, as did the other tests that I wrote for the inputs, but then I realised that I could set anything as an input here, and the test would pass
+```{r}
+testServer(
+  app = my_module_server,
+  args = list(),
+  expr = {
+    ns <- session$ns
+    
+    #Check input isn't set
+    expect_true(is.null(session$topN))
+    
+    #Set input
+    session$setInputs(topN = 5)
+    expect_true(input$topN == 5)
+     
+    session$setInputs(shalabadaba = "shalabadooo")
+    expect_equal(input$shalabadaba, "shalabadooo")
+  }
+)
+```
+
+So I realised that I wasn't testing what I thought I was, or what I needed to test. So I wanted to get a bit more information about what's actually happening in the testServer, like is there actually a reactive_plot being generated?
+
+```{r, eval = FALSE}
+testServer(
+  app = my_module_server,
+  args = list(),
+  expr = {
+    ns <- session$ns
+    
+    print(reactive_plot())
+  }
+)
+```
+
+So now I get the error that 'highlighted_dataframe was missing', which is a mandatory argument for the module server, now we're getting somewhere. Whereas before the tests were passing because they weren't really testing anything, the test is now failing in meaningful ways. 
+
+In more familiar R terms, the server was waiting until it had to do anything with reactive_plot before raising an error. So how do we solve it and check that a plot really is being generated?
+
+```{r, eval = FALSE}
+
+```
+
+
+# Notes from other resources
+
+## Mastering Shiny -  Testing (Chapter 21 presently)
+
+You can use browser() inside testServer to see what’s going on with specific values/what your changes do and what will / won’t work…
+
+stopifnot(is.reactive(var)) - nice little trick for input validation in modules, e.g. for highlighted_dataframe()
+
+testServer -
+Unlike the real world, time does not advance automatically. So if you want to test code that relies on reactiveTimer() or invalidateLater(), you’ll need to manually advance time by calling session$elapse(millis = 300).
+
+testServer() ignores UI. That means inputs don’t get default values, and no JavaScript works. Most importantly this means that you can’t test the update* functions, because they work by sending JavaScript to the browser to simulates user interactions. You’ll require the next technique to test such code.
+
+
+Wrap testServer in test_that
+
+## Shiny App Packages - Testing (Section 3)
+
+Testing the UI
+
+```{r}
+mod_bigram_network_ui(id = "test")
+```
+
+
+## Gotchas + Reminders
+
+Browse[1]> class(bigram_reactive)
+[1] "reactive.event" "reactiveExpr"   "reactive"       "function"      
+Browse[1]> x <- bigram_reactive()
+Browse[1]> class(x)
+[1] "ggraph" "gg"     "ggplot"
+
+bigram_reactive is the reactive expression, untriggered. bigram_reactive() is the actual ggraph/gg/ggplot object now triggered. Always good to remind onself of this and what that means when interacting with the objects at various points of the SWD process.
+
+
+Can use  `ui <- mod_bigram_network_ui(id = "test")` and type ui to see all of the shiny tags, and then type ui[[1]] to render the UI in a viewer object, maybe easier than end app, run_app() -> click to app.

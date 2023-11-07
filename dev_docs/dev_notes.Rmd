@@ -1,4 +1,6 @@
-October
+31st October - fixed the issue with the vot plots not rendering due to the observe funniness.
+
+
 
 Roadmap - popovers & tooltips
 interactive plots with plotly/cards

@@ -58,18 +58,6 @@ mod_bigram_network_server <- function(id, highlighted_dataframe) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    #Utility function
-    make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
-      requireNamespace("ParseR")
-
-      counts <- data %>%
-        ParseR::count_ngram(text_var = {{ text_var }}, top_n = top_n, min_freq = min, ...)
-      plot <- counts[["viz"]] %>%
-        ParseR::viz_ngram()
-
-      return(plot)
-    }
-
     #update whenever highlighted_dataframe() updates, or the plot input button is pressed.
     bigram_reactive <- shiny::eventReactive(c(highlighted_dataframe(), input$updatePlotsButton),{
       if (nrow(highlighted_dataframe()) < 1) {
@@ -84,6 +72,7 @@ mod_bigram_network_server <- function(id, highlighted_dataframe) {
       }
 
       bigram <- bigram_data %>%
+        #Function defined in zzz.R
         make_bigram_viz(
           text_var = clean_text,
           clean_text = FALSE,
@@ -112,5 +101,3 @@ mod_bigram_network_server <- function(id, highlighted_dataframe) {
 
 ## To be copied in the server
 # mod_bigram_network_server("bigram_network_1")
-
-

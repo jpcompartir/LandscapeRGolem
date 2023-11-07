@@ -168,3 +168,77 @@ setSliderColor <- function(color, sliderId) {
   custom_head <- tags$head(tags$style(HTML(as.character(sliderCol))))
   return(custom_head)
 }
+
+
+#For testing etc.
+generate_dummy_data <- function(length = 10){
+  set.seed(1234)
+  data <- data.frame(
+    document = seq(1:length),
+    date = rep(as.Date("2020-01-01"), length),
+    text = rep("This is a test with some extra words because we need them for the bigram viz test function", length),
+    sentiment = rep("positive", length),
+    cluster = 1:length,
+    permalink = rep("https://www.google.com", length),
+    V1 = runif(length, 0, 1),
+    V2 = runif(length, 0, 1)
+  )
+
+  data$clean_text <- data$text
+
+  return(data)
+}
+
+generate_date_sequence_data <- function() {
+  set.seed(1234)
+
+  data <- data.frame(
+    document = seq(1:10),
+    date = as.Date(c("2023-01-01", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05",
+                     "2023-01-06", "2023-01-07", "2023-01-08", "2023-01-09", "2023-01-10")),
+    text = rep("This is a test with some extra words because we need them for the bigram viz test function", 10),
+    sentiment = rep("positive", 10),
+    cluster = 1:10,
+    permalink = rep("https://www.google.com", 10),
+    V1 = runif(10, 0, 1),
+    V2 = runif(10, 0, 1)
+  )
+
+  data$clean_text = data$text
+
+  return(data)
+}
+
+
+
+# Utility function for mod_bigram_network
+make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
+  requireNamespace("ParseR")
+
+  counts <- data %>%
+    ParseR::count_ngram(text_var = {{ text_var }}, top_n = top_n, min_freq = min, ...)
+  plot <- counts[["viz"]] %>%
+    ParseR::viz_ngram()
+
+  return(plot)
+}
+
+
+make_dt_tab_output <- function(data) {
+  stopifnot(is.reactive(data) | is.function(data))
+  table <- data() %>%
+    dplyr::select(date, text, cluster, sentiment, permalink) %>%
+    DT::datatable(
+      filter = "top",
+      options = list(
+        pageLength = 25,
+        dom = '<"top" ifp> rt<"bottom"lp>',
+        autoWidth = FALSE
+      ),
+      style = "bootstrap5",
+      rownames = FALSE,
+      escape = FALSE
+    )
+
+  return(table)
+}
