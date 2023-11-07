@@ -17,7 +17,7 @@ test_that("generate_dummy_data is stable", {
 
 
 test_that("generate_date_sequence_data is stable", {
-  data <- generate_date_sequence_data(length = 20)
+  data <- generate_date_sequence_data()
 
   expect_true(
     all(
@@ -25,6 +25,6 @@ test_that("generate_date_sequence_data is stable", {
     )
   )
   expect_true(min(data$date) < max(data$date))
-  expect_equal(nrow(data), 20)
+  expect_equal(nrow(data), 10)
 
 })
