@@ -162,3 +162,37 @@ bigram_reactive is the reactive expression, untriggered. bigram_reactive() is th
 
 
 Can use  `ui <- mod_bigram_network_ui(id = "test")` and type ui to see all of the shiny tags, and then type ui[[1]] to render the UI in a viewer object, maybe easier than end app, run_app() -> click to app.
+
+## Testing interaction with nested modules
+
+the mod_group_vol_time_server gets its filtered data out of the mod_daterange_input_server. This presents a challenge because each module is namespaced, so we can't just `setInputs(dateRange = list(as.Date("2023-01-03"), as.Date("2023-01-09"))` because we'd be setting the value of dateRange inside the wrong namespace - the namespace of mod_group_vol_time_server.
+
+This means when we try to access the  `group_date_range_vot$over_time_data()` to generate our groupued volume over time char, we get an error that the dateRange isn't set. So with the help of `ui <- mod_group_vol_time_ui(id = "test")` we can look for the correct input to set `dateRange` to, which is `dateRangeGroupVol-dateRange`. We've unearthed a general truth about nested modules. Our parent module is dateRangeGroupVol, our child is dateRange, so we join the two with `dateRangeGroupVol-dateRange`, if dateRange had a child module called dateRangeChild, we'd join the three with `dateRangeGroupVol-dateRange-dateRangeChild`!
+
+```{r, eval = FALSE}
+
+ session$setInputs(
+        # ns("dateRange") = list(as.Date("2023-01-03"), as.Date("2023-01-09")),
+        dateBreak = "day",
+        height = 600,
+        width = 400,
+        nrow = 2,
+        #So to pass stuff into the modules that need them we can pre-prepend the namespace with syms
+        `dateRangeGroupVol-dateRange` = list(as.Date("2023-01-03"), as.Date("2023-01-09"))
+      )
+```
+
+## Emulating a reactive with the return values specified:
+
+because in our module we try to:
+label_ids <- as.numeric(selected_range()$key)
+
+We can't just send in selected_range as c(1, 2, 3). We need to send it in as an object which imitates a reactive, with a return value of list(key = c(...)) so that when we call it in the module later on, we get the current value, and we can access the key. Tricky.
+
+selected_range = function(){
+                return(list(key = c(1, 2, 3)))
+              }
+
+
+If wanting to change the length of the generate_dummy_data for whatever reason:
+function(){return(generate_dummy_data(length = 20))}
