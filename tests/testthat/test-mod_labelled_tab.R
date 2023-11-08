@@ -65,6 +65,8 @@ test_that("module ui works", {
   ui_char <- as.character(ui)
 
   expect_true(stringr::str_detect(ui_char, "test-downloadLabelledData-download"))
-
+  expect_true(stringr::str_detect(ui_char, "test-labelledDT"))
+  expect_true(stringr::str_detect(ui_char, 'aria-label="download icon"'))
+  expect_equal(stringr::str_count("div", string = ui_char), 10)
 })
 
