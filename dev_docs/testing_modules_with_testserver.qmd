@@ -182,3 +182,15 @@ This means when we try to access the  `group_date_range_vot$over_time_data()` to
       )
 ```
 
+## Emulating a reactive with the return values specified:
+
+because in our module we try to:
+label_ids <- as.numeric(selected_range()$key)
+
+We can't just send in selected_range as c(1, 2, 3). We need to send it in as an object which imitates a reactive, with a return value of list(key = c(...)) so that when we call it in the module later on, we get the current value, and we can access the key. Tricky.
+
+selected_range = function(){
+                return(list(key = c(1, 2, 3)))
+              }
+
+

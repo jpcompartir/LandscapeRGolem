@@ -84,6 +84,7 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
       plot_output <- output$saveGroupVolTime
       expect_true(startsWith(plot_output, "/var/fold"))
       expect_true(endsWith(plot_output, ".png"))
+      expect_true(grepl('group_vol_time', plot_output))
     })
 })
 
