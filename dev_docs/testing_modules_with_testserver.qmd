@@ -194,3 +194,5 @@ selected_range = function(){
               }
 
 
+If wanting to change the length of the generate_dummy_data for whatever reason:
+function(){return(generate_dummy_data(length = 20))}
