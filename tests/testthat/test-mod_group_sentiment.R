@@ -41,6 +41,7 @@ test_that("Module produces the plot as expected", {
 
       expect_true(is.reactive(group_sent_reactive))
       plot <- group_sent_reactive()
+
       plot_build <- ggplot2::ggplot_build(plot)
 
       expect_true(inherits(plot, "gg"))
@@ -57,6 +58,9 @@ test_that("Module produces the plot as expected", {
       # Check the first plot has different labels to the second, and that the second's are percentages
       expect_equal(unique(plot_build[[1]][[2]][["label"]]), "1")
       expect_equal(unique(plot_two_build[[1]][[2]][["label"]]), "100%")
+
+      expect_true(inherits(plot, "gg"))
+      expect_true(all(c("group_var", "sentiment_var", "n", "percent", ".total", "percent_character") %in% names(plot$data)))
     }
   )
 })
