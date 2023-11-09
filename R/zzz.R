@@ -242,3 +242,31 @@ make_dt_tab_output <- function(data) {
 
   return(table)
 }
+
+
+#Custom expectation for code ran properly. Informs if NULL return value
+expect_valid <- function(expr) {
+  result <- tryCatch({
+    expr
+  }, error = function(e) {
+    e
+  })
+
+  # Check if result is an error
+  if (inherits(result, "error")) {
+    testthat::expect(
+      FALSE,
+      sprintf("code did not run successfully. Error: %s", result$message)
+    )
+  } else if (is.null(result)) {
+    testthat::expect(
+      FALSE,
+      "code ran but returned NULL"
+    )
+  } else {
+    testthat::expect(
+      TRUE,
+      "code ran successfully and returned non-NULL"
+    )
+  }
+}
