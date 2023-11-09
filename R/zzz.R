@@ -210,7 +210,7 @@ generate_date_sequence_data <- function() {
 }
 
 generate_sentiment_data <- function(size = 30) {
-  set.seed(1234)
+  set.seed(123)
 
   data <- data.frame(
     document = seq(1:size),
@@ -222,7 +222,6 @@ generate_sentiment_data <- function(size = 30) {
     text = rep("This is a test with some extra words because we need them for the bigram viz test function", size),
     sentiment = sample(c("positive","negative", "neutral"),
                        size = size,
-                       prob = c(0.3, 0.1,0.6),
                        replace = TRUE)
     ,
     cluster = sample(
