@@ -1,7 +1,7 @@
 globalVariables(c(".data", ":=", "V1", "V2", "clean_text", "cluster", "document", "mention_content", "permalink", "sentiment", "text", "topic"))
 
 search_widget <- function (inputId, label = NULL, value = "", placeholder = NULL,
-          btnSearch = NULL, btnReset = NULL, resetValue = "", width = NULL)
+                           btnSearch = NULL, btnReset = NULL, resetValue = "", width = NULL)
 {
 
   value <- shiny::restoreInput(id = inputId, default = value)
@@ -99,38 +99,38 @@ bigram_text <- function() {
 
 # nested_accordions <- function(id,) {
 #
-  # ns <- NS(id)
-  #
-  # shiny::tagList(
-  #   bslib::accordion(
-  #     id = "",
-  #     bslib::accordion_panel(
-  #       id = "top_panel",
-  #       bslib::accordion_panel(
-  #         id = "nested_panel1",
-  #         title = ,
-  #         active = ,
-  #         top_level_lements
-  #       ),
-  #       bslib::layout_sidebar(
-  #         fillable = TRUE,
-  #         fill = TRUE,
-  #         sidebar = bslib::sidebar(
-  #           bslib::accordion(
-  #             id = "nested_accordion",
-  #             bslib::accordion_panel(
-  #
-  #             ),
-  #             bslib::accordion_panel(
-  #
-  #             ),
-  #           )
-  #         ), #main component of sidebar
-  #
-  #       ),
-  #     ),
-  #   )
-  # )
+# ns <- NS(id)
+#
+# shiny::tagList(
+#   bslib::accordion(
+#     id = "",
+#     bslib::accordion_panel(
+#       id = "top_panel",
+#       bslib::accordion_panel(
+#         id = "nested_panel1",
+#         title = ,
+#         active = ,
+#         top_level_lements
+#       ),
+#       bslib::layout_sidebar(
+#         fillable = TRUE,
+#         fill = TRUE,
+#         sidebar = bslib::sidebar(
+#           bslib::accordion(
+#             id = "nested_accordion",
+#             bslib::accordion_panel(
+#
+#             ),
+#             bslib::accordion_panel(
+#
+#             ),
+#           )
+#         ), #main component of sidebar
+#
+#       ),
+#     ),
+#   )
+# )
 
 # }
 
@@ -209,7 +209,41 @@ generate_date_sequence_data <- function() {
   return(data)
 }
 
+generate_sentiment_data <- function(size = 30) {
+  set.seed(1234)
 
+  data <- data.frame(
+    document = seq(1:size),
+    date = sample(replace = TRUE, size = size, x =
+                    as.Date(
+                      c("2023-01-01", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05", "2023-01-06", "2023-01-07", "2023-01-08", "2023-01-09", "2023-01-10")
+                    )
+    ),
+    text = rep("This is a test with some extra words because we need them for the bigram viz test function", size),
+    sentiment = sample(c("positive","negative", "neutral"),
+                       size = size,
+                       prob = c(0.3, 0.1,0.6),
+                       replace = TRUE)
+    ,
+    cluster = sample(
+      x = c(1, 2, 3, 4),
+      size = size,
+      replace = TRUE
+      ),
+    permalink = sample(c("https://www.google.com",
+                         "https://www.facebook.com",
+                         "https://www.twitter.com"),
+                       size = size,
+                       replace = TRUE),
+    V1 = runif(size, 0, 1),
+    V2 = runif(size, 0, 1)
+  )
+
+  data$clean_text = data$text
+
+  return(data)
+
+}
 
 # Utility function for mod_bigram_network
 make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
