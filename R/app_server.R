@@ -14,13 +14,8 @@ app_server <- function(input, output, session, data) {
       dplyr::slice_sample(n = 10000)
   }
 
-  pattern <- shiny::reactiveVal(value = "", {})
-  shiny::observeEvent(input$filterPattern, {
-    pattern(input$Regex)
-  })
 
-
-  shiny::observeEvent(input$delete, {
+  shiny::observe({
     # Original functionality: update remove_range's values on delete button press
     req(length(remove_range$keep_keys) > 0)
     remove_range$remove_keys <- selected_range()$key
@@ -36,11 +31,10 @@ app_server <- function(input, output, session, data) {
     colour_var = NULL,
     column_names = colnames(data),
     global_group_var = "cluster",
-    global_subgroups = NULL)
-
-  r$date_min <- min(data$date, na.rm = TRUE)
-  r$date_max <- max(data$date, na.rm = TRUE)
-
+    global_subgroups = NULL,
+    date_min =  min(data$date, na.rm = TRUE),
+    date_max = max(data$date, na.rm = TRUE),
+    virid_colours <- viridis::viridis_pal(option = "H")(50))
 
   mod_conversation_landscape_server("landscapeTag",
     reactive_dataframe = reactive_data,
