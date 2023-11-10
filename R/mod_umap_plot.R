@@ -69,30 +69,6 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
       # req(r$colour_var)
 
       # colour_var <- rlang::as_string(r$colour_var)
-
-
-      microsoft_colours <- c(
-        "#D83B01",
-        "#FFB900",
-        "#107C10",
-        "#008575",
-        "#0078D4",
-        "#8661C5",
-        "#FF9349",
-        "#3b2e58",
-        "#9BF00B",
-        "#30E5D0",
-        "#50E6FF",
-        "#D59DFF",
-        "#6b2929",
-        "#6a4b16",
-        "#054b17",
-        "#274b47",
-        "#243a5e"
-      )
-
-
-
       reactive_dataframe() %>%
         # dplyr::mutate(
         #   # cluster = stringr::str_wrap(cluster, width = 20),
@@ -193,21 +169,6 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
         shinyjs::disable("delete")
       }
     })
-
-    # Make delete button disappear when nothing selected
-    # output$deleteme <- shiny::renderUI({
-    #   if (length(selected_range()$key) > 0) {
-    #     shiny::tagList(
-    #       shiny::actionButton(
-    #         "delete",
-    #         "Delete selections",
-    #         class = "btn",
-    #         icon = shiny::icon("trash"),
-    #         style = "position: absolute; bottom 7px; right: 7px; background: #ff0000; border-radius: 100px; color: #ffffff; border:none;"
-    #       )
-    #     )
-    #   }
-    # })
   })
 }
 

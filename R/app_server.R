@@ -14,12 +14,6 @@ app_server <- function(input, output, session, data) {
       dplyr::slice_sample(n = 10000)
   }
 
-  # pattern <- shiny::reactiveVal(value = "", {})
-  # shiny::observeEvent(input$filterPattern, {
-  #   pattern(input$Regex)
-  # })
-
-
   shiny::observe({
     # Original functionality: update remove_range's values on delete button press
     req(length(remove_range$keep_keys) > 0)
@@ -102,11 +96,6 @@ app_server <- function(input, output, session, data) {
   shiny::observeEvent(plotly::event_data("plotly_selected"), {
     selected_range(plotly::event_data("plotly_selected"))
   })
-
-  #---- key for filtering reactive_data and creating df_filtered ----
-  # key <- reactive({
-  #   selected_range()$key
-  # })
 
   #---- filtered_df ----
   # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
