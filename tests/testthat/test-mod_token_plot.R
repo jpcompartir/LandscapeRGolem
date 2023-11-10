@@ -31,7 +31,6 @@ test_that("Plot is rendered with correct data, geoms, and colours. Labels module
     , {
       ns <- session$ns
 
-      # browser()
       session$setInputs(tokenHex = "#ff7518")
       expect_valid(token_reactive())
       plot <- token_reactive()
