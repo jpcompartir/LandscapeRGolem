@@ -14,20 +14,20 @@ app_server <- function(input, output, session, data) {
       dplyr::slice_sample(n = 10000)
   }
 
-  pattern <- shiny::reactiveVal(value = "", {})
-  shiny::observeEvent(input$filterPattern, {
-    pattern(input$Regex)
-  })
+  # pattern <- shiny::reactiveVal(value = "", {})
+  # shiny::observeEvent(input$filterPattern, {
+  #   pattern(input$Regex)
+  # })
 
 
-  shiny::observeEvent(input$delete, {
+  shiny::observe({
     # Original functionality: update remove_range's values on delete button press
     req(length(remove_range$keep_keys) > 0)
     remove_range$remove_keys <- selected_range()$key
     remove_range$keep_keys <- remove_range$keep_keys[!remove_range$keep_keys %in% remove_range$remove_keys]
 
     # Clear the values in selected_range()
-    selected_range(list())
+    # selected_range(list())
   })
 
 
@@ -36,10 +36,11 @@ app_server <- function(input, output, session, data) {
     colour_var = NULL,
     column_names = colnames(data),
     global_group_var = "cluster",
-    global_subgroups = NULL)
-
-  r$date_min <- min(data$date, na.rm = TRUE)
-  r$date_max <- max(data$date, na.rm = TRUE)
+    global_subgroups = NULL,
+    virid_colours = viridis::viridis_pal(option = "H")(50),
+    date_min = min(data$date, na.rm = TRUE),
+    date_max = max(data$date, na.rm = TRUE)
+    )
 
 
   mod_conversation_landscape_server("landscapeTag",
@@ -78,12 +79,13 @@ app_server <- function(input, output, session, data) {
   reactive_data <- shiny::reactive({
     data <- data %>%
       dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) %>%
-      dplyr::filter(document %in% remove_range$keep_keys) # Filtering for the keys not in remove_range$remove_keys
+      dplyr::filter(document %in% remove_range$keep_keys) %>% # Filtering for the keys not in remove_range$remove_keys
+      dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
 
-    if(!is.null(r$filterPattern) && is.character(r$filterPattern)) {
-      data <- data %>%
-        dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
-    }
+    # if(!is.null(r$filterPattern) && is.character(r$filterPattern)) {
+    #   data <- data %>%
+    #     dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
+    # }
 
     return(data)
   })
@@ -94,12 +96,6 @@ app_server <- function(input, output, session, data) {
     remove_keys = NULL
   )
 
-  shiny::observeEvent(input$delete, { # Update remove_range's values on delete button press
-    req(length(remove_range$keep_keys) > 0)
-    remove_range$remove_keys <- selected_range()$key
-    remove_range$keep_keys <- remove_range$keep_keys[!remove_range$keep_keys %in% remove_range$remove_keys]
-  })
-
   # Instantiate a reactive value, then update that value dynamically when points are selected. ----
   selected_range <- shiny::reactiveVal({})
 
@@ -108,15 +104,15 @@ app_server <- function(input, output, session, data) {
   })
 
   #---- key for filtering reactive_data and creating df_filtered ----
-  key <- reactive({
-    selected_range()$key
-  })
+  # key <- reactive({
+  #   selected_range()$key
+  # })
 
   #---- filtered_df ----
   # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
   df_filtered <- reactive({
     df_filtered <- reactive_data() %>%
-      dplyr::filter(document %in% key())
+      dplyr::filter(document %in%  selected_range()$key)
   })
 
 
