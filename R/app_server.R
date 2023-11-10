@@ -79,7 +79,8 @@ app_server <- function(input, output, session, data) {
 
   #---- filtered_df ----
   # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
-  df_filtered <- eventReactive(plotly::event_data("plotly_selected"),{
+  df_filtered <- eventReactive(
+    c(plotly::event_data("plotly_selected"), input$`landscapeTag-umapPlot-delete`),{
 
     # browser()
     # req(r$selected_range)

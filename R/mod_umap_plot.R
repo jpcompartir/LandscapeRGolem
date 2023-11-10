@@ -72,7 +72,7 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
       r$remove_keys <- r$selected_range
       r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
 
-      browser()
+      # browser()
       # Clear the values in selected_range()
       r$selected_range <- list()
     })
