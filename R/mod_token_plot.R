@@ -46,9 +46,9 @@ mod_token_plot_server <- function(id, highlighted_dataframe) {
         LandscapeR::ls_plot_tokens_counter(
           text_var = clean_text,
           top_n = 25,
-          fill = delayedTokenHex()
+          fill = input$tokenHex
         ) +
-        ggplot2::scale_fill_manual(values = input$tokenHex) +
+        # ggplot2::scale_fill_manual(values = input$tokenHex) + # removing as getting rid of the delayedTokenHex
         token_titles$labels()
     })
 
@@ -68,10 +68,11 @@ mod_token_plot_server <- function(id, highlighted_dataframe) {
                                                  height = shiny::reactive(input$height)
     )
 
-    delayedTokenHex <- shiny::reactive({
-      input$tokenHex
-    }) %>%
-      shiny::debounce(500)
+    #Don't really need this anymore now that we're using colourPicker
+    # delayedTokenHex <- shiny::reactive({
+    #   input$tokenHex
+    # }) %>%
+    #   shiny::debounce(500)
   })
 }
 

@@ -18,8 +18,16 @@ mod_umap_plot_ui <- function(id) {
         shinycssloaders::withSpinner(plotly::plotlyOutput(ns("umapPlot"), height = 600)),
         htmltools::div(
           id = ns("button"),
+          style = "position: absolute; bottom 7px; right: 7px;",
           shiny::fluidRow(
-            shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
+            shiny::actionButton(
+              ns("delete"),
+              "Delete selections",
+              class = "btn",
+              icon = shiny::icon("trash"),
+              style = "background: #ff7518; border-radius: 100px; color: #ffffff; border:none;"
+            ),
+            # shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
           ),
         ),
         shiny::br(),
@@ -52,52 +60,42 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
 
     observe({
       r$x1 <- input$x1
-    })
-    observe({
       r$y1 <- input$y1
     })
 
+    shiny::observeEvent(plotly::event_data("plotly_selected"), {
+      r$selected_range <- plotly::event_data("plotly_selected")$key
+    })
+
+    shiny::observeEvent(input$delete, {
+      print("remove keys will update")
+      r$remove_keys <- r$selected_range
+      r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
+
+      # browser()
+      # Clear the values in selected_range()
+      r$selected_range <- list()
+    })
+
+
     output$umapPlot <- plotly::renderPlotly({
-      req(r$colour_var)
-
-      colour_var <- rlang::as_string(r$colour_var)
-
-      virid_colours <- viridis::viridis_pal(option = "H")(50)
-      microsoft_colours <- c(
-        "#D83B01",
-        "#FFB900",
-        "#107C10",
-        "#008575",
-        "#0078D4",
-        "#8661C5",
-        "#FF9349",
-        "#3b2e58",
-        "#9BF00B",
-        "#30E5D0",
-        "#50E6FF",
-        "#D59DFF",
-        "#6b2929",
-        "#6a4b16",
-        "#054b17",
-        "#274b47",
-        "#243a5e"
-      )
-
-
-
+      # req(r$colour_var)
+      #
+      # colour_var <- rlang::as_string(r$colour_var)
       reactive_dataframe() %>%
-        dplyr::mutate(
+        # dplyr::mutate(
           # cluster = stringr::str_wrap(cluster, width = 20),
           # cluster = factor(cluster),
-          !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
-          !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
-        ) %>%
+        #   !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
+        #   !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
+        # ) %>%
         plotly::plot_ly(
           x = ~V1,
           y = ~V2,
           type = "scattergl",
-          color = ~ .data[[r$colour_var]],
-          colors = virid_colours,
+          # color = ~ .data[[r$colour_var]],
+          color = ~ cluster,
+          colors = r$virid_colours,
           key = ~document,
           text = ~ paste("<br> Post:", text),
           hoverinfo = "text", marker = list(size = 2), height = 600
@@ -176,20 +174,15 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
         )
     })
 
-    # Make delete button disappear when nothing selected
-    output$deleteme <- shiny::renderUI({
-      if (length(selected_range()$key) > 0) {
-        shiny::tagList(
-          shiny::actionButton(
-            "delete",
-            "Delete selections",
-            class = "btn",
-            icon = shiny::icon("trash"),
-            style = "position: absolute; bottom 7px; right: 7px; background: #ff0000; border-radius: 100px; color: #ffffff; border:none;"
-          )
-        )
+    observe({
+      if(!is.null(r$selected_range) && length(r$selected_range) > 0) {
+        shinyjs::enable("delete")
+      } else {
+        shinyjs::disable("delete")
       }
     })
+
+
   })
 }
 
