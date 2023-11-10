@@ -60,9 +60,8 @@ app_server <- function(input, output, session, data) {
   # reactive_data() also takes care of the filtering via a pattern
   reactive_data <- shiny::reactive({
     data <- data %>%
-      dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) %>%
-      dplyr::filter(document %in% r$keep_keys) # Filtering for the keys not in remove_range$remove_keys
-
+      dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) #%>%
+      # dplyr::filter(document %in% r$keep_keys) # Filtering for the keys not in remove_range$remove_keys
 
     if(r$filterPattern != ""){
       data <- data %>%
@@ -72,24 +71,26 @@ app_server <- function(input, output, session, data) {
     return(data)
   })
 
-  shiny::observeEvent(plotly::event_data("plotly_selected"), {
-    r$selected_range <- plotly::event_data("plotly_selected")$key
-  })
 
-  shiny::observe({
-    r$remove_keys <- r$selected_range
-    r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
+  shiny::observeEvent(
+    # input$`landscapeTag-umapPlot-delete`
+    input$delete,{
 
-    # Clear the values in selected_range()
-    r$selected_range <- list()
+      req(reactive_data())
+      delete_data <- reactive_data() %>%
+        dplyr::filter(!document %in% r$remove_keys)
+
+
+
   })
 
 
   #---- filtered_df ----
   # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
   df_filtered <- eventReactive(plotly::event_data("plotly_selected"),{
+    req(r$selected_range)
     df_filtered <- reactive_data() %>%
-      dplyr::filter(document %in% plotly::event_data("plotly_selected"))
+      dplyr::filter(document %in% r$selected_range)
   })
 
 

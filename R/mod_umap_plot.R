@@ -63,6 +63,19 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
       r$y1 <- input$y1
     })
 
+    shiny::observeEvent(plotly::event_data("plotly_selected"), {
+      r$selected_range <- plotly::event_data("plotly_selected")$key
+    })
+
+    shiny::observe({
+      r$remove_keys <- r$selected_range
+      r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
+
+      # Clear the values in selected_range()
+      r$selected_range <- list()
+    })
+
+
     output$umapPlot <- plotly::renderPlotly({
       # req(r$colour_var)
       #
@@ -169,20 +182,7 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
       }
     })
 
-    # Make delete button disappear when nothing selected
-    # output$deleteme <- shiny::renderUI({
-    #   if (length(selected_range()$key) > 0) {
-    #     shiny::tagList(
-    #       shiny::actionButton(
-    #         "delete",
-    #         "Delete selections",
-    #         class = "btn",
-    #         icon = shiny::icon("trash"),
-    #         style = "position: absolute; bottom 7px; right: 7px; background: #ff0000; border-radius: 100px; color: #ffffff; border:none;"
-    #       )
-    #     )
-    #   }
-    # })
+
   })
 }
 
