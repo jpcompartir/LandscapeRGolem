@@ -16,7 +16,6 @@ test_that("Module's server function accepts the right named inputs", {
       # Add here your module params
       args = list(
         reactive_dataframe = list(),
-        selected_range = list(),
         r = list(
         )
       ),
@@ -31,12 +30,13 @@ test_that("Module works when we provide the right inputs, that labels can be upd
     mod_label_data_server,
     # Add here your module params
     args = list(reactive_dataframe = generate_dummy_data,
-                selected_range = function(){
-                  return(list(key = c(3, 4, 5)))
-                },
+                # selected_range = function(){
+                #   return(list(key = c(3, 4, 5)))
+                # },
                 r = shiny::reactiveValues(
                   labels = c("label1", "label2"),
-                  label_ids = c(1, 2)
+                  label_ids = c(1, 2),
+                  selected_range = c(1, 2, 3, 4, 5)
                 )
     )
     , {
@@ -44,16 +44,17 @@ test_that("Module works when we provide the right inputs, that labels can be upd
       expect_true(all(r$labels %in% c("label1", "label2")))
       expect_true(all(r$label_ids %in% c(1, 2)))
 
+      browser()
       expect_equal(length(r$label_ids), 2)
 
       session$setInputs(labelText = "Dummy Label")
       session$setInputs(labelNow = 1)
 
-      expect_equal(length(r$labels), 5)
+      expect_equal(length(r$labels), 7)
       expect_true(
         all(
           r$labels ==
-            c("label1", "label2", "Dummy Label", "Dummy Label", "Dummy Label")
+            c("label1", "label2", "Dummy Label", "Dummy Label", "Dummy Label", "Dummy Label", "Dummy Label")
         )
       )
 
@@ -61,6 +62,7 @@ test_that("Module works when we provide the right inputs, that labels can be upd
       session$setInputs(labelText = "overwrite")
       session$setInputs(labelNow = 1)
       expect_true(length(r$labels) == length(r$label_ids))
+
     })
 })
 
@@ -77,3 +79,4 @@ test_that("module ui works", {
   expect_true(stringr::str_detect(ui_char, stringr::fixed('id="test-labelledDT')))
 
 })
+
