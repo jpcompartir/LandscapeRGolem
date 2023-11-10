@@ -68,8 +68,7 @@ mod_conversation_landscape_server <- function(id, reactive_dataframe,
       mod_download_data_server("selectedData", data_object = highlighted_dataframe)
       mod_label_data_server("labelData",
                             r = r,
-                            reactive_dataframe = reactive_dataframe,
-                            selected_range = selected_range
+                            reactive_dataframe = reactive_dataframe
       )
 
       observe({

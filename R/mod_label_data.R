@@ -32,8 +32,7 @@ mod_label_data_ui <- function(id) {
 #'
 #' @noRd
 mod_label_data_server <- function(id, r,
-                                  reactive_dataframe,
-                                  selected_range) {
+                                  reactive_dataframe) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -62,13 +61,13 @@ shiny::observeEvent(input$labelNow,{
       # If we already have some labels, then we repeat the same thing before concatenating and updating reactiveValues
       if(input$labelText != ""){
         if (length(r$labels) == 0) {
-          label_ids <- selected_range()$key
+          label_ids <- r$selected_range
           reps <- length(label_ids)
           labels <- rep(x = input$labelText, reps)
           r$label_ids <- label_ids
           r$labels <- labels
         } else {
-          label_ids <- as.numeric(selected_range()$key)
+          label_ids <- r$selected_range
           reps <- length(label_ids)
           labels <- rep(x = input$labelText, reps)
           r$labels <- c(r$labels, labels)
@@ -79,7 +78,7 @@ shiny::observeEvent(input$labelNow,{
 
     # Make label button disappear when nothing selected
     output$labelSelection <- shiny::renderUI({
-      if (length(selected_range() > 0)) {
+      if (length(r$seleted_range > 0)) {
         shiny::tagList(
           shiny::textInput(
             inputId = ns("labelText"),
@@ -92,7 +91,7 @@ shiny::observeEvent(input$labelNow,{
     })
 
     output$labelButton <- shiny::renderUI({
-      if (length(selected_range() > 0)) {
+      if (length(r$selected_range > 0)) {
         shiny::actionButton(
           inputId = ns("labelNow"),
           label = "Label",
