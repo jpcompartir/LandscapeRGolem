@@ -27,7 +27,7 @@ app_server <- function(input, output, session, data) {
     remove_range$keep_keys <- remove_range$keep_keys[!remove_range$keep_keys %in% remove_range$remove_keys]
 
     # Clear the values in selected_range()
-    # selected_range(list())
+    selected_range(list())
   })
 
 
