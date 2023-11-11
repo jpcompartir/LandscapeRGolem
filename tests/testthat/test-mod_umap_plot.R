@@ -69,12 +69,12 @@ test_that("module ui works", {
 
 
   #Notify us when total # of divs change
-  expect_equal(stringr::str_count("div>", string = ui_char), 20)
+  expect_equal(stringr::str_count("div>", string = ui_char), 19)
   expect_match(ui_char,'<div class="col-sm-6" style="width:50%; height: 10000px; position: relative;">', fixed = TRUE)
 
   expect_match(ui_char, 'id="test-umapPlot" style="width:100%;height:600px;', fixed = TRUE)
   expect_match(ui_char, 'test-button')
-  expect_match(ui_char, 'test-deleteme')
+  expect_match(ui_char, 'test-delete')
   expect_match(ui_char, 'slider1')
   expect_match(ui_char, 'test-x1')
   expect_match(ui_char, 'slider2')

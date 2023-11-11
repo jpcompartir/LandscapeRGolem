@@ -19,14 +19,15 @@ mod_umap_plot_ui <- function(id) {
         htmltools::div(
           style = "position: absolute; bottom 7px; right: 7px;",
           id = ns("button"),
+          style = "position: absolute; bottom 7px; right: 7px;",
           shiny::fluidRow(
             shiny::actionButton(
               ns("delete"),
               "Delete selections",
               class = "btn",
               icon = shiny::icon("trash"),
-              style = "background: #ff0000; border-radius: 100px; color: #ffffff; border:none;"
-            )
+              style = "background: #ff7518; border-radius: 100px; color: #ffffff; border:none;"
+            ),
             # shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
           ),
         ),
@@ -60,19 +61,32 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
 
     observe({
       r$x1 <- input$x1
-    })
-    observe({
       r$y1 <- input$y1
     })
 
+    shiny::observeEvent(plotly::event_data("plotly_selected"), {
+      r$selected_range <- plotly::event_data("plotly_selected")$key
+    })
+
+    shiny::observeEvent(input$delete, {
+      print("remove keys will update")
+      r$remove_keys <- r$selected_range
+      r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
+
+      # browser()
+      # Clear the values in selected_range()
+      r$selected_range <- list()
+    })
+
+
     output$umapPlot <- plotly::renderPlotly({
       # req(r$colour_var)
-
+      #
       # colour_var <- rlang::as_string(r$colour_var)
       reactive_dataframe() %>%
         # dplyr::mutate(
-        #   # cluster = stringr::str_wrap(cluster, width = 20),
-        #   # cluster = factor(cluster),
+          # cluster = stringr::str_wrap(cluster, width = 20),
+          # cluster = factor(cluster),
         #   !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
         #   !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
         # ) %>%
@@ -161,14 +175,15 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
         )
     })
 
-
     observe({
-      if (!is.null(selected_range()) && length(selected_range()$key) > 0) {
+      if(!is.null(r$selected_range) && length(r$selected_range) > 0) {
         shinyjs::enable("delete")
       } else {
         shinyjs::disable("delete")
       }
     })
+
+
   })
 }
 
