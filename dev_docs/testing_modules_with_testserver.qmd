@@ -1,9 +1,10 @@
 ---
-title: "Testing a Golem module"
+title: "Writing Tests for R Packages & R Shiny Applications"
 format: 
   html:
     toc: true
     toc-location: left
+    code-block-border-left: "#0f50d2"
 editor: visual
 ---
 
@@ -11,31 +12,264 @@ editor: visual
 
 When developing packages in R, we usually lean on {testthat}. Creating unit tests with {testthat} (leaving aside integration tests for now) is pretty simple, first we write a function which performs some actions, then we write some tests which check that our function still performs those actions - or if following Test Driven Development (TDD) practices, we write the tests first and then write the functionality, in either case, {testthat} makes it pretty seamless.
 
-However, {testthat} was not built with Shiny in mind, and the interaction between the UI and the server of a Shiny app is not self-evident how to test via {testthat}'s traditional testing approach. In fact, when I sat down to start testing Shiny apps, I realised that not only could I not see how to do it, I didn't know how to articulate why I couldn't `just do it`. I just sort of stared at the screen, looked at a few help pages, and eventually went back to building out more features (don't do this!).
+As a quick refresher, let's look at how to write some basic unit tests in R; for brevity we won't follow a strict TDD workflow - we'll test a couple of functions that we've inherited - is_even and is_odd, where is_odd calls is_even.
 
-# Testing a Golem Module
+## Testable Functions
 
-There is another layer of complexity if we build our apps with frameworks like {golem}. For the rest of this post, we'll assume some familiarity with {golem} and its modules.  
+```{r}
+is_even <- function(number) {
+  
+  stopifnot(is.numeric(number), number != 0)
+  
+  return(number %% 2 == 0)
+}
+"#FF333300"
 
-In my case, the modules that I want to test take reactiveValues from other modules, or reactive objects, such as reactive data frames from other modules. This presents a barrier to testing, as in a general R or testthat session, we're not in a reactive context. 
-
-Now - I’m pretty sure I first read this in `Mastering Shiny by Hadley Wickham` - but it’s important to remember that in R, virtually everything is a function, and reactives are no different. This means that we can mimic the behaviour of a reactive, by passing in a function to a module.
-
-To make it more concrete, I have a module’s server function which takes an id and a data frame. The function then calls the moduleServer function, which takes the id from my_module_server, and a server function as an input.
-
-```{r, eval = FALSE}
-my_module_server <- function(id, highlighted_dataframe) {
-	moduleServer(id, 
-	             function(input, output, session) # This is what we'd usually have as our server, e.g. server <- function(input, output, session)
-	               ) {
-
-	} 
+is_odd <- function(number) {
+  stopifnot(is.numeric(number), number != 0)
+  
+  return(!is_even(number))
 }
 ```
 
-At the moment the module doesn't actually do anything, but we have a skeleton in place and we can see that when we call `my_module_server` we have to provide an input for id and highlighted_dataframe. 
+Our two functions should take a number as an input, and check that the number isn't zero. `is_even` should return TRUE if the number is divisible by 2 and FALSE otherwise. `is_odd` calls `is_even` and then flips the truth value, so that if a number isn't even, and it's not 0, it's odd.
+
+It clearly makes sense to test `is_even` first, because `is_odd` depends on it. So what should we test? Echoing Einstein's famous words on simplicity, tests should test everything the function does, nothing more and nothing less. Obviously we should check that our input validation is working, if we input 0 do we get an error, the same if we input a non-numeric. Then we should check a few return values, some that the function should return FALSE to and some that the function should return TRUE to. And then there's a slightly less obvious test - our function has one argument and that argument is mandatory, i.e. it has no default value; if we've made this decision we should have made it for a reason, so we should test the function does error if no value is set.
+
+Reminder that unit tests should:
+
+-   **be lightweight**: *you're usually going to want to write hundreds of them for a package and check them often, provide informative error messages*
+-   **be self-contained**: *don't pass data around between tests, each test_that block should be able to start and terminate in isolation*
+-   **be informative**: *they should provide helpful error messages when they fail, so that you know precisely which part of your code's logic is broken and where*
+-   **be comprehensive**: *if your code should do something, write a test to show it does*
+-   **look both ways**: *if your code shouldn't do something, write a test to show it doesn't*
+
+Writing tests may at times feel cumbersome, but only at the beginning. Once you've got a good test suite up development becomes more enjoyable - less anxiety associated with each change you make or feature you implement - and faster (trust!). You should often feel like you're insulting your own intelligence and that of your colleague's by writing such a simple test "Well duh, of course it does that..."
+
+## Our First Tests
+
+There are a number of other, more specific tests for more advanced users, but let's stick to expect_error, expect_true, and expect_false for now.
+
+```{r}
+library(testthat)
+test_that("is_even has an argument called number and it requires an input", {
+  
+  expect_true(names(formals(is_even)) == "number")
+  expect_error(is_even(),
+               regexp = 'argument "number" is missing')
+})
+```
+
+We're going to make a change to is_even, to show that these tests can fail if the underlying logic of is_even changes resulting in changes in the function's behaviour (this isn't necessary except for explanatory purposes).
+
+```{r}
+is_even_inputs <- function() {
+  test_that("is_even has an argument called number and it requires an input", {
+    
+    expect_true(
+      names(formals(is_even)) == "number")
+    
+    expect_error(
+      is_even(),
+      regexp = 'argument "number" is missing'
+    )
+  })
+}
+
+
+is_even_inputs()
+```
+
+Ok, so the test passes. But what if I want to change the input is_even takes to 'x' which is a more common input?
+
+```{r, error = TRUE}
+is_even <- is_even <- function(x) {
+  
+  stopifnot(is.numeric(x), x != 0)
+  
+  return(x %% 2 == 0)
+}
+
+is_even_inputs()
+```
+
+We see that we get a test failure: -- Failure: is_even has an argument called number and it requires an input ----- names(formals(is_even)) == "number" is not TRUE
+
+This is exactly what we wanted. We wrote a function, wrote some tests, changed the function's behaviour and then running our tests told us that we'd altered the function's behaviour. At this point we should either fix our function - if indeed we broke it - or update our tests. We'll fix the function as the tests are still doing what we want them to. Then we'll check our old tests still pass.
+
+```{r}
+is_even <- function(number) {
+  
+  stopifnot(is.numeric(number), number != 0)
+  
+  return(number %% 2 == 0)
+}
+
+is_even_inputs()
+```
+
+Ok, so let's carry on with testing the function. We'll establish that our function doesn't take 0 as an input, and that if we feed it a string, or a string that could be coerced into a numeric that the function errors. This last one might seem like a funny test, but we haven't explicitly asked our function to coerce its inputs, so we should check that it does not.
+
+```{r}
+test_that("is_even errors if given a non-numeric input, or 0 as an input", {
+  expect_error(is_even(0),
+               regexp = stringr::fixed('number != 0'))
+  
+  expect_error(
+    is_even("string"),
+    regexp = "is\\.numeric"
+  )
+  
+  expect_error(
+    is_even("10"),
+    regexp = "is\\.numeric"
+  )
+})
+```
+
+And then finally we can test that the return values are what we expect:
+
+```{r}
+test_that("is_even returns a logical, and that logical is TRUE if given an even input, and FALSE if given an odd.", {
+  expect_true(
+    inherits(is_even(10), "logical")
+  )
+  
+  expect_true(
+    inherits(is_even(9), "logical")
+  )
+  
+  expect_true(
+    is_even(10) == TRUE
+  )
+  expect_false(
+    is_even(9) == TRUE
+    )
+  
+  #and another value, just to be sure...
+  expect_true(
+    is_even(10002) == TRUE
+  )
+})
+```
+
+## Refactoring is_odd
+
+We've now tested that our is_even function does what it should, and doesn't do what it shouldn't. We could add more tests, like what happens if we input a data frame as number, or a factor? Or if 8938957 and 23665 are odds, but we feel quite confident that our current cases take care of those.
+
+We haven't tested is_odd yet, but let's take another look at our function definitions and see if we can't simplify the logic somehwat.
+
+```{r}
+is_even <- function(number) {
+  
+  stopifnot(is.numeric(number), number != 0)
+  
+  return(number %% 2 == 0)
+}
+
+is_odd <- function(number) {
+  stopifnot(is.numeric(number), number != 0)
+  
+  return(!is_even(number))
+}
+```
+
+We've written a pretty lightweight and comprehensive test suite for is_even, so do we just go ahead and write the same tests for is_odd? We don't really need to, because is_odd calls is_even anyway. So let's simplify is_odd:
+
+```{r}
+is_odd <- function(number) {
+  return(!is_even(number))
+}
+```
+
+Informally test a few values:
+
+```{r, error= TRUE}
+is_odd("string")
+is_odd(0)
+```
+
+So we can see that is_odd is producing the errors we would expect it to, because the logic is cemented in is_even. Our tests for is_odd don't *really* need to duplicate this logic, so we could test one each odd-signalling end digit, and each even-signalling end digit.
+
+```{r}
+test_that("is_odd returns TRUE for odd numbers and FALSE for even numbers", {
+    
+  expect_true(is_odd(11))
+  expect_true(is_odd(333))
+  expect_true(is_odd(555))
+  expect_true(is_odd(37))
+  expect_true(is_odd(49))
+  
+  
+  expect_false(is_odd(10))
+  expect_false(is_odd(4))
+  expect_false(is_odd(638))
+  expect_false(is_odd(132))
+  expect_false(is_odd(666))
+})
+```
+
+It's overkill to do this, but there's an important point to be made. You might look at this and think 'shouldn't I just apply a list of numbers, rather than write each test out, to avoid duplication?'
+
+```{r}
+test_that("is_odd returns TRUE for odd numbers and FALSE for even numbers", {
+  odds <- list(11, 333, 555, 37, 49)
+  lapply(odds, function(odd) {
+    expect_true(is_odd(odd))
+  })
+  
+  evens <- list(10, 4, 638, 132, 666)
+  lapply(evens, function(even){
+    expect_false(is_odd(even))
+  })
+})
+```
+
+## Keep it Simple, Stupid
+
+Whilst this is generally good practice, it's not ideal in the case of testing because when a test fails, our error messages are less informative. For brevity we'll add an odd value to our evens list, and apply that list over our tests:
+
+```{r, error = TRUE}
+
+test_that("is_odd returns FALSE when given even inputs",{
+  evens <- list(10, 4, 638, 132, 666, 17)
+  lapply(evens, function(even){
+    expect_false(is_odd(even))
+  })
+})
+
+```
+
+We see that the error message we get back doesn't tell us which of our inputs failed, just that we expected a FALSE and we got a TRUE, somewhere. In this case it's pretty obvious, but there are times when testing things like shiny UI components where it's tempting to put all the UI tags into a list of tags and l/vapply them into an expect function to keep the testing code concise and avoid duplication. However, we want our tests to be informative more than we want them to adhere to Do Not Repeat Yourself principles.
+
+# Testing Shiny apps
+
+Testing feels pretty straightforward for R packages with {testthat} but it was not built with Shiny in mind. Shiny introduces reactive programming to R users, and it's not self-evident how to test reactive components and applications via {testthat}'s traditional testing approach. In fact, when I sat down to start testing Shiny apps, I realised that not only could I not see how to do it, I didn't know how to articulate why I couldn't `just do it`. I stared at the screen for a while with that unpleasant sense of 'I don't know what I'm doing', looked at a few help pages, and eventually went back to building out more features (don't do this!).
+
+# Testing a Golem Module
+
+There is another layer of complexity if we build our apps with frameworks like {golem}. For the rest of this post, we'll assume some familiarity with {golem} and its modules.
+
+In my case, the modules that I want to test take reactiveValues from other modules, or reactive objects, such as reactive data frames from other modules. This presents a barrier to testing, as in a general R or testthat session, we're not in a reactive context.
+
+Now - I'm pretty sure I first read this in `Mastering Shiny by Hadley Wickham` - but it's important to remember that in R, virtually everything is a function, and reactives are no different. This means that we can mimic the behaviour of a reactive, by passing in a function to a module.
+
+To make it more concrete, I have a module's server function which takes an id and a data frame. The function then calls the moduleServer function, which takes the id from my_module_server, and a server function as an input.
+
+```{r, eval = FALSE}
+my_module_server <- function(id, highlighted_dataframe) {
+  moduleServer(id, 
+               function(input, output, session) # This is what we'd usually have as our server, e.g. server <- function(input, output, session)
+  ) {
+    
+  } 
+}
+```
+
+At the moment the module doesn't actually do anything, but we have a skeleton in place and we can see that when we call `my_module_server` we have to provide an input for id and highlighted_dataframe.
 
 Let's add some real logic, so that our module creates a reactive object, which updates whenever there's a change in our highlighted_dataframe input, or the updatePlotButton is pressed, and needs to have an x column in the highlighted_dataframe, plus an input set for topN and width + height. This module is a bit more complex, but still less complex than many modules will be.
+
 ```{r, eval = FASLSE}
 my_module_server <- function(id, highlighted_dataframe) {
   moduleServer(id, function(input, output, session)) {
@@ -75,13 +309,14 @@ testServer(
     #Set input
     session$setInputs(topN = 5)
     expect_true(input$topN == 5)
-     
+    
     #... some other code
   }
 )
 ```
 
 This test passed, as did the other tests that I wrote for the inputs, but then I realised that I could set anything as an input here, and the test would pass
+
 ```{r}
 testServer(
   app = my_module_server,
@@ -95,7 +330,7 @@ testServer(
     #Set input
     session$setInputs(topN = 5)
     expect_true(input$topN == 5)
-     
+    
     session$setInputs(shalabadaba = "shalabadooo")
     expect_equal(input$shalabadaba, "shalabadooo")
   }
@@ -116,7 +351,7 @@ testServer(
 )
 ```
 
-So now I get the error that 'highlighted_dataframe was missing', which is a mandatory argument for the module server, now we're getting somewhere. Whereas before the tests were passing because they weren't really testing anything, the test is now failing in meaningful ways. 
+So now I get the error that 'highlighted_dataframe was missing', which is a mandatory argument for the module server, now we're getting somewhere. Whereas before the tests were passing because they weren't really testing anything, the test is now failing in meaningful ways.
 
 In more familiar R terms, the server was waiting until it had to do anything with reactive_plot before raising an error. So how do we solve it and check that a plot really is being generated?
 
@@ -124,20 +359,17 @@ In more familiar R terms, the server was waiting until it had to do anything wit
 
 ```
 
-
 # Notes from other resources
 
-## Mastering Shiny -  Testing (Chapter 21 presently)
+## Mastering Shiny - Testing (Chapter 21 presently)
 
-You can use browser() inside testServer to see what’s going on with specific values/what your changes do and what will / won’t work…
+You can use browser() inside testServer to see what's going on with specific values/what your changes do and what will / won't work...
 
 stopifnot(is.reactive(var)) - nice little trick for input validation in modules, e.g. for highlighted_dataframe()
 
-testServer -
-Unlike the real world, time does not advance automatically. So if you want to test code that relies on reactiveTimer() or invalidateLater(), you’ll need to manually advance time by calling session$elapse(millis = 300).
+testServer - Unlike the real world, time does not advance automatically. So if you want to test code that relies on reactiveTimer() or invalidateLater(), you'll need to manually advance time by calling session\$elapse(millis = 300).
 
-testServer() ignores UI. That means inputs don’t get default values, and no JavaScript works. Most importantly this means that you can’t test the update* functions, because they work by sending JavaScript to the browser to simulates user interactions. You’ll require the next technique to test such code.
-
+testServer() ignores UI. That means inputs don't get default values, and no JavaScript works. Most importantly this means that you can't test the update\* functions, because they work by sending JavaScript to the browser to simulates user interactions. You'll require the next technique to test such code.
 
 Wrap testServer in test_that
 
@@ -150,49 +382,41 @@ mod_bigram_network_ui(id = "test")
 ```
 
 
+
 ## Gotchas + Reminders
 
-Browse[1]> class(bigram_reactive)
-[1] "reactive.event" "reactiveExpr"   "reactive"       "function"      
-Browse[1]> x <- bigram_reactive()
-Browse[1]> class(x)
-[1] "ggraph" "gg"     "ggplot"
+Browse\[1\]\> class(bigram_reactive) \[1\] "reactive.event" "reactiveExpr" "reactive" "function"\
+Browse\[1\]\> x \<- bigram_reactive() Browse\[1\]\> class(x) \[1\] "ggraph" "gg" "ggplot"
 
 bigram_reactive is the reactive expression, untriggered. bigram_reactive() is the actual ggraph/gg/ggplot object now triggered. Always good to remind onself of this and what that means when interacting with the objects at various points of the SWD process.
 
-
-Can use  `ui <- mod_bigram_network_ui(id = "test")` and type ui to see all of the shiny tags, and then type ui[[1]] to render the UI in a viewer object, maybe easier than end app, run_app() -> click to app.
+Can use `ui <- mod_bigram_network_ui(id = "test")` and type ui to see all of the shiny tags, and then type ui\[\[1\]\] to render the UI in a viewer object, maybe easier than end app, run_app() -\> click to app.
 
 ## Testing interaction with nested modules
 
 the mod_group_vol_time_server gets its filtered data out of the mod_daterange_input_server. This presents a challenge because each module is namespaced, so we can't just `setInputs(dateRange = list(as.Date("2023-01-03"), as.Date("2023-01-09"))` because we'd be setting the value of dateRange inside the wrong namespace - the namespace of mod_group_vol_time_server.
 
-This means when we try to access the  `group_date_range_vot$over_time_data()` to generate our groupued volume over time char, we get an error that the dateRange isn't set. So with the help of `ui <- mod_group_vol_time_ui(id = "test")` we can look for the correct input to set `dateRange` to, which is `dateRangeGroupVol-dateRange`. We've unearthed a general truth about nested modules. Our parent module is dateRangeGroupVol, our child is dateRange, so we join the two with `dateRangeGroupVol-dateRange`, if dateRange had a child module called dateRangeChild, we'd join the three with `dateRangeGroupVol-dateRange-dateRangeChild`!
+This means when we try to access the `group_date_range_vot$over_time_data()` to generate our groupued volume over time char, we get an error that the dateRange isn't set. So with the help of `ui <- mod_group_vol_time_ui(id = "test")` we can look for the correct input to set `dateRange` to, which is `dateRangeGroupVol-dateRange`. We've unearthed a general truth about nested modules. Our parent module is dateRangeGroupVol, our child is dateRange, so we join the two with `dateRangeGroupVol-dateRange`, if dateRange had a child module called dateRangeChild, we'd join the three with `dateRangeGroupVol-dateRange-dateRangeChild`!
 
 ```{r, eval = FALSE}
 
- session$setInputs(
-        # ns("dateRange") = list(as.Date("2023-01-03"), as.Date("2023-01-09")),
-        dateBreak = "day",
-        height = 600,
-        width = 400,
-        nrow = 2,
-        #So to pass stuff into the modules that need them we can pre-prepend the namespace with syms
-        `dateRangeGroupVol-dateRange` = list(as.Date("2023-01-03"), as.Date("2023-01-09"))
-      )
+session$setInputs(
+  # ns("dateRange") = list(as.Date("2023-01-03"), as.Date("2023-01-09")),
+  dateBreak = "day",
+  height = 600,
+  width = 400,
+  nrow = 2,
+  #So to pass stuff into the modules that need them we can pre-prepend the namespace with syms
+  `dateRangeGroupVol-dateRange` = list(as.Date("2023-01-03"), as.Date("2023-01-09"))
+)
 ```
 
 ## Emulating a reactive with the return values specified:
 
-because in our module we try to:
-label_ids <- as.numeric(selected_range()$key)
+because in our module we try to: label_ids \<- as.numeric(selected_range()\$key)
 
 We can't just send in selected_range as c(1, 2, 3). We need to send it in as an object which imitates a reactive, with a return value of list(key = c(...)) so that when we call it in the module later on, we get the current value, and we can access the key. Tricky.
 
-selected_range = function(){
-                return(list(key = c(1, 2, 3)))
-              }
+selected_range = function(){ return(list(key = c(1, 2, 3))) }
 
-
-If wanting to change the length of the generate_dummy_data for whatever reason:
-function(){return(generate_dummy_data(length = 20))}
+If wanting to change the length of the generate_dummy_data for whatever reason: function(){return(generate_dummy_data(length = 20))}
