@@ -82,20 +82,20 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
     output$umapPlot <- plotly::renderPlotly({
       # req(r$colour_var)
       #
-      # colour_var <- rlang::as_string(r$colour_var)
+      colour_var <- rlang::as_string(r$colour_var)
       reactive_dataframe() %>%
-        # dplyr::mutate(
-          # cluster = stringr::str_wrap(cluster, width = 20),
-          # cluster = factor(cluster),
-        #   !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
-        #   !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
-        # ) %>%
+        dplyr::mutate(
+        cluster = stringr::str_wrap(cluster, width = 20),
+        cluster = factor(cluster),
+          !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
+          !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
+        ) %>%
         plotly::plot_ly(
           x = ~V1,
           y = ~V2,
           type = "scattergl",
-          # color = ~ .data[[r$colour_var]],
-          color = ~ cluster,
+          color = ~ .data[[r$colour_var]],
+          # color = ~ cluster,
           colors = r$virid_colours,
           key = ~document,
           text = ~ paste("<br> Post:", text),

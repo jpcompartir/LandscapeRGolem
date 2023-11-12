@@ -16,7 +16,7 @@ app_server <- function(input, output, session, data) {
 
   # This is for passing reactive values to and from modules
   r <- reactiveValues(
-    colour_var = NULL,
+    colour_var = "cluster",
     column_names = colnames(data),
     global_group_var = "cluster",
     global_subgroups = NULL,
@@ -66,7 +66,6 @@ app_server <- function(input, output, session, data) {
     data <- data %>%
       dplyr::filter(document %in% r$keep_keys) # Filtering for the keys not in remove_range$remove_keys
     }
-
 
     # browser()
     if(r$filterPattern != ""){
