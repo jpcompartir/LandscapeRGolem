@@ -246,6 +246,111 @@ We see that the error message we get back doesn't tell us which of our inputs fa
 
 Testing feels pretty straightforward for R packages with {testthat} but it was not built with Shiny in mind. Shiny introduces reactive programming to R users, and it's not self-evident how to test reactive components and applications via {testthat}'s traditional testing approach. In fact, when I sat down to start testing Shiny apps, I realised that not only could I not see how to do it, I didn't know how to articulate why I couldn't `just do it`. I stared at the screen for a while with that unpleasant sense of 'I don't know what I'm doing', looked at a few help pages, and eventually went back to building out more features (don't do this!).
 
+Let's steal a basic shiny ap from the `sidebarLayout` documentation. From the code it's pretty clear that we'll have a one page app, with a sidebar layout. In the sidebar we'll have a slider input which allows us to select a number of observations and then in the main panel we'll output a histogram. The server then reacts to changes in the slider's input, and generates a new histogram each time. 
+
+```{r}
+library(shiny)
+
+# Define UI
+ui <- fluidPage(
+
+  # Application title
+  titlePanel("Hello Shiny!"),
+  sidebarLayout(
+    # Sidebar with a slider input
+    sidebarPanel(
+      sliderInput("obs",
+                  "Number of observations:",
+                  min = 0,
+                  max = 1000,
+                  value = 500)
+    ),
+    # Show a plot of the generated distribution
+    mainPanel(
+      plotOutput("distPlot")
+    )
+  )
+)
+
+# Server logic
+server <- function(input, output, session) {
+  output$distPlot <- renderPlot({
+    hist(rnorm(input$obs))
+  })
+}
+if (interactive()) {
+# Complete app with UI and server components
+shinyApp(ui, server)
+}
+```
+
+## What's the problem?
+
+Ideally we want to test the three main components - the UI, the server, and the call to combine the two. The first obstacle is the UI, it's not a function like we're used to testing. And we don't need to write a test to check that it's still not a function going forwards, we let the Shiny developers write their own tests.
+```{r}
+inherits(ui, "function")
+```
+I think it's quite common to build Shiny apps without really knowing what a shiny.tag.list is, and that's what a UI is.
+```{r}
+S3Class(ui)
+```
+And then there's the slightly puzzling unnamed list which has 4 elements
+```{r}
+length(ui); names(ui)
+```
+
+What are the elements, and what kinds of test can we run on them?
+```{r}
+ui[[1]]
+ui[[2]]
+ui[2]
+ui[3]
+class(ui[4][[1]][[1]])
+```
+We'll come back to this shortly.
+
+The next problem is the server object - which is a function - but a slightly esoteric one.
+```{r}
+S3Class(server)
+```
+It takes three mandatory arguments - input, output, and session. The input argument is quite transparent - we use it to access inputs all the time when building Shiny apps, and similar for outputs with the output$ object. As we can index them with $ we think they're probably named lists of some description. But session is a little more opaque.
+```{r}
+formals(server)
+```
+So we know that if we want to test the server function we'll need to add input, output, and session but we don't really know what we should add there. Like the UI, we'll come back to this shortly.
+
+So the shinyApp function, which has a more familiar look about it. It takes our ui and server as inputs, and builds the Shiny app for us. Source code:
+```{r, eval = FALSE}
+function (ui, server, onStart = NULL, options = list(), uiPattern = "/", 
+    enableBookmarking = NULL) 
+{
+    if (!is.function(server)) {
+        stop("`server` must be a function", call. = FALSE)
+    }
+    uiPattern <- sprintf("^%s$", uiPattern)
+    httpHandler <- uiHttpHandler(ui, uiPattern)
+    serverFuncSource <- function() {
+        server
+    }
+    if (!is.null(enableBookmarking)) {
+        bookmarkStore <- match.arg(enableBookmarking, c("url", 
+            "server", "disable"))
+        enableBookmarking(bookmarkStore)
+    }
+    appOptions <- captureAppOptions()
+    structure(list(httpHandler = httpHandler, serverFuncSource = serverFuncSource, 
+        onStart = onStart, options = options, appOptions = appOptions), 
+        class = "shiny.appobj")
+}
+```
+There's some input validation, 
+
+
+
+inputs is a list of reactiveValues, output is a list of some values too. Session is... a bit different. And how do we access it programmatically?
+
+Later - refactor to have min > 0, as why would you want 0 breaks and to allow the erro?
+
 # Testing a Golem Module
 
 There is another layer of complexity if we build our apps with frameworks like {golem}. For the rest of this post, we'll assume some familiarity with {golem} and its modules.

@@ -1,5 +1,7 @@
 #' reactive_data UI Function
 #'
+#' Left empty as this module has no use of a UI and isn't called inside the app.
+#'
 #' @description A shiny Module.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
@@ -15,6 +17,8 @@ mod_reactive_data_ui <- function(id){
 }
 
 #' reactive_data Server Functions
+#' @param data original data input to app, not as a reactive expression
+#' @param r list of reactiveValues to pass keep_keys, filterPattern and x1/y1 for filtering via co-ordinates.
 #'
 #' @noRd
 mod_reactive_data_server <- function(id, data, r){
@@ -37,7 +41,7 @@ mod_reactive_data_server <- function(id, data, r){
           dplyr::filter(document %in% r$keep_keys)
       }
 
-      if(r$filterPattern == ""){
+      if(r$filterPattern != ""){
         reactive_data <- reactive_data %>%
           dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
       }
