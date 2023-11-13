@@ -23,24 +23,12 @@ mod_umap_plot_ui <- function(id) {
           shiny::fluidRow(
             mod_delete_data_ui(ns("deleteData"))
           )
-          # shiny::fluidRow(
-          #   shiny::actionButton(
-          #     ns("delete"),
-          #     "Delete selections",
-          #     class = "btn",
-          #     icon = shiny::icon("trash"),
-          #     style = "background: #ff7518; border-radius: 100px; color: #ffffff; border:none;"
-          #   ),
-          #   # shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
-          # ),
         ),
-        shiny::br(),
-        shiny::br(),
         shiny::fluidRow(
           shiny::column(6, htmltools::div(
             id = "slider1",
             style = "width: 100%;",
-            shinyWidgets::noUiSliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20),color = "#ff7518"  ) # not using ns(x1) as don't want this input to be restricted to the namespace (am now...)
+            shinyWidgets::noUiSliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20),color = "#ff7518"  )
           ), ), # Slider 1
           shiny::column(
             6,
@@ -58,7 +46,7 @@ mod_umap_plot_ui <- function(id) {
 #' umap_plot Server Functions
 #'
 #' @noRd
-mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
+mod_umap_plot_server <- function(id, reactive_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -67,24 +55,7 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
       r$y1 <- input$y1
     })
 
-    # shiny::observeEvent(plotly::event_data("plotly_selected"), {
-    #   r$selected_range <- plotly::event_data("plotly_selected")$key
-    # })
-    #
-    # shiny::observeEvent(input$delete, {
-    #   print("remove keys will update")
-    #   r$remove_keys <- r$selected_range
-    #   r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
-    #
-    #   # Clear the values in selected_range()
-    #   r$selected_range <- list()
-    # })
-
-    mod_delete_data_server(
-      id = "deleteData",
-      r = r
-      )
-
+    mod_delete_data_server(id = "deleteData", r = r)
 
     #Plot generation logic
     output$umapPlot <- plotly::renderPlotly({

@@ -29,7 +29,7 @@ run_app <- function(onStart = NULL,
 }
 
 
-#' Run the Shiny Application from anoher project
+#' Run the Shiny Application from another project
 #'
 #' @param data Your custom data
 #' @param ... arguments to pass to golem_opts.
