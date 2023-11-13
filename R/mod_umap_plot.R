@@ -21,15 +21,18 @@ mod_umap_plot_ui <- function(id) {
           id = ns("button"),
           style = "position: absolute; bottom 7px; right: 7px;",
           shiny::fluidRow(
-            shiny::actionButton(
-              ns("delete"),
-              "Delete selections",
-              class = "btn",
-              icon = shiny::icon("trash"),
-              style = "background: #ff7518; border-radius: 100px; color: #ffffff; border:none;"
-            ),
-            # shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
-          ),
+            mod_delete_data_ui(ns("deleteData"))
+          )
+          # shiny::fluidRow(
+          #   shiny::actionButton(
+          #     ns("delete"),
+          #     "Delete selections",
+          #     class = "btn",
+          #     icon = shiny::icon("trash"),
+          #     style = "background: #ff7518; border-radius: 100px; color: #ffffff; border:none;"
+          #   ),
+          #   # shiny::uiOutput(ns("deleteme")), # Dynamic UI placeholder (renders once a selection has been made)
+          # ),
         ),
         shiny::br(),
         shiny::br(),
@@ -64,24 +67,28 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
       r$y1 <- input$y1
     })
 
-    shiny::observeEvent(plotly::event_data("plotly_selected"), {
-      r$selected_range <- plotly::event_data("plotly_selected")$key
-    })
+    # shiny::observeEvent(plotly::event_data("plotly_selected"), {
+    #   r$selected_range <- plotly::event_data("plotly_selected")$key
+    # })
+    #
+    # shiny::observeEvent(input$delete, {
+    #   print("remove keys will update")
+    #   r$remove_keys <- r$selected_range
+    #   r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
+    #
+    #   # Clear the values in selected_range()
+    #   r$selected_range <- list()
+    # })
 
-    shiny::observeEvent(input$delete, {
-      print("remove keys will update")
-      r$remove_keys <- r$selected_range
-      r$keep_keys <- r$keep_keys[!r$keep_keys %in% r$remove_keys]
-
-      # browser()
-      # Clear the values in selected_range()
-      r$selected_range <- list()
-    })
+    mod_delete_data_server(
+      id = "deleteData",
+      r = r
+      )
 
 
+    #Plot generation logic
     output$umapPlot <- plotly::renderPlotly({
-      # req(r$colour_var)
-      #
+
       colour_var <- rlang::as_string(r$colour_var)
       reactive_dataframe() %>%
         dplyr::mutate(
@@ -174,16 +181,6 @@ mod_umap_plot_server <- function(id, reactive_dataframe, selected_range, r) {
 "
         )
     })
-
-    observe({
-      if(!is.null(r$selected_range) && length(r$selected_range) > 0) {
-        shinyjs::enable("delete")
-      } else {
-        shinyjs::disable("delete")
-      }
-    })
-
-
   })
 }
 

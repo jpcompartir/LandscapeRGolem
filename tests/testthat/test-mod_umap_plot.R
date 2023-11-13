@@ -24,40 +24,41 @@ test_that("Module's server function accepts the right named inputs", {
   )
 })
 
+test_that("Module returns a json object as the output$umapPlot", {
+  testServer(
+    mod_umap_plot_server,
+    # Add here your module params
+    args = list(
+      reactive_dataframe = generate_dummy_data,
+      selected_range = function(){
+        return(list(key = c(3, 4, 5)))
+      },
+      r = shiny::reactiveValues(
+        x1 = c(-10, 10),
+        y1 = c(-10, 10),
+        colour_var = "cluster"
+      )
+    ),
+    expr = {
+      ns <- session$ns
 
-testServer(
-  mod_umap_plot_server,
-  # Add here your module params
-  args = list(
-    reactive_dataframe = generate_dummy_data,
-    selected_range = function(){
-      return(list(key = c(3, 4, 5)))
-    },
-    r = shiny::reactiveValues(
-      x1 = c(-10, 10),
-      y1 = c(-10, 10),
-      colour_var = "cluster"
-    )
-  ),
-  expr = {
-    ns <- session$ns
+      expect_true(inherits(output$umapPlot, "json"))
 
-    expect_true(inherits(output$umapPlot, "json"))
+      # convert output$umapPlot to a list or data frame with only base R
 
-    # convert output$umapPlot to a list or data frame with only base R
+      if(requireNamespace("jsonlite")){
+        plotly_data <- jsonlite::fromJSON(output$umapPlot[[1]])
 
-    if(requireNamespace("jsonlite")){
-      plotly_data <- jsonlite::fromJSON(output$umapPlot[[1]])
-
-      expect_contains(
-        names(plotly_data$deps), c("name", "version", "src", "script", "stylesheet")
+        expect_contains(
+          names(plotly_data$deps), c("name", "version", "src", "script", "stylesheet")
         )
 
-      expect_contains(
-        plotly_data$x$shinyEvents, c("plotly_hover", "plotly_selected", "plotly_click")
+        expect_contains(
+          plotly_data$x$shinyEvents, c("plotly_hover", "plotly_selected", "plotly_click")
         )
-    }
+      }
 
+    })
 })
 
 test_that("module ui works", {
