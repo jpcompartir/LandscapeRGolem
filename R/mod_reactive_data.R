@@ -1,4 +1,4 @@
-golem:#' reactive_data UI Function
+#' reactive_data UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -17,9 +17,36 @@ mod_reactive_data_ui <- function(id){
 #' reactive_data Server Functions
 #'
 #' @noRd
-mod_reactive_data_server <- function(id){
-  moduleServer( id, function(input, output, session){
+mod_reactive_data_server <- function(id, data, r){
+  moduleServer(id, function(input, output, session){
     ns <- session$ns
+
+    # stopifnot(inherits(data, "data.frame"), is.reactive(r))
+
+    reactive_data <- shiny::reactive({
+      reactive_data <- data %>%
+        dplyr::filter(
+          V1 >= r$x1[[1]],
+          V1 <= r$x1[[2]],
+          V2 >= r$y1[[1]],
+          V2 <= r$y1[[2]]
+                      )
+
+      if(!is.null(r$remove_keys)){
+        reactive_data <- reactive_data %>%
+          dplyr::filter(document %in% r$keep_keys)
+      }
+
+      if(r$filterPattern == ""){
+        reactive_data <- reactive_data %>%
+          dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
+      }
+
+      return(reactive_data) # return it from the reactive
+    })
+
+    #Return it from the module in a named list so it's accessible in app_server.R. But, return as the reactive or the called data? Not sure what practical difference it would make here.
+    return(list(reactive_data = reactive_data))
 
   })
 }

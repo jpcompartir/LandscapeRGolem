@@ -27,7 +27,7 @@ app_server <- function(input, output, session, data) {
     remove_keys = NULL)
 
   mod_conversation_landscape_server("landscapeTag",
-    reactive_dataframe = reactive_data,
+    reactive_dataframe = reactive_data_output$reactive_data,
     highlighted_dataframe = df_filtered,
     r = r
   )
@@ -49,41 +49,22 @@ app_server <- function(input, output, session, data) {
 
   mod_labelled_tab_server(
     id = "labelledTag",
-    reactive_dataframe = reactive_data,
+    reactive_dataframe = reactive_data_output$reactive_data,
     data = data,
     r = r
   )
 
-  # Create reactive data from data. Filters on inputs of sliders in umap_plot, defaulting values to 10.
-  # Then create a reactive dependency on remove_range$keep_keys, s.t. any change in remove_range makes a change here.
-  # Keys from selected_range move into remove_range$remove_keys when the delete button is pressed. $remove_keys and $keep_keys are the inverse of one another.
-  # reactive_data() also takes care of the filtering via a pattern
-  reactive_data <- shiny::reactive({
-    data <- data %>%
-      dplyr::filter(V1 > r$x1[[1]], V1 < r$x1[[2]], V2 > r$y1[[1]], V2 < r$y1[[2]]) #%>%
 
-    if(!is.null(r$remove_keys)){
-    data <- data %>%
-      dplyr::filter(document %in% r$keep_keys) # Filtering for the keys not in remove_range$remove_keys
-    }
-
-    # browser()
-    if(r$filterPattern != ""){
-      data <- data %>%
-        dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
-    }
-
-    return(data)
-  })
+  reactive_data_output <- mod_reactive_data_server(id =  "reactveData",
+                                            data = data,
+                                            r = r)
 
   #---- filtered_df ----
   # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
   df_filtered <- eventReactive(
     c(plotly::event_data("plotly_selected"), input$`landscapeTag-umapPlot-delete`),{
 
-    # browser()
-    # req(r$selected_range)
-    df_filtered <- reactive_data() %>%
+    df_filtered <- reactive_data_output$reactive_data() %>%
       dplyr::filter(document %in% r$selected_range)
 
     df_filtered
