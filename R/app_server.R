@@ -14,6 +14,8 @@ app_server <- function(input, output, session, data) {
       dplyr::slice_sample(n = 10000)
   }
 
+  stopifnot(c("text", "document", "clean_text", "permalink", "cluster", "sentiment", "V1", "V2", "date") %in% colnames(data))
+
   # This is for passing reactive values to and from modules
   r <- reactiveValues(
     colour_var = "cluster",
