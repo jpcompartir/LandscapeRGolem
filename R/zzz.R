@@ -138,6 +138,44 @@ generate_sentiment_data <- function(size = 30) {
 
 }
 
+generate_wlos_data <- function(size = 20) {
+  set.seed(123)
+
+  words <- c("hello", "goodbye", "this", "that", "ex", "nihilo", "lorem", "ipsum", "divine", "right", "justice", "tradition", "alien", "remarkable")
+
+
+  data <- data.frame(
+    document = seq(1:size),
+    date = sample(replace = TRUE, size = size, x =
+                    as.Date(
+                      c("2023-01-01", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05", "2023-01-06", "2023-01-07", "2023-01-08", "2023-01-09", "2023-01-10")
+                    )
+    ),
+    text = stringr::sentences[1:size],
+    sentiment = sample(c("positive","negative", "neutral"),
+                       size = size,
+                       replace = TRUE)
+    ,
+    cluster = sample(
+      x = c(1, 2, 3, 4),
+      size = size,
+      replace = TRUE
+    ),
+    permalink = sample(c("https://www.google.com",
+                         "https://www.facebook.com",
+                         "https://www.twitter.com"),
+                       size = size,
+                       replace = TRUE),
+    V1 = runif(size, 0, 1),
+    V2 = runif(size, 0, 1)
+  )
+
+  data$clean_text = data$text
+
+  return(data)
+}
+
+
 # Utility function for mod_bigram_network
 make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
   requireNamespace("ParseR")
