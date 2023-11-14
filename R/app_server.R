@@ -11,7 +11,7 @@ app_server <- function(input, output, session, data) {
       dplyr::select(-cluster) %>%
       dplyr::rename(cluster = topic) %>%
       dplyr::mutate(date = as.Date(date)) %>%
-      dplyr::slice_sample(n = 10000)
+      dplyr::slice_sample(n = 1000)
   }
 
   stopifnot(c("text", "document", "clean_text", "permalink", "cluster", "sentiment", "V1", "V2", "date") %in% colnames(data))
