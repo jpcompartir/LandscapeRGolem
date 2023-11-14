@@ -69,7 +69,7 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
     ns <- session$ns
 
     #Update when highlighted_dataframe changes, or the updatePlotsButton is pressed (settings) or the subgroups/groups are changed.
-    wlos_reactive <- eventReactive(c(highlighted_dataframe(), input$updatePlotsButton, r$current_subgroups), {
+    wlos_reactive <- eventReactive(c(highlighted_dataframe(), input$updatePlotsButton, r$current_subgroups, input$topN, input$nrow, input$termCutoff), {
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a weighted log-odds chart")
       }

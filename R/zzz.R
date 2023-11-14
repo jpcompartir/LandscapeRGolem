@@ -1,37 +1,5 @@
 globalVariables(c(".data", ":=", "V1", "V2", "clean_text", "cluster", "document", "mention_content", "permalink", "sentiment", "text", "topic"))
 
-search_widget <- function (inputId, label = NULL, value = "", placeholder = NULL,
-                           btnSearch = NULL, btnReset = NULL, resetValue = "", width = NULL)
-{
-
-  value <- shiny::restoreInput(id = inputId, default = value)
-  if (!is.null(btnSearch)) {
-    btnSearch <- htmltools::tags$button(class = "btn btn-default btn-addon action-button",
-                                        id = paste0(inputId, "_search"), type = "button",
-                                        btnSearch)
-  }
-  if (!is.null(btnReset)) {
-    btnReset <- htmltools::tags$button(class = "btn btn-default btn-addon action-button",
-                                       id = paste0(inputId, "_reset"), type = "button",
-                                       btnReset)
-  }
-  css_btn_addon <- paste0(".btn-addon{", "font-size:14.5px;",
-                          "margin:0 0 0 0 !important;", "display: inline-block !important;",
-                          "}")
-  searchTag <- htmltools::tags$div(class = "form-group shiny-input-container",
-                                   style = if (!is.null(width))
-                                     paste0("width: ", validateCssUnit(width), ";"), if (!is.null(label))
-                                       htmltools::tags$label(label, `for` = inputId), htmltools::tags$div(id = inputId,
-                                                                                                          `data-reset` = !is.null(resetValue), `data-reset-value` = resetValue,
-                                                                                                          class = "input-group search-text", htmltools::tags$input(id = paste0(inputId,
-                                                                                                                                                                               "_text"), style = "border-radius: 16px!important; margin-right:5px;",
-                                                                                                                                                                   type = "text", class = "form-control", value = value,
-                                                                                                                                                                   placeholder = placeholder), htmltools::tags$div(class = "input-group-btn",
-                                                                                                                                                                                                                   btnReset, btnSearch)), singleton(tags$head(tags$style(css_btn_addon))))
-  shinyWidgets:::attachShinyWidgetsDep(searchTag)
-}
-
-
 wlos_text <- function() {
   text <- shiny::HTML(
     "
@@ -95,80 +63,6 @@ bigram_text <- function() {
 
   return(text)
 }
-
-
-# nested_accordions <- function(id,) {
-#
-# ns <- NS(id)
-#
-# shiny::tagList(
-#   bslib::accordion(
-#     id = "",
-#     bslib::accordion_panel(
-#       id = "top_panel",
-#       bslib::accordion_panel(
-#         id = "nested_panel1",
-#         title = ,
-#         active = ,
-#         top_level_lements
-#       ),
-#       bslib::layout_sidebar(
-#         fillable = TRUE,
-#         fill = TRUE,
-#         sidebar = bslib::sidebar(
-#           bslib::accordion(
-#             id = "nested_accordion",
-#             bslib::accordion_panel(
-#
-#             ),
-#             bslib::accordion_panel(
-#
-#             ),
-#           )
-#         ), #main component of sidebar
-#
-#       ),
-#     ),
-#   )
-# )
-
-# }
-
-
-setSliderColor <- function(color, sliderId) {
-
-  # some tests to control inputs
-  stopifnot(!is.null(color))
-  stopifnot(is.character(color))
-  stopifnot(is.numeric(sliderId))
-  stopifnot(!is.null(sliderId))
-
-  # the css class for ionrangeslider starts from 0
-  # therefore need to remove 1 from sliderId
-  sliderId <- sliderId - 1
-
-  # create custom css background for each slider
-  # selected by the user
-  sliderCol <- lapply(sliderId, FUN = function(i) {
-    paste0(
-      ".js-irs-", i, " .irs-single,",
-      " .js-irs-", i, " .irs-from,",
-      " .js-irs-", i, " .irs-to,",
-      " .js-irs-", i, " .irs-bar-edge,",
-      " .js-irs-", i,
-      " .irs-bar{  border-color: transparent;background: ", color[i+1],
-      "; border-top: 1px solid ", color[i+1],
-      "; border-bottom: 1px solid ", color[i+1],
-      ";}"
-    )
-  })
-
-  # insert this custom css code in the head
-  # of the shiy app
-  custom_head <- tags$head(tags$style(HTML(as.character(sliderCol))))
-  return(custom_head)
-}
-
 
 #For testing etc.
 generate_dummy_data <- function(length = 10){
@@ -244,6 +138,44 @@ generate_sentiment_data <- function(size = 30) {
 
 }
 
+generate_wlos_data <- function(size = 20) {
+  set.seed(123)
+
+  words <- c("hello", "goodbye", "this", "that", "ex", "nihilo", "lorem", "ipsum", "divine", "right", "justice", "tradition", "alien", "remarkable")
+
+
+  data <- data.frame(
+    document = seq(1:size),
+    date = sample(replace = TRUE, size = size, x =
+                    as.Date(
+                      c("2023-01-01", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05", "2023-01-06", "2023-01-07", "2023-01-08", "2023-01-09", "2023-01-10")
+                    )
+    ),
+    text = stringr::sentences[1:size],
+    sentiment = sample(c("positive","negative", "neutral"),
+                       size = size,
+                       replace = TRUE)
+    ,
+    cluster = sample(
+      x = c(1, 2, 3, 4),
+      size = size,
+      replace = TRUE
+    ),
+    permalink = sample(c("https://www.google.com",
+                         "https://www.facebook.com",
+                         "https://www.twitter.com"),
+                       size = size,
+                       replace = TRUE),
+    V1 = runif(size, 0, 1),
+    V2 = runif(size, 0, 1)
+  )
+
+  data$clean_text = data$text
+
+  return(data)
+}
+
+
 # Utility function for mod_bigram_network
 make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 10, ...) {
   requireNamespace("ParseR")
@@ -255,7 +187,6 @@ make_bigram_viz <- function(data, text_var = mention_content, top_n = 50, min = 
 
   return(plot)
 }
-
 
 make_dt_tab_output <- function(data) {
   stopifnot(is.reactive(data) | is.function(data))
@@ -275,7 +206,6 @@ make_dt_tab_output <- function(data) {
 
   return(table)
 }
-
 
 #Custom expectation for code ran properly. Informs if NULL return value
 expect_valid <- function(expr) {

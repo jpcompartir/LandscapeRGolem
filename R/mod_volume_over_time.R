@@ -21,18 +21,6 @@ mod_volume_over_time_ui <- function(id, distribution_tab_height, distribution_ta
             shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1400, value = distribution_tab_height, step = 50, color = "#ff7518"),
             shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1400, value = distribution_tab_width, step = 50, color = "#ff7518"),
             mod_daterange_input_ui(id = ns("dateRangeVot")),
-            # shiny::dateRangeInput(
-            #   inputId = ns("dateRangeVot"),
-            #   label = "date range",
-            #   start = NULL,
-            #   end = NULL,
-            #   max = Sys.Date() + 1,
-            #   min = Sys.Date() - (365*5)
-            #   # start = as.Date("2023-01-01"),
-            #   # end = Sys.Date() ,
-            #   # min = Sys.Date() - (365*3),
-            #   # max = Sys.Date() + 1
-            # ),
             shiny::selectInput(inputId = ns("dateBreak"), label = "unit", choices = c("day", "week", "month", "quarter", "year"), selected = "week"),
             shiny::selectInput(inputId = ns("dateSmooth"), label = "smooth", choices = c("none", "loess", "lm", "glm", "gam"), selected = "none"),
             shiny::uiOutput(ns("smoothControls")),
@@ -69,7 +57,7 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe, r) {
         LandscapeR::ls_plot_volume_over_time(
           .date_var = date,
           unit = input$dateBreak,
-          fill = delayedVolumeHex()
+          fill = input$volumeHex
         )
 
       if (!input$dateSmooth == "none") {
@@ -114,15 +102,9 @@ mod_volume_over_time_server <- function(id, highlighted_dataframe, r) {
             selected = "TRUE"
           ),
           colourpicker::colourInput(ns("smoothColour"), label = "smooth colour", value = "#000000")
-          # shiny::textInput(ns("smoothColour"), "Smooth colour", value = "#000000")
         )
       }
     })
-
-    delayedVolumeHex <- shiny::reactive({
-      input$volumeHex
-    }) %>%
-      shiny::debounce(500)
 
     output$saveVolume <- LandscapeR::download_box("volume_plot",
                                                   volume_reactive,

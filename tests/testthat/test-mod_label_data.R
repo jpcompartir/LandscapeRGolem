@@ -44,7 +44,7 @@ test_that("Module works when we provide the right inputs, that labels can be upd
       expect_true(all(r$labels %in% c("label1", "label2")))
       expect_true(all(r$label_ids %in% c(1, 2)))
 
-      browser()
+      # browser()
       expect_equal(length(r$label_ids), 2)
 
       session$setInputs(labelText = "Dummy Label")
