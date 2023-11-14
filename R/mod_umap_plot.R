@@ -12,33 +12,33 @@ mod_umap_plot_ui <- function(id) {
   tagList(
     # Using some CSS for styling, and adding a spinner (that indicates something is loading) build out a UI tab which takes up 6/12 columns of the screen for the interactive landscape plot. Add the dynamically rendered delete me button to the UI in the bottom right corner of the landscape - rendering once selections have been made. Then place the V1 and V2 sliders below the landscape
     shiny::column(6,
-      style = "width:50%; height: 10000px; position: relative;",
-      htmltools::div(
-        id = "graph",
-        shinycssloaders::withSpinner(plotly::plotlyOutput(ns("umapPlot"), height = 600)),
-        htmltools::div(
-          style = "position: absolute; bottom 7px; right: 7px;",
-          id = ns("button"),
-          style = "position: absolute; bottom 7px; right: 7px;",
-          shiny::fluidRow(
-            mod_delete_data_ui(ns("deleteData"))
-          )
-        ),
-        shiny::fluidRow(
-          shiny::column(6, htmltools::div(
-            id = "slider1",
-            style = "width: 100%;",
-            shinyWidgets::noUiSliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20),color = "#ff7518"  )
-          ), ), # Slider 1
-          shiny::column(
-            6,
-            htmltools::div(
-              id = "slider2", style = "width: 100%;",
-              shinyWidgets::noUiSliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20), color = "#ff7618")
-            )
-          ), # Slider2
-        )
-      )
+                  style = "width:50%; height: 10000px; position: relative;",
+                  htmltools::div(
+                    id = "graph",
+                    shinycssloaders::withSpinner(plotly::plotlyOutput(ns("umapPlot"), height = 600)),
+                    htmltools::div(
+                      style = "position: absolute; bottom 7px; right: 7px;",
+                      id = ns("button"),
+                      style = "position: absolute; bottom 7px; right: 7px;",
+                      shiny::fluidRow(
+                        mod_delete_data_ui(ns("deleteData"))
+                      )
+                    ),
+                    shiny::fluidRow(
+                      shiny::column(6, htmltools::div(
+                        id = "slider1",
+                        style = "width: 100%;",
+                        shinyWidgets::noUiSliderInput(ns("x1"), "V1 Range", step = 5, -100, 100, c(-20, 20),color = "#ff7518"  )
+                      ), ), # Slider 1
+                      shiny::column(
+                        6,
+                        htmltools::div(
+                          id = "slider2", style = "width: 100%;",
+                          shinyWidgets::noUiSliderInput(ns("y1"), "V2 Range", step = 5, -100, 100, c(-20, 20), color = "#ff7618")
+                        )
+                      ), # Slider2
+                    )
+                  )
     )
   )
 }
@@ -60,11 +60,11 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
     #Plot generation logic
     output$umapPlot <- plotly::renderPlotly({
 
-      colour_var <- rlang::as_string(r$colour_var)
+      # colour_var <- rlang::as_string(r$colour_var)
       reactive_dataframe() %>%
         dplyr::mutate(
-        cluster = stringr::str_wrap(cluster, width = 20),
-        cluster = factor(cluster),
+          cluster = stringr::str_wrap(cluster, width = 20),
+          cluster = factor(cluster),
           !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
           !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
         ) %>%

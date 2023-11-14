@@ -78,7 +78,7 @@ test_that("Module communicates with mod_delete_data (more of an integration than
       #r$selected_range gets flushed
       expect_equal(length(r$selected_range), 0)
 
-      browser()
+      # browser()
     })
 })
 
