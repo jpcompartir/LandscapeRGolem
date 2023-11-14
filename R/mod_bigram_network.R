@@ -30,10 +30,6 @@ mod_bigram_network_ui <- function(id) {
             shinyWidgets::noUiSliderInput(ns("width"), "width", min = 100, max = 1200, value = 800, step = 50, color = "#ff7518"),
             shinyWidgets::noUiSliderInput(ns("topN"), "top_n", min = 20, max = 100, value = 50, step = 5, color = "#ff7518"),
             shinyWidgets::noUiSliderInput(ns("minFreq"), "min_freq", min = 5, max = 100, value = 10, step = 5, color = "#ff7518"),
-            # shiny::sliderInput(ns("height"), "height", min = 100, max = 1200, value = 600, step = 50),
-            # shiny::sliderInput(ns("width"), "width", min = 100, max = 1200, value = 800, step = 50),
-            # shiny::sliderInput(ns("topN"), "top_n", min = 20, max = 100, value = 50, step = 5),
-            # shiny::sliderInput(ns("minFreq"), "min_freq", min = 5, max = 100, value = 10, step = 5),
             shinyWidgets::materialSwitch(inputId = ns("removeStopwords"), label = "remove stopwords?", status = "primary", right = TRUE, value = FALSE),
             shiny::actionButton(
               class = "btn-subgroups-update",

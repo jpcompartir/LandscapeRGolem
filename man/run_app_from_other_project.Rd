@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_app.R
 \name{run_app_from_other_project}
 \alias{run_app_from_other_project}
-\title{Run the Shiny Application from anoher project}
+\title{Run the Shiny Application from another project}
 \usage{
 run_app_from_other_project(
   onStart = NULL,
@@ -40,5 +40,5 @@ expression in order for the match to be considered successful.}
 See `?golem::get_golem_options` for more details.}
 }
 \description{
-Run the Shiny Application from anoher project
+Run the Shiny Application from another project
 }
