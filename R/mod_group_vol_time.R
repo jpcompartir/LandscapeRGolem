@@ -73,6 +73,7 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
       }
 
       group_vol_time_plot <- group_date_range_vot$over_time_data() %>%
+        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
         LandscapeR::ls_plot_group_vol_time(
           group_var = r$global_group_var,
           date_var = date,

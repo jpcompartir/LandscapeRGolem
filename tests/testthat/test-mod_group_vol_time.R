@@ -58,20 +58,20 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
       expect_true(inherits(plot, "gg"))
 
       #Check range of dates is as expected:
-      expect_true(max(plot$data$plot_date) == as.Date("2023-01-09"))
+      expect_true(max(plot$data$plot_date) == as.Date("2023-01-05"))
       expect_true(min(plot$data$plot_date) == as.Date("2023-01-03"))
 
       #Check the output is rendering with the correct names
       expect_true(
         all(
           c("src", "width", "height", "alt", "coordmap") %in% names(output$groupVolTime)
-          )
+        )
       )
 
       expect_true(output$groupVolTime$alt == "Plot object")
 
       #Correct var is facetted
-      expect_true(output$groupVolTime$coordmap$panels[[7]]$mapping$panelvar1 == "facet_var")
+      expect_true(output$groupVolTime$coordmap$panels[[1]]$mapping$panelvar1 == "facet_var")
 
       #Check interaction with labels module works:
       session$setInputs(`groupVolTimeTitles-Title` = "New Title Please!",
@@ -85,8 +85,50 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
       expect_true(startsWith(plot_output, "/var/fold"))
       expect_true(endsWith(plot_output, ".png"))
       expect_true(grepl('group_vol_time', plot_output))
+
+
     })
 })
+
+test_that("mod_group_vol_time's plot is responding correctly to changes in r$global_group_var and r$current_subgroups", {
+  testServer(
+    mod_group_vol_time_server,
+    # Add here your module params
+    args = list(
+      highlighted_dataframe = generate_sentiment_data,
+      r = shiny::reactiveValues(
+        date_min = as.Date("2023-01-02"),
+        date_max = as.Date("2023-01-09")
+      )
+    ),
+    expr = {
+      ns <- session$ns
+
+      session$setInputs(
+        dateBreak = "day",
+        height = 600,
+        width = 400,
+        nrow = 2,
+        #So to pass stuff into the modules that need them we can pre-prepend the namespace with syms
+        `dateRangeGroupVol-dateRange` = list(as.Date("2023-01-03"), as.Date("2023-01-09"))
+      )
+
+      r$global_group_var <- "sentiment"
+      r$current_subgroups <- c("positive", "negative")
+
+      pos_neg <- group_vol_time_reactive()
+      expect_setequal(c("negative", "positive"), unique(pos_neg$data$facet_var))
+
+      r$global_group_var <- "sentiment"
+      r$current_subgroups <- c("negative", "neutral")
+      neg_pos <- group_vol_time_reactive()
+      expect_setequal(c("negative", "neutral"), unique(neg_pos$data$facet_var))
+
+    })
+
+})
+
+
 
 
 test_that("Module UI renders with correct tags + icons", {
