@@ -32,7 +32,8 @@ test_that("Module returns a json object as the output$umapPlot", {
       r = shiny::reactiveValues(
         x1 = c(-10, 10),
         y1 = c(-10, 10),
-        colour_var = "cluster"
+        colour_var = "cluster",
+        virid_colours = viridis::viridis_pal(option = "H")(50)
       )
     ),
     expr = {
@@ -77,8 +78,6 @@ test_that("Module communicates with mod_delete_data (more of an integration than
 
       #r$selected_range gets flushed
       expect_equal(length(r$selected_range), 0)
-
-      # browser()
     })
 })
 
