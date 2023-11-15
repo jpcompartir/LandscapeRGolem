@@ -27,10 +27,6 @@ mod_delete_data_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    shiny::observeEvent(plotly::event_data("plotly_selected"), {
-      r$selected_range <- plotly::event_data("plotly_selected")$key
-    })
-
     shiny::observeEvent(input$delete, {
       print("remove keys will update")
       r$remove_keys <- r$selected_range

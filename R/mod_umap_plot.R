@@ -59,16 +59,14 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
 
     #Plot generation logic
     output$umapPlot <- plotly::renderPlotly({
-
-      # colour_var <- rlang::as_string(r$colour_var)
-      reactive_dataframe() %>%
+      plot <- reactive_dataframe() %>%
         dplyr::mutate(
           cluster = stringr::str_wrap(cluster, width = 20),
           cluster = factor(cluster),
           !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
           !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
         ) %>%
-        plotly::plot_ly(
+        plotly::plot_ly(source = "umap_plot",
           x = ~V1,
           y = ~V2,
           type = "scattergl",
@@ -112,7 +110,7 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
               "eraseshape"
             )
         ) %>%
-        plotly::event_register(event = "plotly_selected") %>%
+        # plotly::event_register(event = "plotly_selected") %>%
         htmlwidgets::onRender(
           # Javascript function which labels the most recently added shape with some editable text
           "
@@ -149,8 +147,14 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
       }
     });
   }
-"
-        )
+")
+      plotly::event_register(plot, "plotly_selected")
+      plot
+
+    })
+
+    shiny::observeEvent(plotly::event_data("plotly_selected", source = "umap_plot"), {
+      r$selected_range <- plotly::event_data("plotly_selected", source = "umap_plot")$key
     })
   })
 }

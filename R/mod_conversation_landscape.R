@@ -17,7 +17,7 @@ mod_conversation_landscape_ui <- function(id) {
         2,
         style = "display: flex; align-items: center;",
         shiny::selectInput(
-          inputId = ns("colourVar"), selected = NULL, choices = NULL, label = "Colour Variable", selectize = FALSE # can set this to TRUE but will adjust height, and not sure it needs selectize for now. Unclear where to edit the selectize's height
+          inputId = ns("colourVar"), selected = "cluster", choices = NULL, label = "Colour Variable", selectize = FALSE # can set this to TRUE but will adjust height, and not sure it needs selectize for now. Unclear where to edit the selectize's height
         )),
       mod_download_data_ui(id = ns("allData"), label = "All Data"),
       shiny::column(3,
