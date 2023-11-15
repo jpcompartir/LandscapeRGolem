@@ -26,7 +26,8 @@ app_server <- function(input, output, session, data) {
     date_max = max(data$date, na.rm = TRUE),
     virid_colours = viridis::viridis_pal(option = "H")(50),
     keep_keys = data %>% dplyr::pull(document),
-    remove_keys = NULL)
+    remove_keys = NULL,
+    selected_range = NULL)
 
   mod_conversation_landscape_server("landscapeTag",
     reactive_dataframe = reactive_data_output$reactive_data,
@@ -64,13 +65,14 @@ app_server <- function(input, output, session, data) {
   #---- filtered_df ----
   # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
   df_filtered <- eventReactive(
-    c(plotly::event_data("plotly_selected"), input$`landscapeTag-umapPlot-deleteData-delete`),{
+    c(
+      plotly::event_data("plotly_selected", source = "umap_plot"),
+      input$`landscapeTag-umapPlot-deleteData-delete`),{
 
     df_filtered <- reactive_data_output$reactive_data() %>%
       dplyr::filter(document %in% r$selected_range)
 
     df_filtered
   })
-
 
 }
