@@ -18,16 +18,30 @@ app_server <- function(input, output, session, data) {
 
   # This is for passing reactive values to and from modules
   r <- reactiveValues(
+    global_group_var = "cluster",
     colour_var = "cluster",
     column_names = colnames(data),
-    global_group_var = "cluster",
-    global_subgroups = NULL,
+    current_subgroups = unique(data$cluster),
+    new_subgroups = unique(data$cluster),
     date_min =  min(data$date, na.rm = TRUE),
     date_max = max(data$date, na.rm = TRUE),
     virid_colours = viridis::viridis_pal(option = "H")(50),
     keep_keys = data %>% dplyr::pull(document),
     remove_keys = NULL,
     selected_range = NULL)
+
+    #---- filtered_df ----
+    # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
+    df_filtered <- eventReactive(
+      c(
+        plotly::event_data("plotly_selected", source = "umap_plot"),
+        input$`landscapeTag-umapPlot-deleteData-delete`),{
+
+          df_filtered <- reactive_data_output$reactive_data() %>%
+            dplyr::filter(document %in% r$selected_range)
+
+          df_filtered
+        })
 
   mod_conversation_landscape_server("landscapeTag",
     reactive_dataframe = reactive_data_output$reactive_data,
@@ -47,6 +61,7 @@ app_server <- function(input, output, session, data) {
 
   mod_compare_groups_server("compareGroupsTag",
     highlighted_dataframe = df_filtered,
+    start_up_values = start_up_values,
     r = r
   )
 
@@ -62,17 +77,6 @@ app_server <- function(input, output, session, data) {
                                             data = data,
                                             r = r)
 
-  #---- filtered_df ----
-  # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
-  df_filtered <- eventReactive(
-    c(
-      plotly::event_data("plotly_selected", source = "umap_plot"),
-      input$`landscapeTag-umapPlot-deleteData-delete`),{
 
-    df_filtered <- reactive_data_output$reactive_data() %>%
-      dplyr::filter(document %in% r$selected_range)
-
-    df_filtered
-  })
 
 }
