@@ -71,7 +71,7 @@ mod_conversation_landscape_server <- function(id,
                             reactive_dataframe = reactive_dataframe
       )
 
-      observe({
+      observeEvent(input$filterPattern,{
         r$filterPattern <- input$filterPattern
       })
 
@@ -83,7 +83,7 @@ mod_conversation_landscape_server <- function(id,
         )
       })
 
-      observe({
+      observeEvent(input$colourVar,{
         r$colour_var <- input$colourVar
       })
     }
