@@ -26,6 +26,7 @@ test_that("Module takes correct inputs and responds to its inputs being changed 
 
       #eventReactive listens to nrow (just added)
       session$setInputs(nrow = 4)
+      session$setInputs(updatePlotsButton = 1)
       plot <- wlos_reactive()
       expect_equal(plot$facet$params$nrow, 4)
 
