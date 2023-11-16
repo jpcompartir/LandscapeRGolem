@@ -24,7 +24,7 @@ mod_group_vol_time_ui <- function(id) {
               icon = shiny::icon("wand-magic-sparkles"),
               shinyWidgets::noUiSliderInput(inputId = ns("height"), label = "height", min = 300, max = 1400, value = 600, step = 50, color = "#ff7518"),
               shinyWidgets::noUiSliderInput(inputId = ns("width"), label = "width", min = 300, max = 1400, value = 800, step = 50, color = "#ff7518"),
-              shinyWidgets::noUiSliderInput(inputId = ns("nrow"), label = "Number of Rows", min = 1, max = 20, value = 5, color = "#ff7518")
+              shinyWidgets::noUiSliderInput(inputId = ns("nrow"), label = "Number of Rows", min = 1, max = 20, value = 5, step = 1, color = "#ff7518")
             ),
             bslib::accordion_panel(
               title = "Parameters",
@@ -73,6 +73,7 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
       }
 
       group_vol_time_plot <- group_date_range_vot$over_time_data() %>%
+        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
         LandscapeR::ls_plot_group_vol_time(
           group_var = r$global_group_var,
           date_var = date,
