@@ -7,26 +7,29 @@ test_that("mod_bigram_network_server generates a plot with correct inputs",{
 
     # Add here your module params
     args = list(
-      highlighted_dataframe = generate_dummy_data
+      highlighted_dataframe = function() {generate_wlos_data(size = 50)}
     ),
 
     expr = {
       ns <- session$ns
 
       session$setInputs(topN = 20,
-                        minFreq = 5,
-                        removeStopwords = TRUE,
+                        minFreq = 2,
+                        removeStopwords = FALSE,
                         width = 666,
                         height = 666)
 
       expect_true(is.reactive(bigram_reactive))
       bigram_plot <- bigram_reactive()
+      bigram_plot$data
 
       expect_true(all(c('data', "layers", "scales", "mapping") %in% names(bigram_plot)))
       expect_true(inherits(bigram_plot, "gg"))
 
-      expect_equal(nrow(bigram_plot$data), 6)
+      expect_equal(nrow(bigram_plot$data), 52)
 
+      session$setInputs(minFreq = 4, updatePlotsButton =1)
+      expect_equal(nrow(bigram_reactive()$data),12)
     })
 })
 

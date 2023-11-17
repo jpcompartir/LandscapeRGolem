@@ -46,7 +46,7 @@ mod_c_groups_global_ui <- function(id){
 #' c_groups_global Server Functions
 #'
 #' @noRd
-mod_c_groups_global_server <- function(id, highlighted_dataframe, r, start_up_values){
+mod_c_groups_global_server <- function(id, highlighted_dataframe, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

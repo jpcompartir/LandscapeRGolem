@@ -151,7 +151,8 @@ generate_wlos_data <- function(size = 20) {
                       c("2023-01-01", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05", "2023-01-06", "2023-01-07", "2023-01-08", "2023-01-09", "2023-01-10")
                     )
     ),
-    text = stringr::sentences[1:size],
+    # text = tolower(stringr::sentences[1:size]),
+    text = tolower(stringi::stri_rand_lipsum(size)),
     sentiment = sample(c("positive","negative", "neutral"),
                        size = size,
                        replace = TRUE)

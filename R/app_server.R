@@ -61,7 +61,6 @@ app_server <- function(input, output, session, data) {
 
   mod_compare_groups_server("compareGroupsTag",
     highlighted_dataframe = df_filtered,
-    start_up_values = start_up_values,
     r = r
   )
 

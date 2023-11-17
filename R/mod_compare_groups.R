@@ -38,14 +38,13 @@ mod_compare_groups_ui <- function(id) {
 #' compare_groups Server Functions
 #'
 #' @noRd
-mod_compare_groups_server <- function(id, highlighted_dataframe, r, start_up_values) {
+mod_compare_groups_server <- function(id, highlighted_dataframe, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     #add the mod_c_groups_server
     mod_c_groups_global_server("groupGlobalsTag",
                                highlighted_dataframe = highlighted_dataframe,
-                               start_up_values = start_up_values,
                                r = r)
 
     mod_wlos_server("wlosTag",
