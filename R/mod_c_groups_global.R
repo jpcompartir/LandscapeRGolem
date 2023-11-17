@@ -76,13 +76,8 @@ mod_c_groups_global_server <- function(id, highlighted_dataframe, r, start_up_va
       }
     })
 
-    #above works, below not quite.
-    #----
-
+    #We include nrow(highlghted_dataframe()) to avoid trying to find the unique values in a column in an empty data frame
     observe({
-    #   (nrow( highlighted_dataframe() ) > 0
-    #     )
-    #   # browser()
       if(!is.null(input$tabGroupVar) && input$tabGroupVar != "" && nrow(highlighted_dataframe()) > 0){
         # unique(highlighted_dataframe()[[input$tabGroupVar]])
       # browser()
@@ -96,7 +91,6 @@ mod_c_groups_global_server <- function(id, highlighted_dataframe, r, start_up_va
         r$current_subgroups <-  unique(highlighted_dataframe()[[input$tabGroupVar]])
         r$new_subgroups <-  unique(highlighted_dataframe()[[input$tabGroupVar]])
       }
-
     })
 
     observe({
