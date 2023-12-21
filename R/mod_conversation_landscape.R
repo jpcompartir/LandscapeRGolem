@@ -78,8 +78,8 @@ mod_conversation_landscape_server <- function(id,
       observe({
         shiny::updateSelectInput(session,
                                  inputId = "colourVar",
-                                 choices = r$column_names,
-                                 selected = "cluster"
+                                 choices = r$grouping_variables,
+                                 selected = r$global_group_var
         )
       })
 
