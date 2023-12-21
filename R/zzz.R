@@ -327,3 +327,22 @@ isServer <- function(x) {
 
   identical(names(formals(x))[1:3], c("input", "output", "session"))
 }
+
+
+#' Get the choices for a grouping variable
+#'
+#' @description extract the possible grouping variables from the data
+#' @details  must have fewer than 100 unique values. This threshold could be reduced, as we would expect to have no more than ~20 or so &performance will fall off a cliff for plots above 50-100.
+#'
+#' @param data the data frame to get names from
+#'
+#' @noRd
+#'
+get_group_variables <- function(data) {
+  candidates <- vapply(data, FUN.VALUE = logical(1), function(x) {
+    .data_names <- names(data)
+    .data_candidates <- length(unique(x)) < 50
+  })
+
+  return(names(candidates[candidates]))
+}
