@@ -87,8 +87,7 @@ mod_group_sentiment_server <- function(id, highlighted_dataframe, r) {
         validate("You must select data first to view a grouped sentiment plot")
       }
 
-      group_sent_plot <- highlighted_dataframe() %>%
-        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
+      group_sent_plot <- r$grouped_data() %>%
         LandscapeR::ls_plot_group_sent(
           group_var = r$global_group_var,
           sentiment_var = sentiment,
