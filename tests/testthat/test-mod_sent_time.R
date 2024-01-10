@@ -29,12 +29,13 @@ test_that("Module takes the right inputs, interacts with sub modules and respond
     args = list(
       highlighted_dataframe = generate_date_sequence_data,
       r = shiny::reactiveValues(global_group_var = "cluster",
-                                current_subgroups = 1:5,
+                                grouped_data =  generate_date_sequence_data,
                                 date_min = as.Date("2023-01-02"),
                                 date_max = as.Date("2023-01-09"))
     )
     , {
       ns <- session$ns
+
       expect_error(sent_time_reactive(),
                    regexp = "date >=")
       expect_true(is.reactive(sent_time_reactive))
@@ -42,16 +43,6 @@ test_that("Module takes the right inputs, interacts with sub modules and respond
       #Check that all the titles are NULL before we interact with the module by setting the inputs
       expect_true(all(vapply(sent_time_titles$labels(), function(x) is.null(x), FUN.VALUE = logical(1))))
 
-      session$setInputs(
-        `sentTimeTitles-Title` = "My test title",
-        `sentTimeTitles-Subtitle` = "My test subtitle",
-        `sentTimeTitles-Caption` = "My test caption"
-      )
-
-      # Check they're set and returned by the module
-      expect_equal(sent_time_titles$labels()$title, "My test title")
-      expect_equal(sent_time_titles$labels()$subtitle, "My test subtitle")
-      expect_equal(sent_time_titles$labels()$caption, "My test caption")
 
       #Shouldn't run yet
       expect_error(sent_date_range_vot$over_time_data())
@@ -59,7 +50,8 @@ test_that("Module takes the right inputs, interacts with sub modules and respond
         `dateRangeSent-dateRange` = c(as.Date("2023-01-03"), as.Date("2023-01-06"))
       )
 
-      # Should run now
+
+      # Data should run now
       expect_silent(sent_date_range_vot$over_time_data())
 
       #Check values align with expectation
@@ -68,7 +60,21 @@ test_that("Module takes the right inputs, interacts with sub modules and respond
       expect_equal(max(over_time_data$date), as.Date("2023-01-06"))
 
       #Should run now
-      expect_silent(sent_time_reactive())
+      expect_no_error(sent_time_reactive())
+
+      # Now we know there's no errors, add title, subtitle, caption to plot
+      session$setInputs(
+        `sentTimeTitles-Title` = "My test title",
+        `sentTimeTitles-Subtitle` = "My test subtitle",
+        `sentTimeTitles-Caption` = "My test caption"
+      )
+
+      # Check title, subtitle, caption set in and returned by the module
+      expect_equal(sent_time_titles$labels()$title, "My test title")
+      expect_equal(sent_time_titles$labels()$subtitle, "My test subtitle")
+      expect_equal(sent_time_titles$labels()$caption, "My test caption")
+
+      # Render plot with labels
       plot <- sent_time_reactive()
 
       #Check plot has the right labels and class
@@ -78,10 +84,12 @@ test_that("Module takes the right inputs, interacts with sub modules and respond
       expect_equal(plot$labels$caption, "My test caption")
       expect_equal(plot$labels$fill, "sentiment")
 
-      #Shouldn't run yet as width and height not set
+      #Shouldn't run yet as width and height not set (sanity check)
       expect_error(output$sentTimePlot)
 
       session$setInputs(width = 400, height = 500)
+
+      #Should now render
       expect_equal(output$sentTimePlot$alt, "Plot object")
       expect_true(inherits(output$sentTimePlot, "list"))
 
@@ -91,8 +99,6 @@ test_that("Module takes the right inputs, interacts with sub modules and respond
       expect_true(grepl("sentiment_time_plot", output$saveSentTime))
     })
 })
-
-
 
 test_that("module ui works", {
   expect_error(
