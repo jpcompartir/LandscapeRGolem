@@ -27,11 +27,13 @@ mod_c_groups_global_server <- function(id, highlighted_dataframe, grouped_data, 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-    grouping_variables <- reactive({
-      req(isTruthy(highlighted_dataframe()))
-      sort(get_group_variables(highlighted_dataframe()))
-      browser()
-    })
+
+    # grouping_variables <- reactive({
+    #   # Block looks redundant, what does it do? browser() not triggering
+    #   req(isTruthy(highlighted_dataframe()))
+    #   sort(get_group_variables(highlighted_dataframe()))
+    #   browser()
+    # })
 
     output$selectColumn <- renderUI({
       if(nrow(highlighted_dataframe()) > 0){
