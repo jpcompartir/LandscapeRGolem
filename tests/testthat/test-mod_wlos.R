@@ -6,10 +6,12 @@ test_that("Module takes correct inputs and responds to its inputs being changed 
     args = list(
       highlighted_dataframe = function(){generate_wlos_data(size = 50)},
       r = shiny::reactiveValues(
+        grouped_data = function(){generate_wlos_data(size = 50)}
       )
     )
     , {
       ns <- session$ns
+      # browser()
       session$setInputs(topN = 5,
                         updatePlotsButton = 1,
                         termCutoff = 10,
@@ -17,11 +19,11 @@ test_that("Module takes correct inputs and responds to its inputs being changed 
                         nrow = 3)
 
       r$global_group_var = "cluster"
-      r$current_subgroups = c(1:4)
+
       plot <- wlos_reactive()
       expect_true(inherits(plot, "gg"))
       expect_equal(length(plot$layers), 3)
-      names(plot)
+      expect_contains(names(plot), c("data", "layers", "facet"))
       expect_equal(plot$facet$params$nrow, 3)
 
       #eventReactive listens to nrow (just added)
@@ -34,11 +36,15 @@ test_that("Module takes correct inputs and responds to its inputs being changed 
       expect_true(startsWith(output$saveWLOs, "/var/folders"))
       expect_true(endsWith(output$saveWLOs, ".png"))
       expect_match(output$saveWLOs, "wlos_plot")
+
+
+      r$global_group_var <- "sentiment"
+      session$setInputs(updatePlotsButton = 2)
+      plot <- wlos_reactive()
+      expect_setequal(unique(plot$data$facet_var), c("negative", "neutral", "positive"))
     })
 
 })
-
-
 
 test_that("module ui works", {
   ui <- mod_wlos_ui(id = "test")
