@@ -34,18 +34,6 @@ test_that("module ui works", {
   # Test that a bad tag isn't found
   expect_false(stringr::str_detect(ui_char, "badTag"))
 
-  # ids_that_should_exist <- list(
-  #   "compareGroupsAccordion",
-  #   "groupGlobalsTag",
-  #   "wlosTag",
-  #   "groupSentimentTag",
-  #   "groupVolTimeTag"
-  # )
-  #
-  # # Check that the tags that should exist, do exist
-  # lapply(ids_that_should_exist, function(x){
-  #   expect_true(stringr::str_detect(ui_char, x))
-  # })
   #Write the tests out individually so the error message are more informative.
   expect_true(stringr::str_detect(ui_char, "compareGroupsAccordio"))
   expect_true(stringr::str_detect(ui_char, "groupGlobalsTag"))

@@ -19,7 +19,7 @@
 ## to change the name in the app_sys() function in app_config.R /!\
 ##
 golem::fill_desc(
-  pkg_name = "LandscaperGolem", # The Name of the package containing the App
+  pkg_name = "LandscapeRGolem", # The Name of the package containing the App
   pkg_title = "Golem Learning", # The Title of the package containing the App
   pkg_description = "Package for learning Golem and modularising LandscapeR app. ", # The Description of the package containing the App
   author_first_name = "Jack", # Your First Name
