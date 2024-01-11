@@ -26,38 +26,40 @@ test_that("Module produces the plot as expected", {
   testServer(
     app = mod_group_sentiment_server,
     args = list(
-      highlighted_dataframe = generate_dummy_data,
+      highlighted_dataframe = generate_sentiment_data,
       r = shiny::reactiveValues(global_group_var = "cluster",
-                                current_subgroups = 1:5)
+                                grouped_data = generate_sentiment_data)
     ),
     expr = {
       ns <- session$ns
 
+      # Inputs necessary for group_sent_reactive to render a plot
       session$setInputs(
         width = "450px",
         height = "450px",
         chartType = "volume",
         labelsType = "volume")
 
-      expect_true(is.reactive(group_sent_reactive))
+      # Will error if plot can't render
       plot <- group_sent_reactive()
-
       plot_build <- ggplot2::ggplot_build(plot)
 
       expect_true(inherits(plot, "gg"))
       expect_true(all(c("group_var", "sentiment_var", "n", "percent", ".total", "percent_character") %in% names(plot$data)))
 
-
+      # Change inputs and make sure plot updates
       session$setInputs(
         chartType = "percent",
         labelsType = "percent"
       )
+
+      #To compare against plot & plot_build
       plot_two <- group_sent_reactive()
       plot_two_build <- ggplot2::ggplot_build(plot_two)
 
       # Check the first plot has different labels to the second, and that the second's are percentages
-      expect_equal(unique(plot_build[[1]][[2]][["label"]]), "1")
-      expect_equal(unique(plot_two_build[[1]][[2]][["label"]]), "100%")
+      expect_equal(unique(plot_build[[1]][[2]][["label"]])[[1]], "2")
+      expect_equal(unique(plot_two_build[[1]][[2]][["label"]])[[1]], "25%")
 
       expect_true(inherits(plot, "gg"))
       expect_true(all(c("group_var", "sentiment_var", "n", "percent", ".total", "percent_character") %in% names(plot$data)))

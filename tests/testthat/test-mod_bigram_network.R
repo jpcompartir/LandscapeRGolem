@@ -7,37 +7,29 @@ test_that("mod_bigram_network_server generates a plot with correct inputs",{
 
     # Add here your module params
     args = list(
-      highlighted_dataframe = generate_dummy_data
+      highlighted_dataframe = function() {generate_wlos_data(size = 50)}
     ),
 
     expr = {
       ns <- session$ns
 
-      # #Set input -> check input is set
-      session$setInputs(topN = 20)
-      expect_true(input$topN == 20)
-
-      session$setInputs(minFreq = 5)
-      expect_equal(input$minFreq, 5)
-
-      expect_error(is.reactive(object_that_doesnt_exist))
-      expect_false(is.reactive("object_that_doesn't exist"))
-      # print(highlighted_dataframe())
-      session$setInputs(removeStopwords = TRUE)
-      expect_true(input$removeStopwords)
-
-      session$setInputs(width = 666)
-      session$setInputs(height = 666)
-      expect_equal(input$width, 666)
-      expect_equal(input$height, 666)
-
-      # Can use browser to step into the server when it's running.
-      # browser()
+      session$setInputs(topN = 20,
+                        minFreq = 2,
+                        removeStopwords = FALSE,
+                        width = 666,
+                        height = 666)
 
       expect_true(is.reactive(bigram_reactive))
-      xd <- bigram_reactive()
-      expect_true(all(c('data', "layers", "scales", "mapping") %in% names(xd)))
-      expect_true(inherits(xd, "gg"))
+      bigram_plot <- bigram_reactive()
+      bigram_plot$data
+
+      expect_true(all(c('data', "layers", "scales", "mapping") %in% names(bigram_plot)))
+      expect_true(inherits(bigram_plot, "gg"))
+
+      expect_equal(nrow(bigram_plot$data), 52)
+
+      session$setInputs(minFreq = 4, updatePlotsButton =1)
+      expect_equal(nrow(bigram_reactive()$data),12)
     })
 })
 

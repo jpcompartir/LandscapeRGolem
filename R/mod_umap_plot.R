@@ -59,24 +59,27 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
 
     #Plot generation logic
     output$umapPlot <- plotly::renderPlotly({
+
       plot <- reactive_dataframe() %>%
         dplyr::mutate(
-          cluster = stringr::str_wrap(cluster, width = 20),
-          cluster = factor(cluster),
-          !!dplyr::sym(r$colour_var) := stringr::str_wrap(.data[[r$colour_var]], width = 20),
-          !!dplyr::sym(r$colour_var) := factor(.data[[r$colour_var]])
-        ) %>%
+          cluster = factor(cluster)
+        )
+
+      plot <- plot %>%
         plotly::plot_ly(source = "umap_plot",
           x = ~V1,
           y = ~V2,
           type = "scattergl",
+          mode = "markers",
           color = ~ .data[[r$colour_var]],
           # color = ~ cluster,
           colors = r$virid_colours,
           key = ~document,
           text = ~ paste("<br> Post:", text),
           hoverinfo = "text", marker = list(size = 2), height = 600
-        ) %>%
+        )
+
+      plot <- plot %>%
         plotly::layout(
           dragmode = "lasso",
           legend = list(itemsizing = "constant"),
@@ -99,7 +102,9 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
             title = ""
           ),
           newshape = list(fillcolor = "#ff7518", opacity = 0.2)
-        ) %>%
+        )
+
+      plot <- plot %>%
         plotly::config(
           editable = TRUE,
           modeBarButtonsToAdd =
@@ -109,8 +114,10 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
               "drawrect",
               "eraseshape"
             )
-        ) %>%
-        # plotly::event_register(event = "plotly_selected") %>%
+        )
+
+
+      plot <- plot %>%
         htmlwidgets::onRender(
           # Javascript function which labels the most recently added shape with some editable text
           "
@@ -148,8 +155,11 @@ mod_umap_plot_server <- function(id, reactive_dataframe, r) {
     });
   }
 ")
+
       plotly::event_register(plot, "plotly_selected")
-      plot
+
+      plotly::toWebGL(plot)
+
 
     })
 

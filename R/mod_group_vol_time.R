@@ -65,7 +65,7 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
 
     group_vol_time_titles <- mod_reactive_labels_server("groupVolTimeTitles")
 
-    group_date_range_vot <- mod_daterange_input_server("dateRangeGroupVol", highlighted_dataframe, r)
+    group_date_range_vot <- mod_daterange_input_server("dateRangeGroupVol", highlighted_dataframe = r$grouped_data, r)
 
     group_vol_time_reactive <- shiny::reactive({
       if (nrow(highlighted_dataframe()) < 1) {
@@ -73,7 +73,6 @@ mod_group_vol_time_server <- function(id, highlighted_dataframe, r) {
       }
 
       group_vol_time_plot <- group_date_range_vot$over_time_data() %>%
-        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
         LandscapeR::ls_plot_group_vol_time(
           group_var = r$global_group_var,
           date_var = date,

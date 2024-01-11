@@ -1,6 +1,20 @@
+10th January 2024 
+UI changes + changes to r$ mean some tests need to be updated. Last test(s) - test_mod_wlos
+
+
+18th December
+fix the mutate issue causing unnecessary delay in plotly module.
+fix the subgroups not updating properly on new data selection
+
+subgroups:
+Procedure has to be first select data so we need a reactive dependency on highlighted_dataframe(). Then, whenever the global_group_var changes, re-populate. Whenever values are selected, send those to r$current_subgroups, 
+
+Branching to subgroups_module / shinytests
+
+doing away with r$subgroups, current_subgroups etc. handling inside the module and then passing the reactive df to the functions that need it
+
+
 31st October - fixed the issue with the vot plots not rendering due to the observe funniness.
-
-
 
 Roadmap - popovers & tooltips
 interactive plots with plotly/cards
@@ -50,8 +64,8 @@ prepare_data_for_landscaper <- function(data, document_var, date_var, text_var, 
   return(data)
 }
 
-data <- read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
-  dplyr::select(-cluster)
+# data <- read_csv("~/Google Drive/My Drive/data_science_project_work/microsoft/project_work/624_ai_landscape_refresh/data/624_topic_df.csv") %>%
+#   dplyr::select(-cluster)
 
 data <- prepare_data_for_landscaper(data, document, date, text, clean_text, topic, V1, V2, permalink)
 

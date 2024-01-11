@@ -69,13 +69,14 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
     ns <- session$ns
 
     #Update when highlighted_dataframe changes, or the updatePlotsButton is pressed (settings) or the subgroups/groups are changed.
-    wlos_reactive <- eventReactive(c(highlighted_dataframe(), input$updatePlotsButton, r$current_subgroups), {
+    wlos_reactive <- eventReactive(c(highlighted_dataframe(), r$grouped_data(), input$updatePlotsButton), {
+      # browser()
       if (nrow(highlighted_dataframe()) < 1) {
         validate("You must select data first to view a weighted log-odds chart")
       }
-
-      wlos <- highlighted_dataframe() %>%
-        dplyr::filter(!!dplyr::sym(r$global_group_var) %in% r$current_subgroups) %>%
+      req(r$grouped_data())
+      # browser()
+      wlos <- r$grouped_data() %>%
         LandscapeR::ls_wlos(
           group_var = r$global_group_var,
           text_var = clean_text,
@@ -89,7 +90,9 @@ mod_wlos_server <- function(id, highlighted_dataframe, r) {
 
     output$wlosPlot <- shiny::renderPlot(
       {
-        wlos_reactive()
+        if(isTruthy(wlos_reactive())){
+          wlos_reactive()
+        }
       },
       width = function() input$width,
       height = function() input$height

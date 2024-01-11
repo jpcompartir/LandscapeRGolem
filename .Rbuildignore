@@ -11,3 +11,4 @@ $run_dev.*
 ^rsconnect$
 ^tests$
 ^dev_docs$
+run_locally_script.R

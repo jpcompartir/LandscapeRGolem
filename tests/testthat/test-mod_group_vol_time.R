@@ -22,7 +22,7 @@ test_that("Module's server function accepts the right named inputs", {
   )
 })
 
-test_that("Module renders a plot when correct inputs are set and interacts with its modules",{
+test_that("Module renders a plot when correct inputs are set and interacts with its modules - labels, downloads",{
   #This is rather a long test, it'll stay like this at least for now as setting up the testServer code each time takes a while.
   testServer(
     mod_group_vol_time_server,
@@ -30,7 +30,7 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
     args = list(
       highlighted_dataframe = generate_date_sequence_data,
       r = shiny::reactiveValues(global_group_var = "cluster",
-                                current_subgroups = 1:5,
+                                grouped_data = generate_date_sequence_data,
                                 date_min = as.Date("2023-01-02"),
                                 date_max = as.Date("2023-01-09"))
     )
@@ -38,10 +38,9 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
       ns <- session$ns
 
 
-      # Should error as inpouts aren't set
+      # Should error as inputs aren't set
       expect_error(group_vol_time_reactive(),
                    regexp = "date >=")
-      # browser()
 
       session$setInputs(
         dateBreak = "day",
@@ -58,7 +57,7 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
       expect_true(inherits(plot, "gg"))
 
       #Check range of dates is as expected:
-      expect_true(max(plot$data$plot_date) == as.Date("2023-01-05"))
+      expect_true(max(plot$data$plot_date) == as.Date("2023-01-09"))
       expect_true(min(plot$data$plot_date) == as.Date("2023-01-03"))
 
       #Check the output is rendering with the correct names
@@ -90,13 +89,15 @@ test_that("Module renders a plot when correct inputs are set and interacts with 
     })
 })
 
-test_that("mod_group_vol_time's plot is responding correctly to changes in r$global_group_var and r$current_subgroups", {
+test_that("mod_group_vol_time's plot is responding correctly to changes in r$global_group_var", {
   testServer(
     mod_group_vol_time_server,
-    # Add here your module params
+
     args = list(
       highlighted_dataframe = generate_sentiment_data,
       r = shiny::reactiveValues(
+        global_group_var = "cluster",
+        grouped_data = generate_sentiment_data,
         date_min = as.Date("2023-01-02"),
         date_max = as.Date("2023-01-09")
       )
@@ -113,23 +114,20 @@ test_that("mod_group_vol_time's plot is responding correctly to changes in r$glo
         `dateRangeGroupVol-dateRange` = list(as.Date("2023-01-03"), as.Date("2023-01-09"))
       )
 
-      r$global_group_var <- "sentiment"
-      r$current_subgroups <- c("positive", "negative")
+      # browser()
 
-      pos_neg <- group_vol_time_reactive()
-      expect_setequal(c("negative", "positive"), unique(pos_neg$data$facet_var))
+      cluster_plot <- group_vol_time_reactive()
+
+      expect_setequal(unique(cluster_plot$data$facet_var), c(1,2, 3,4))
 
       r$global_group_var <- "sentiment"
-      r$current_subgroups <- c("negative", "neutral")
-      neg_pos <- group_vol_time_reactive()
-      expect_setequal(c("negative", "neutral"), unique(neg_pos$data$facet_var))
+      sentiment_plot <- group_vol_time_reactive()
+      expect_setequal(unique(sentiment_plot$data$facet_var), c("negative", "neutral", "positive"))
+
 
     })
 
 })
-
-
-
 
 test_that("Module UI renders with correct tags + icons", {
   ui <- mod_group_vol_time_ui(id = "test")

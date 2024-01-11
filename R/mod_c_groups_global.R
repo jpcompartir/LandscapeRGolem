@@ -11,115 +11,109 @@ mod_c_groups_global_ui <- function(id){
   ns <- NS(id)
   tagList(
     shiny::fluidRow(
-      id = ns("groupsRow"),
-      shiny::column(
-        3,
-        shiny::selectInput(
-          inputId = ns("tabGroupVar"),
-          label = "grouping variable",
-          choices = NULL,
-          selected = NULL)
-      ),
-      shinyWidgets::pickerInput(
-        inputId = ns("subGroups"),
-        label = "levels of grouping variable",
-        choices = c("Conversational AI", "AI Performance","AI Search", "Coding & Assistance", "AI & Business","AI-Powered Creativity", "AI Ethics & Society", "Risks & Challenges", "AI & Security"),
-        options = shinyWidgets::pickerOptions(
-          class = 'custom-picker',
-          actionsBox = TRUE,
-          size = 10,
-          selectedTextFormat = "count > 3"
-        ),
-        selected = c("Conversational AI", "AI Performance","AI Search", "Coding & Assistance", "AI & Business","AI-Powered Creativity", "AI Ethics & Society", "Risks & Challenges", "AI & Security"),
-        multiple = TRUE
-      ),
-      shiny::column(1,
-                    shiny::actionButton(
-                      class = "btn-subgroups-update",
-                      inputId = ns("updateSubgroupsButton"),
-                      label = "Go")
-      )
-    )
+      shiny::column(2, uiOutput(ns("selectColumn"))),
+      shiny::column(3, uiOutput(ns("selectSubgroups"))),
+      shiny::column(1, uiOutput(ns("filterSubgroups")))
+      # shiny::column(1, uiOutput(ns("filterSubgroups")))
+    ),
+    shiny::dataTableOutput(ns("table"))
   )
 }
 
 #' c_groups_global Server Functions
 #'
 #' @noRd
-mod_c_groups_global_server <- function(id, highlighted_dataframe, r, start_up_values){
-  moduleServer( id, function(input, output, session){
+mod_c_groups_global_server <- function(id, highlighted_dataframe, grouped_data, r){
+  moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-    observe({
-      if (nrow(highlighted_dataframe()) > 0) {
-        shinyjs::enable("groupsRow")
-      } else {
-        shinyjs::disable("groupsRow")
+
+    # grouping_variables <- reactive({
+    #   # Block looks redundant, what does it do? browser() not triggering
+    #   req(isTruthy(highlighted_dataframe()))
+    #   sort(get_group_variables(highlighted_dataframe()))
+    #   browser()
+    # })
+
+    output$selectColumn <- renderUI({
+      if(nrow(highlighted_dataframe()) > 0){
+        shiny::tagList(
+          shinyWidgets::pickerInput(
+            inputId = ns("column"),
+            label = "select column",
+            choices = r$grouping_variables,
+            selected = r$grouping_variables[[1]],
+            options = shinyWidgets::pickerOptions(
+              class = 'custom-picker',
+              actionsBox = TRUE,
+              size = 10,
+              selectedTextFormat = "count > 3")
+          )
+        )
       }
     })
 
-    observe({
-      shiny::updateSelectInput(
-        session,
-        inputId = "tabGroupVar",
-        choices = colnames(highlighted_dataframe()),
-        selected = "cluster"
-        # selected = r$global_group_var
-      )
-    })
-
-
-    # Update the reactive value global_group_bar when a new variable is selected
-    observeEvent(input$tabGroupVar,{
-      if(!is.null(input$tabGroupVar) && input$tabGroupVar != ""){
-        r$global_group_var <- input$tabGroupVar
+    subgroups <- reactive({
+      if(isTruthy(input$column)){
+        highlighted_dataframe() %>%
+          dplyr::pull(input$column) %>%
+          unique() %>%
+          sort()
       }
     })
 
-    #above works, below not quite.
-    #----
-
-    observe({
-    #   (nrow( highlighted_dataframe() ) > 0
-    #     )
-    #   # browser()
-      if(!is.null(input$tabGroupVar) && input$tabGroupVar != "" && nrow(highlighted_dataframe()) > 0){
-        # unique(highlighted_dataframe()[[input$tabGroupVar]])
-      # browser()
-      shinyWidgets::updatePickerInput(
-        session,
-        inputId = "subGroups",
-        choices =  unique(highlighted_dataframe()[[input$tabGroupVar]]),
-        selected =  unique(highlighted_dataframe()[[input$tabGroupVar]])
-      )
-
-        r$current_subgroups <-  unique(highlighted_dataframe()[[input$tabGroupVar]])
-        r$new_subgroups <-  unique(highlighted_dataframe()[[input$tabGroupVar]])
-      }
-
-    })
-
-    observe({
-      if(!is.null(input$tabGroupVar) && input$tabGroupVar != "" && nrow(highlighted_dataframe()) > 0){
-      #Initialise them so plots load
-      r$current_subgroups <-  unique(highlighted_dataframe()[[input$tabGroupVar]])
-      r$new_subgroups <-  unique(highlighted_dataframe()[[input$tabGroupVar]])
+    output$selectSubgroups <- renderUI({
+      if(isTruthy(input$column)){
+        shiny::tagList(
+          shinyWidgets::pickerInput(
+            inputId = ns("subgroups"),
+            label = "select subgroups",
+            choices = subgroups(),
+            selected = subgroups(),
+            multiple = TRUE,
+            options = shinyWidgets::pickerOptions(
+              class = 'custom-picker',
+              actionsBox = TRUE,
+              size = 10,
+              selectedTextFormat = "count > 3")
+          )
+        )
       }
     })
 
-    #Temporary store of the new subgroups before updating the plot
-    observeEvent(c(highlighted_dataframe(), input$subGroups, input$updateSubgroupsButton), {
-      if(!is.null(input$subGroups) && all(input$subGroups != "")) {
-        r$new_subgroups <- input$subGroups
+    output$filterSubgroups <- renderUI({
+      if(isTruthy(input$subgroups) & isTruthy(input$column)){
+        shiny::tagList(
+          shiny::actionButton(
+            class = "btn-subgroups-update",
+            inputId = ns("updateSubgroups"),
+            label = "update")
+        )
       }
-
     })
 
-    observeEvent(input$updateSubgroupsButton, {
-      #Update the current subgroups when the button is pressed
-      r$current_subgroups <- r$new_subgroups
+
+    group_df_filtered <- eventReactive(c(input$updateSubgroups, highlighted_dataframe()),{
+      .group_data <- NULL
+      if(nrow(highlighted_dataframe())> 1){
+        if(isTruthy(input$column) & isTruthy(input$subgroups)){
+
+          #Sanity check
+          print(paste0("Column: ", input$column, "Subgroups: ", input$subgroups))
+
+          .group_data <- highlighted_dataframe() %>%
+            dplyr::mutate(!!dplyr::sym(input$column) := as.factor(!!dplyr::sym(input$column))) %>%
+            dplyr::filter(!!dplyr::sym(input$column) %in% as.factor(input$subgroups))
+        }
+      }
+      .group_data
     })
 
+    observeEvent(c(input$updateSubgroups, highlighted_dataframe()),{
+      r$grouped_data <- group_df_filtered
+      r$global_group_var <- input$column
+
+    })
   })
 }
 
