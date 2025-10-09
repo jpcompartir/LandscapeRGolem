@@ -41,7 +41,7 @@ mod_reactive_data_server <- function(id, data, r){
           dplyr::filter(document %in% r$keep_keys)
       }
 
-      if(r$filterPattern != ""){
+      if(!is.null(r$filterPattern) && nchar(r$filterPattern) > 0){
         reactive_data <- reactive_data %>%
           dplyr::filter(grepl(r$filterPattern, text, ignore.case = TRUE))
       }

@@ -16,32 +16,51 @@ app_server <- function(input, output, session, data) {
 
   stopifnot(c("text", "document", "clean_text", "permalink", "cluster", "sentiment", "V1", "V2", "date") %in% colnames(data))
 
+  # get grouping variables and ensure 'cluster' is first if it exists
+  group_vars <- get_group_variables(data)
+  if ("cluster" %in% group_vars) {
+    group_vars <- c("cluster", sort(setdiff(group_vars, "cluster")))
+  } else {
+    group_vars <- sort(group_vars)
+  }
+
   # This is for passing reactive values to and from modules
+
+
   r <- reactiveValues(
     global_group_var = "cluster",
     colour_var = "cluster",
     column_names = colnames(data),
+    grouping_variables = group_vars,
     current_subgroups = unique(data$cluster),
     new_subgroups = unique(data$cluster),
-    date_min =  min(data$date, na.rm = TRUE),
+    date_min = min(data$date, na.rm = TRUE),
     date_max = max(data$date, na.rm = TRUE),
     virid_colours = viridis::viridis_pal(option = "H")(50),
     keep_keys = data %>% dplyr::pull(document),
     remove_keys = NULL,
-    selected_range = NULL)
+    selected_range = NULL,
+    x1 = c(-20, 20),
+    y1 = c(-20, 20),
+    filterPattern = "")
 
-    #---- filtered_df ----
-    # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
-    df_filtered <- eventReactive(
-      c(
-        plotly::event_data("plotly_selected", source = "umap_plot"),
-        input$`landscapeTag-umapPlot-deleteData-delete`),{
+  # define reactive_data_output FIRST (before it's used)
+  reactive_data_output <- mod_reactive_data_server(id = "reactveData",
+                                                   data = data,
+                                                   r = r)
 
-          df_filtered <- reactive_data_output$reactive_data() %>%
-            dplyr::filter(document %in% r$selected_range)
+  #---- filtered_df ----
+  # Used for rendering the fully responsive data table - consider changing this to highlighted_dataframe (it's passed as that nearly everywhere)
+  df_filtered <- eventReactive(
+    c(
+      plotly::event_data("plotly_selected", source = "umap_plot"),
+      input$`landscapeTag-umapPlot-deleteData-delete`),{
 
-          df_filtered
-        })
+        df_filtered <- reactive_data_output$reactive_data() %>%
+          dplyr::filter(document %in% r$selected_range)
+
+        df_filtered
+      })
 
   mod_conversation_landscape_server("landscapeTag",
     reactive_dataframe = reactive_data_output$reactive_data,
@@ -70,11 +89,6 @@ app_server <- function(input, output, session, data) {
     data = data,
     r = r
   )
-
-
-  reactive_data_output <- mod_reactive_data_server(id =  "reactveData",
-                                            data = data,
-                                            r = r)
 
 
 

@@ -340,8 +340,7 @@ isServer <- function(x) {
 #'
 get_group_variables <- function(data) {
   candidates <- vapply(data, FUN.VALUE = logical(1), function(x) {
-    .data_names <- names(data)
-    .data_candidates <- length(unique(x)) < 50
+    length(unique(x)) < 50
   })
 
   return(names(candidates[candidates]))
