@@ -16,12 +16,22 @@ app_server <- function(input, output, session, data) {
 
   stopifnot(c("text", "document", "clean_text", "permalink", "cluster", "sentiment", "V1", "V2", "date") %in% colnames(data))
 
+  # get grouping variables and ensure 'cluster' is first if it exists
+  group_vars <- get_group_variables(data)
+  if ("cluster" %in% group_vars) {
+    group_vars <- c("cluster", sort(setdiff(group_vars, "cluster")))
+  } else {
+    group_vars <- sort(group_vars)
+  }
+
   # This is for passing reactive values to and from modules
+
+
   r <- reactiveValues(
     global_group_var = "cluster",
     colour_var = "cluster",
     column_names = colnames(data),
-    grouping_variables = sort(get_group_variables(data)),
+    grouping_variables = group_vars,
     current_subgroups = unique(data$cluster),
     new_subgroups = unique(data$cluster),
     date_min = min(data$date, na.rm = TRUE),
